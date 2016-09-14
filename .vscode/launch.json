@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PowerShell",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/Scripts/debug.ps1",
+            "args": [],
+            "cwd": "${workspaceRoot}/Scripts/debug.ps1"
+        }
+    ]
+}
