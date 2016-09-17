@@ -19,18 +19,18 @@ tbd
 
 Please feel free to contribute by opening new issues or providing pull requests.
 For the best development experience, open this project as a folder in Visual
-Studio Code and ensure the PowerShell extension is installed.
+Studio Code and ensure that the PowerShell extension is installed.
 
 * [Visual Studio Code](https://code.visualstudio.com/)
 * [PowerShell Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
 
 This module is tested with the PowerShell testing framework Pester. To run all
-tests, just start the included test script `Scripts\test.ps1` or invoke Pester
-directly. The tests will download the latest meta test from the
-claudiospizzi/PowerShellModuleBase repository. To prevent checking in the latest
-meta tests into this repository, please update your git index tu ensure they
-will stay unchanged:
+tests, just start the included test script `.\Scripts\test.ps1` or invoke Pester
+directly with the `Invoke-Pester` cmdlet. The tests will automatically download
+the latest meta test from the claudiospizzi/PowerShellModuleBase repository. To
+prevent checking in the meta tests into this repository, please update your git
+index to ensure they will stay unchanged:
 
-```git
+```
 git update-index --assume-unchanged 'Tests/Meta/ProjectStructure.Tests.ps1'
 ```
