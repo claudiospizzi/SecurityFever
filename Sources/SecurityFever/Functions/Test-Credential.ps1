@@ -36,8 +36,8 @@ function Test-Credential
     (
         # PowerShell credentials object to test.
         [Parameter(Mandatory = $true, ParameterSetName = 'Credential')]
-        [Credential()]
         [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]
         $Credential,
 
         # The username to validate. Specify password too.
@@ -101,7 +101,7 @@ function Test-Credential
                 }
                 $directoryEntry = New-Object @directoryEntryArgs
 
-                if ($directoryEntry -eq $null)
+                if ($null -eq $directoryEntry)
                 {
                     throw 'Unable to create an ADSI connection.'
                 }
