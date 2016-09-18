@@ -14,7 +14,7 @@
     SecurityFever.AuditPolicy[]. Array of custom audit policy objects.
 
     .EXAMPLE
-    PS C:\> 
+    PS C:\>
 
 
     .NOTES
@@ -45,7 +45,7 @@ function Get-SecurityAuditPolicy
 
     foreach ($csvAuditCategory in $csvAuditCategories)
     {
-        # If the Category/Subcategory field starts with two blanks, it is a 
+        # If the Category/Subcategory field starts with two blanks, it is a
         # subcategory entry - else a category entry.
         if ($csvAuditCategory.'GUID' -like '{*-797A-11D9-BED3-505054503030}')
         {

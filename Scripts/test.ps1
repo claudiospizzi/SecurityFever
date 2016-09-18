@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-    Test the PowerShell module with Pester and upload the results to AppVeyor. 
+    Test the PowerShell module with Pester and upload the results to AppVeyor.
 
     .DESCRIPTION
     Using Pester to execute all tests within the Tests folder. The tests result
@@ -48,6 +48,9 @@ $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleN
 ## TEST
 
 Write-Verbose "** TEST"
+
+# Preload the meta tests
+ Invoke-Pester -Path "$ProjectPath\Tests" -TestName 'Meta Autoload'
 
 # Use the Pester invoke command to execte all tests.
 $TestResults = Invoke-Pester -Path "$ProjectPath\Tests" -OutputFormat NUnitXml -OutputFile "$StagingPath\$ModuleName-$ModuleVersion.NUnit.xml" -PassThru

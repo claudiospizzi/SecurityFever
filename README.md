@@ -15,6 +15,13 @@ Windows and application security.
 tbd
 
 
+## Versions
+
+### unreleased
+
+* ...
+
+
 ## Contribute
 
 Please feel free to contribute by opening new issues or providing pull requests.
@@ -27,10 +34,4 @@ Studio Code and ensure that the PowerShell extension is installed.
 This module is tested with the PowerShell testing framework Pester. To run all
 tests, just start the included test script `.\Scripts\test.ps1` or invoke Pester
 directly with the `Invoke-Pester` cmdlet. The tests will automatically download
-the latest meta test from the claudiospizzi/PowerShellModuleBase repository. To
-prevent checking in the meta tests into this repository, please update your git
-index to ensure they will stay unchanged:
-
-```
-git update-index --assume-unchanged 'Tests/Meta/ProjectStructure.Tests.ps1'
-```
+the latest meta test from the claudiospizzi/PowerShellModuleBase repository.

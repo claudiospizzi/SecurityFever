@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-    
+
 
     .DESCRIPTION
-    
+
 
     .INPUTS
     None.
@@ -12,7 +12,7 @@
     None.
 
     .EXAMPLE
-    PS C:\> 
+    PS C:\>
 
 
     .NOTES
@@ -33,7 +33,7 @@ function Get-SecurityAuditPolicySetting
         [Parameter(Mandatory = $true)]
         [System.String]
         $Category,
-        
+
         # Audit policy subcategory
         [Parameter(Mandatory = $true)]
         [System.String]

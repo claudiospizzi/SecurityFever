@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-    
+
 
     .DESCRIPTION
-    
+
 
     .INPUTS
     None.
@@ -12,7 +12,7 @@
     None.
 
     .EXAMPLE
-    PS C:\> 
+    PS C:\>
 
 
     .NOTES
@@ -28,8 +28,7 @@ function Get-SecurityActivity
     [CmdletBinding()]
     param
     (
-        
     )
 
-    
+
 }

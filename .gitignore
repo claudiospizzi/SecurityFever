@@ -1,0 +1,5 @@
+
+# Ignore meta test files
+Tests/Meta/FileEncoding.Tests.ps1
+Tests/Meta/FileFormatting.Tests.ps1
+Tests/Meta/ProjectStructure.Tests.ps1

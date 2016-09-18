@@ -14,7 +14,7 @@
     Output of the invoked script block or command.
 
     .EXAMPLE
-    PS C:\> 
+    PS C:\>
 
 
     .NOTES

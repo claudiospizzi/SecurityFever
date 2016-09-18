@@ -6,7 +6,10 @@
     "PowerShell",
     "GitHub",
     "AppVeyor",
-    "OperationsManagerFever"
+    "OperationsManagerFever",
+    "PowerShellModuleBase",
+    "claudiospizzi",
+    "ps1"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
