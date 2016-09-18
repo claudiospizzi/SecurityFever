@@ -1,21 +1,22 @@
 
-# Audoload latest meta test files from the master branch of the 
-# claudiospizzi/PowerShellModuleBase repository. It will only update the
-# existing placeholder files and not download new meta test files.
+<#
+    Use this tests to verify, if the latest meta tests are available in this
+    repository, compared to the claudiospizzi/PowerShellModuleBase repository.
+#>
 
 Describe 'Meta Autoload' {
 
-    $baseUri = 'https://raw.githubusercontent.com/claudiospizzi/PowerShellModuleBase/master/Tests/Meta'
+    $baseApi = 'https://api.github.com/repos/claudiospizzi/PowerShellModuleBase/contents/Tests/Meta'
 
-    $testFiles = Get-ChildItem -Path $PSScriptRoot -Exclude 'Autoload.Tests.ps1' | ForEach-Object Name
+    $files = Invoke-RestMethod -Method Get -Uri $baseApi
 
-    foreach ($testFile in $testFiles)
+    foreach ($file in $files)
     {
-        Context "File $testFile" {
+        if ($file.name -ne 'Autoload.Tests.ps1')
+        {
+            It "should download the latest version of /$($file.path)" {
 
-            It 'should download the latest version' {
-
-                { Invoke-WebRequest -Uri "$baseUri/$testFile" -OutFile "$PSScriptRoot\$testFile" -ErrorAction Stop } | Should Not Throw
+                { Invoke-WebRequest -Uri $file.download_url -OutFile "$PSScriptRoot\$($file.name)" -Headers @{ 'Cache-Control' = 'no-cache' } -UseBasicParsing -ErrorAction Stop } | Should Not Throw
             }
         }
     }
