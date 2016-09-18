@@ -50,7 +50,7 @@ $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleN
 Write-Verbose "** TEST"
 
 # Preload the meta tests
- Invoke-Pester -Path "$ProjectPath\Tests" -TestName 'Meta Autoload'
+Invoke-Pester -Path "$ProjectPath\Tests" -TestName 'Meta Autoload'
 
 # Use the Pester invoke command to execte all tests.
 $TestResults = Invoke-Pester -Path "$ProjectPath\Tests" -OutputFormat NUnitXml -OutputFile "$StagingPath\$ModuleName-$ModuleVersion.NUnit.xml" -PassThru
