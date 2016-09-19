@@ -18,14 +18,16 @@ all my security related functions into this module, ready to use.
 
 ## Cmdlets
 
-* **Get-SecurityActivity**    
-  
+* **Get-SecurityActivity**
 
-* **Get-SecurityAuditPolicy**  
+
+* **Get-SecurityAuditPolicy**
+
   List the current local security audit policy settings. It will execute the
   auditpol.exe command and parse the result into objects.
 
-* **Get-SecurityAuditPolicySetting**  
+* **Get-SecurityAuditPolicySetting**
+
   Return the value of one security audit policy setting. It will use the
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
 
