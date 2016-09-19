@@ -1,4 +1,7 @@
 
+# Ignore debug script file
+Scripts/debug.ps1
+
 # Ignore meta test files
 Tests/Meta/FileEncoding.Tests.ps1
 Tests/Meta/FileFormatting.Tests.ps1
