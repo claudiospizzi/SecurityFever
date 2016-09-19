@@ -13,21 +13,19 @@ Windows and application security.
 ## Introduction
 
 This is a personal PowerShell Module created by Claudio Spizzi. I've collected
-all my security related functions into this module, ready to use.
+all my security related functions into this module, ready to use. 
 
 
 ## Cmdlets
 
 * **Get-SecurityActivity**
+  
 
-
-* **Get-SecurityAuditPolicy**
-
+* **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
   auditpol.exe command and parse the result into objects.
 
-* **Get-SecurityAuditPolicySetting**
-
+* **Get-SecurityAuditPolicySetting**  
   Return the value of one security audit policy setting. It will use the
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
 
@@ -86,13 +84,20 @@ Please feel free to contribute by opening new issues or providing pull requests.
 For the best development experience, open this project as a folder in Visual
 Studio Code and ensure that the PowerShell extension is installed.
 
-* [Visual Studio Code](https://code.visualstudio.com/)
-* [PowerShell Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
+* [Visual Studio Code]
+* [PowerShell Extension]
 
 This module is tested with the PowerShell testing framework Pester. To run all
 tests, just start the included test script `.\Scripts\test.ps1` or invoke Pester
 directly with the `Invoke-Pester` cmdlet. The tests will automatically download
 the latest meta test from the claudiospizzi/PowerShellModuleBase repository.
 
+To debug the module, just copy the existing `.\Scripts\debug.default.ps1` file
+to `.\Scripts\debug.ps1`, which is ignored by git. Now add the command to the
+debug file and start it.
+
 
 [PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
+
+[Visual Studio Code]: https://code.visualstudio.com/
+[PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
