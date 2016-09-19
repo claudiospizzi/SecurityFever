@@ -12,4 +12,3 @@ Split-Path -Path $PSScriptRoot |
             ForEach-Object { . $_.FullName }
 
 # Execute deubg
-Get-SecurityAuditPolicy
