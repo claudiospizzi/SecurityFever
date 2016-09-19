@@ -9,7 +9,11 @@
     "OperationsManagerFever",
     "PowerShellModuleBase",
     "claudiospizzi",
-    "ps1"
+    "ps1",
+    "Spizzi",
+    "cmdletwere",
+    "cmdlet",
+    "powershell"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
