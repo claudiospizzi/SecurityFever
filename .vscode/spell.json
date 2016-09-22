@@ -10,7 +10,20 @@
     "cmdlet",
     "powershell",
     "R2",
-    "WMF"
+    "WMF",
+    "Spizzi",
+    "CurrentUser",
+    "AllUsers",
+    "auditpol",
+    "exe",
+    "sudo",
+    "ps1",
+    "claudiospizzi",
+    "PowerShellModuleBase",
+    "-Scope",
+    "Get-SecurityActivity",
+    "Get-SecurityAuditPolicy",
+    "Get-SecurityAuditPolicySetting"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
@@ -27,8 +40,7 @@
     "Make I uppercase": "Warning"
   },
   "languageIDs": [
-    "markdown",
-    "plaintext"
+    "markdown"
   ],
   "ignoreRegExp": [
     "/\\(.*\\.(jpg|jpeg|png|md|gif|JPG|JPEG|PNG|MD|GIF)\\)/g",
