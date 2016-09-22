@@ -18,8 +18,10 @@ all my security related functions into this module, ready to use.
 
 ## Cmdlets
 
-* **Get-SecurityActivity**
-  
+* **Get-SecurityActivity**  
+  Get security and lifecycle related activity events on the target computer like
+  start up / shutdown, user logon / logoff, workstation locked / unlocked,
+  session reconnected / disconnected and screensaver invoke and dismiss.
 
 * **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
@@ -46,7 +48,7 @@ all my security related functions into this module, ready to use.
 
 ## Requirements
 
-The following minimum tested requirements are necessary to use this module:
+The following minimum requirements are necessary to use this module:
 
 * Windows PowerShell 3.0
 * Windows Server 2008 R2 / Windows 7
