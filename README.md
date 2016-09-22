@@ -16,12 +16,39 @@ This is a personal PowerShell Module created by Claudio Spizzi. I've collected
 all my security related functions into this module, ready to use. 
 
 
-## Cmdlets
+## Requirements
+
+The following minimum requirements are necessary to use this module:
+
+* Windows PowerShell 3.0
+* Windows Server 2008 R2 / Windows 7
+
+
+## Installation
+
+With PowerShell 5.0, the new [PowerShell Gallery] was introduced. Additionally,
+the new module [PowerShellGet] was added to the default WMF 5.0 installation.
+With the cmdlet `Install-Module`, a published module from the PowerShell Gallery
+can be downloaded and installed directly within the PowerShell host, optionally
+with the scope definition:
+
+```powershell
+Install-Module SecurityFever [-Scope {CurrentUser | AllUsers}]
+```
+
+Alternatively, download the latest release from GitHub and install the module
+manually on your local system:
+
+* Download the latest release from GitHub as a ZIP file: [GitHub Releases]
+* Extract the downloaded module and install it: [Installing a PowerShell Module]
+
+
+## Features
 
 * **Get-SecurityActivity**  
-  Get security and lifecycle related activity events on the target computer like
-  start up / shutdown, user logon / logoff, workstation locked / unlocked,
-  session reconnected / disconnected and screensaver invoke and dismiss.
+  Get security and life cycle related activity events on the target computer
+  like start up / shutdown, user log on / log off, workstation locked / unlocked,
+  session reconnected / disconnected and screen saver invoke / dismiss.
 
 * **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
@@ -44,33 +71,6 @@ all my security related functions into this module, ready to use.
   how the credentials are validated (start process, Active Directory). Be aware,
   multiple testing with wrong credentials can lock out the used account
   depending on your security settings. 
-
-
-## Requirements
-
-The following minimum requirements are necessary to use this module:
-
-* Windows PowerShell 3.0
-* Windows Server 2008 R2 / Windows 7
-
-
-## Installation
-
-With PowerShell 5.0, the new [PowerShell Gallery] and the Install-Module cmdlet were introduced. Install this module automatically from the PowerShell Gallery
-to your local system:
-
-```powershell
-Install-Module OperationsManagerFever
-```
-
-Alternative, download the latest release from GitHub and install the module
-manually on your local system:
-
-* Download the latest release from GitHub as a ZIP file
-* Extract the downloaded module into one of your module paths
-
-
-tbd
 
 
 ## Versions
@@ -100,6 +100,10 @@ debug file and start it.
 
 
 [PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
+[PowerShellGet]: https://technet.microsoft.com/en-us/library/dn807169.aspx
+
+[GitHub Releases]: https://github.com/claudiospizzi/SecurityFever/releases
+[Installing a PowerShell Module]: https://msdn.microsoft.com/en-us/library/dd878350
 
 [Visual Studio Code]: https://code.visualstudio.com/
 [PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
