@@ -15,6 +15,7 @@
         'Resources\SecurityFever.Formats.ps1xml'
     )
     FunctionsToExport  = @(
+        'Get-SecurityActivity'
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
         'Invoke-Elevated'
