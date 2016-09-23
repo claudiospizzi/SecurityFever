@@ -46,9 +46,9 @@ manually on your local system:
 ## Features
 
 * **Get-SecurityActivity**  
-  Get security and life cycle related activity events on the target computer
-  like start up / shutdown, user log on / log off, workstation locked / unlocked,
-  session reconnected / disconnected and screen saver invoke / dismiss.
+  Get security and life-cycle related events on the target computer like start
+  up / shutdown, user log on / log off, workstation locked /unlocked, session
+  reconnected / disconnected and screen saver invoke / dismiss.
 
 * **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
@@ -77,7 +77,11 @@ manually on your local system:
 
 ### unreleased
 
-* Add Invoke-Elevated cmdlet with sudo alias
+* Add Get-SecurityActivity cmdlet to get security and life-cycle events
+* Add Get-SecurityAuditPolicy cmdlet to get current audit policy settings
+* Add Get-SecurityAuditPolicySetting cmdlet to get current audit policy settings
+* Add Invoke-Elevated cmdlet to execute elevated scripts (alias: sudo)
+* Add Test-Credential cmdlet for local and Active Directory verification
 
 
 ## Contribute
@@ -97,6 +101,7 @@ the latest meta test from the claudiospizzi/PowerShellModuleBase repository.
 To debug the module, just copy the existing `.\Scripts\debug.default.ps1` file
 to `.\Scripts\debug.ps1`, which is ignored by git. Now add the command to the
 debug file and start it.
+
 
 
 [PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
