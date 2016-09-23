@@ -50,7 +50,7 @@ function Get-SecurityActivity
         )
         Shutdown = @(
             6006,            # The Event log service was stopped.
-            6008,            # The previous system shutdown at 16:19:09 on ‎22.‎09.‎2016 was unexpected.
+            6008,            # The previous system shutdown at <Time> on <Date> was unexpected.
             1074             # The process <Process> has initiated the power off of computer <Computer> on behalf of user <Domain>\<User> for the following reason: ...
         )
         Logon    = @()
@@ -63,8 +63,8 @@ function Get-SecurityActivity
         )
         Shutdown = @()
         Logon    = @(
-            4624,             # An account was successfully logged on.
-            4625              # An account failed to log on.
+            4624,            # An account was successfully logged on.
+            4625             # An account failed to log on.
         )
         Logoff   = @(
             4634,            # An account was logged off.
