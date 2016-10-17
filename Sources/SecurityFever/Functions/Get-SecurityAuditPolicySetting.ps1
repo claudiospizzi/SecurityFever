@@ -1,19 +1,21 @@
 <#
     .SYNOPSIS
-
+    Get one audit policy setting on the local system.
 
     .DESCRIPTION
-
+    This command uses the auditpol.exe command to get the current audit policy
+    setting for the local system and parses the output for the target setting.
 
     .INPUTS
     None.
 
     .OUTPUTS
-    None.
+    System.Boolean. Return true if the audit policy is enabled, false if not.
 
     .EXAMPLE
-    PS C:\>
-
+    PS C:\> Get-SecurityAuditPolicySetting -Category 'Object Access' -Subcategory 'File System' -Setting 'Success'
+    Returns the current setting for success audit on the file system object
+    access audit policy.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -46,16 +48,16 @@ function Get-SecurityAuditPolicySetting
         $Setting
     )
 
-    $AuditPolicies = Get-SecurityAuditPolicy
+    $auditPolicies = Get-SecurityAuditPolicy
 
-    foreach ($AuditPolicy in $AuditPolicies)
+    foreach ($auditPolicy in $auditPolicies)
     {
-        if ($AuditPolicy.Category -eq $Category -and $AuditPolicy.Subcategory -eq $Subcategory)
+        if ($auditPolicy.Category -eq $Category -and $auditPolicy.Subcategory -eq $Subcategory)
         {
             switch ($Setting)
             {
-                'Success' { return $AuditPolicy.AuditSuccess }
-                'Failure' { return $AuditPolicy.AuditFailure }
+                'Success' { return $auditPolicy.AuditSuccess }
+                'Failure' { return $auditPolicy.AuditFailure }
             }
         }
     }

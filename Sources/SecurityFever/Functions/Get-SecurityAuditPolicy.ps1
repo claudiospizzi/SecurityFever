@@ -11,11 +11,11 @@
     None.
 
     .OUTPUTS
-    SecurityFever.AuditPolicy[]. Array of custom audit policy objects.
+    SecurityFever.AuditPolicy. Array of custom audit policy objects.
 
     .EXAMPLE
-    PS C:\>
-
+    PS C:\> Get-SecurityAuditPolicy
+    Return all local security audit policies.
 
     .NOTES
     Author     : Claudio Spizzi
