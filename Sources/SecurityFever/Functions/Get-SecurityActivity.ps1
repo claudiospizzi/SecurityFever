@@ -41,6 +41,7 @@
 
 function Get-SecurityActivity
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess')]
     [CmdletBinding(DefaultParameterSetName = 'Local')]
     param
     (
