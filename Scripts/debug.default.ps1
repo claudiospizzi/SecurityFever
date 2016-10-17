@@ -14,5 +14,8 @@ Split-Path -Path $PSScriptRoot |
 # Update format data
 Update-FormatData "$PSScriptRoot\..\Sources\SecurityFever\Resources\SecurityFever.Formats.ps1xml"
 
+# Update type data
+Update-TypeData "$PSScriptRoot\..\Sources\SecurityFever\Resources\SecurityFever.Types.ps1xml"
+
 # Execute deubg
 # ToDo...

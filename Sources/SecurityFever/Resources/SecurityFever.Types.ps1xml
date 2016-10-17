@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Types>
 
+    <Type>
+        <Name>SecurityFever.ActivityRecord</Name>
+        <Members>
+            <ScriptProperty>
+                <Name>VisualIndicator</Name>
+                <GetScriptBlock>
+                    switch ($this.Activity)
+                    {
+                        'Startup'  { '[{0}{0} ]' -f [char]8594 }
+                        'Shutdown' { '[{0}{0} ]' -f [char]8592 }
+                        'Awake'    { '[ {0} ]'   -f [char]8594 }
+                        'Sleep'    { '[ {0} ]'   -f [char]8592 }
+                        'Logon'    { '[  {0}]'   -f [char]8594 }
+                        'Logoff'   { '[  {0}]'   -f [char]8592 }
+                        default { '' }
+                    }
+                </GetScriptBlock>
+            </ScriptProperty>
+        </Members>
+    </Type>
+
 </Types>
