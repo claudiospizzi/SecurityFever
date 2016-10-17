@@ -32,7 +32,7 @@
 
     .EXAMPLE
     PS C:\> Invoke-Elevated -ScriptBlock { param ($Path) Remove-Item -Path $Path } -ArgumentList 'C:\Windows\test.txt'
-    Delete a file from the program files folder with elevated permission, 
+    Delete a file from the program files folder with elevated permission,
     beacuse a normal user account has no permissions.
 
     .NOTES
