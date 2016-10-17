@@ -26,6 +26,6 @@ test_script:
 build_script:
   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
 
-# Execute release script
-release:
+# Execute deploy script
+deploy_script:
   - ps: .\Scripts\release.ps1 -AppVeyor -Verbose
