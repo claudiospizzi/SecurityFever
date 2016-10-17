@@ -45,7 +45,7 @@
 
 function Invoke-Elevated
 {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess')]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Scope='Function', Target='Invoke-Elevated')]
     [CmdletBinding(DefaultParameterSetName = 'None')]
     [Alias('sudo')]
     param

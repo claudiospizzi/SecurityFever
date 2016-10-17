@@ -41,7 +41,7 @@
 
 function Get-SecurityActivity
 {
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess')]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Scope='Function', Target='Get-SecurityActivity')]
     [CmdletBinding(DefaultParameterSetName = 'Local')]
     param
     (

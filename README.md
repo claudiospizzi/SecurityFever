@@ -78,6 +78,7 @@ manually on your local system:
 ### Unreleased
 
 * Test-Credential: Support positional parameter and pipeline input
+* Fix suppression in script analyzer tests
 
 ### 1.0.0
 
