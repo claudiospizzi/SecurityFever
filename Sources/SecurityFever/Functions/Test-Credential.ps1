@@ -40,7 +40,7 @@ function Test-Credential
     param
     (
         # PowerShell credentials object to test.
-        [Parameter(Mandatory = $true, ParameterSetName = 'Credential')]
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true, ParameterSetName = 'Credential')]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
         $Credential,

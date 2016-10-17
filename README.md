@@ -75,6 +75,10 @@ manually on your local system:
 
 ## Versions
 
+### Unreleased
+
+* Test-Credential: Support positional parameter and pipeline input
+
 ### 1.0.0
 
 * Add Get-SecurityActivity cmdlet to get security and life-cycle events
