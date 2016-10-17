@@ -1,11 +1,11 @@
 <#
     .SYNOPSIS
-    ...
+    Release the PowerShell module and upload the artifact to AppVeyor.
 
     .DESCRIPTION
-    ...
-    ...
-    ...
+    Use the GitHub REST api to create a new release for the version tag and
+    upload the ZIP module artifact to the release. In addition, publish the
+    module to the PowerShell Gallery.
 #>
 
 [CmdletBinding()]
@@ -31,7 +31,12 @@ param
     # The securely stored GitHub token
     [Parameter(Mandatory = $false)]
     [System.String]
-    $GitHubToken = $env:GitHubToken
+    $GitHubToken = $env:GitHubToken,
+
+    # The securely stored PowerShell Gallery key
+    [Parameter(Mandatory = $false)]
+    [System.String]
+    $PSGalleryKey = $env:PSGalleryKey
 )
 
 
@@ -47,8 +52,8 @@ $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleN
 
 if ($AppVeyor.IsPresent)
 {
-    #if ($env:APPVEYOR_REPO_TAG -eq 'true' -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
-    #{
+    if ($env:APPVEYOR_REPO_TAG -eq 'true' -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
+    {
         Write-Verbose '** RELEASE (APPVEYOR)'
 
         $releaseVersion = $env:APPVEYOR_REPO_TAG_NAME
@@ -86,15 +91,24 @@ if ($AppVeyor.IsPresent)
 
         # Upload artifact to GitHub
         $releaseGitHubArtifactParam = @{
-            Method  = 'Post'
-            Uri     = "https://uploads.github.com/repos/claudiospizzi/$ModuleName/releases/$($releaseGitHubRelease.id)/assets?name=$ModuleName-$releaseVersion.zip"
-            Headers = @{
+            Method          = 'Post'
+            Uri             = "https://uploads.github.com/repos/claudiospizzi/$ModuleName/releases/$($releaseGitHubRelease.id)/assets?name=$ModuleName-$releaseVersion.zip"
+            Headers         = @{
                 'Accept'        = 'application/vnd.github.v3+json'
                 'Authorization' = "token $GitHubToken"
                 'Content-Type'  = 'application/zip'
             }
-            InFile  = "$StagingPath\$ModuleName-$ModuleVersion.zip"
+            InFile          = "$StagingPath\$ModuleName-$ModuleVersion.zip"
         }
         $releaseGitHubArtifact = Invoke-RestMethod @releaseGitHubArtifactParam -ErrorAction Stop
-    #}
+
+
+        Write-Verbose '** RELEASE (APPVEYOR) [PSGALLERY]'
+
+        # Update the module path
+        $env:PSModulePath += ';' + "$ProjectPath\Sources"
+
+        # Publish to module to the PowerShell Gallery
+        Publish-Module -Name $ModuleName -RequiredVersion $releaseVersion -NuGetApiKey $PSGalleryKey -ErrorAction Stop
+    }
 }
