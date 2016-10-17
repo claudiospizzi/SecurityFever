@@ -56,6 +56,12 @@ if ($AppVeyor.IsPresent)
         $releaseNotes   = $env:APPVEYOR_REPO_COMMIT_MESSAGE + $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED + " "
         $releaseAsset   = "$ModuleName-$releaseVersion.zip"
 
+        # Check it the module and release (tag) version match
+        if ($ModuleVersion -ne $releaseVersion)
+        {
+            throw "Module and release (tag) version do not match!"
+        }
+
 
         Write-Verbose '** RELEASE (APPVEYOR) [GITHUB]'
 
@@ -89,6 +95,6 @@ if ($AppVeyor.IsPresent)
             }
             InFile  = "$StagingPath\$ModuleName-$ModuleVersion.zip"
         }
-        releaseGitHubArtifact = Invoke-RestMethod @releaseGitHubArtifactParam -ErrorAction Stop
+        $releaseGitHubArtifact = Invoke-RestMethod @releaseGitHubArtifactParam -ErrorAction Stop
     #}
 }

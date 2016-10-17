@@ -75,7 +75,7 @@ manually on your local system:
 
 ## Versions
 
-### unreleased
+### 1.0.0
 
 * Add Get-SecurityActivity cmdlet to get security and life-cycle events
 * Add Get-SecurityAuditPolicy cmdlet to get current audit policy settings
