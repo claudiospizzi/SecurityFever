@@ -26,7 +26,12 @@ param
     # Option to enable the AppVeyor specific release tasks.
     [Parameter(Mandatory = $false)]
     [Switch]
-    $AppVeyor
+    $AppVeyor,
+
+    # The securely stored GitHub token
+    [Parameter(Mandatory = $false)]
+    [System.String]
+    $GitHubToken = $env:GitHubToken
 )
 
 
@@ -38,6 +43,52 @@ $ModuleName    = (Get-ChildItem -Path "$ProjectPath\Sources" | Select-Object -Fi
 $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleName\$ModuleName.psd1").ModuleVersion
 
 
+## RELEASE (APPVEYOR)
+
+if ($AppVeyor.IsPresent)
+{
+    #if ($env:APPVEYOR_REPO_TAG -eq 'true' -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
+    #{
+        Write-Verbose '** RELEASE (APPVEYOR)'
+
+        $releaseVersion = $env:APPVEYOR_REPO_TAG_NAME
+        $releaseName    = "$ModuleName v$releaseVersion"
+        $releaseNotes   = $env:APPVEYOR_REPO_COMMIT_MESSAGE + $env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED + " "
+        $releaseAsset   = "$ModuleName-$releaseVersion.zip"
 
 
+        Write-Verbose '** RELEASE (APPVEYOR) [GITHUB]'
 
+        # Create GitHub release
+        $releaseGitHubReleaseParam = @{
+            Method  = 'Post'
+            Uri     = "https://api.github.com/repos/claudiospizzi/$ModuleName/releases"
+            Headers = @{
+                'Accept'        = 'application/vnd.github.v3+json'
+                'Authorization' = "token $GitHubToken"
+            }
+            Body   = @{
+                tag_name         = $releaseVersion
+                target_commitish = 'master'
+                name             = $releaseName
+                body             = $releaseNotes
+                draft            = $false
+                prerelease       = $false
+            } | ConvertTo-Json
+        }
+        $releaseGitHubRelease = Invoke-RestMethod @releaseGitHubReleaseParam -ErrorAction Stop
+
+        # Upload artifact to GitHub
+        $releaseGitHubArtifactParam = @{
+            Method  = 'Post'
+            Uri     = "https://uploads.github.com/repos/claudiospizzi/$ModuleName/releases/$($releaseGitHubRelease.id)/assets?name=$ModuleName-$releaseVersion.zip"
+            Headers = @{
+                'Accept'        = 'application/vnd.github.v3+json'
+                'Authorization' = "token $GitHubToken"
+                'Content-Type'  = 'application/zip'
+            }
+            InFile  = "$StagingPath\$ModuleName-$ModuleVersion.zip"
+        }
+        releaseGitHubArtifact = Invoke-RestMethod @releaseGitHubArtifactParam -ErrorAction Stop
+    #}
+}

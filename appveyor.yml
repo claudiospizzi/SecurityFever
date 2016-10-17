@@ -27,5 +27,5 @@ build_script:
   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
 
 # Execute release script
-#release :
-#  - ps: .\Scripts\release.ps1-GitHub -PSGallery -Verbose
+release:
+  - ps: .\Scripts\release.ps1 -AppVeyor -Verbose
