@@ -6,6 +6,10 @@
     Runs the specified command in an elevated context. This is useful on Windows
     systems where the user account control is enabled. Input object and result
     objects are serialized using XML.
+    It's important, the command does use the current user context. This means,
+    the current user needs administrative permissions on the local system.
+    If no file path or script block is specified, the current running process
+    will be run as administrator.
 
     .INPUTS
     None.
@@ -14,8 +18,22 @@
     Output of the invoked script block or command.
 
     .EXAMPLE
-    PS C:\>
+    PS C:\> Invoke-Elevated
+    Will start the current process, e.g. PowerShell Console or ISE, in an
+    elevated session as Administrator.
 
+    .EXAMPLE
+    PS C:\> Invoke-Elevated -FilePath 'C:\Temp\script.ps1'
+    Start the script in an elevated session and return the result.
+
+    .EXAMPLE
+    PS C:\> Invoke-Elevated -ScriptBlock { Get-DscLocalConfigurationManager }
+    Start the script in an elevated session and return the result.
+
+    .EXAMPLE
+    PS C:\> Invoke-Elevated -ScriptBlock { param ($Path) Remove-Item -Path $Path } -ArgumentList 'C:\Windows\test.txt'
+    Delete a file from the program files folder with elevated permission, 
+    beacuse a normal user account has no permissions.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -27,12 +45,13 @@
 
 function Invoke-Elevated
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'None')]
     [Alias('sudo')]
     param
     (
         # The path to an executable program.
         [Parameter(Mandatory = $true, Position = 0, ParameterSetName = 'FilePath')]
+        [ValidateScript({Test-Path -Path $_})]
         [System.String]
         $FilePath,
 
@@ -42,17 +61,35 @@ function Invoke-Elevated
         $ScriptBlock,
 
         # Optional argument list for the program or the script block.
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false, Position = 1)]
         [System.Object[]]
         $ArgumentList
     )
 
-    if ($PSCmdlet.ParameterSetName -eq 'FilePath')
+    if ($PSCmdlet.ParameterSetName -eq 'None')
     {
+        # If no file path and script block was specified, just elevate the
+        # current session for interactive use. For this, use the start info
+        # object of the current process and start an elevated new one.
+        $currentProcess = Get-Process -Id $PID
 
+        $processStart = $currentProcess.StartInfo
+        $processStart.FileName         = $currentProcess.Path
+        $processStart.Verb             = 'RunAs'
+
+        $process = New-Object -TypeName System.Diagnostics.Process
+        $process.StartInfo = $processStart
+        $process.Start() | Out-Null
     }
 
-    if ($PSCmdlet.ParameterSetName -eq 'ScriptBlock')
+    if ($PSCmdlet.ParameterSetName -eq 'FilePath')
+    {
+        # If a file path instead of a script block was specified, just load the
+        # file content and parse it as script block.
+        $ScriptBlock = [System.Management.Automation.ScriptBlock]::Create((Get-Content -Path $FilePath -ErrorAction Stop -Raw))
+    }
+
+    if ($PSCmdlet.ParameterSetName -eq 'FilePath' -or $PSCmdlet.ParameterSetName -eq 'ScriptBlock')
     {
         try
         {
