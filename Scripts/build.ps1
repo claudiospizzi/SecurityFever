@@ -43,7 +43,6 @@ $ModuleName    = (Get-ChildItem -Path "$ProjectPath\Sources" | Select-Object -Fi
 $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleName\$ModuleName.psd1").ModuleVersion
 
 
-
 ## BUILD
 
 Write-Verbose '** BUILD'
