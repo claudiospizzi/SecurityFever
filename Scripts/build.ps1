@@ -48,6 +48,10 @@ $ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleN
 
 Write-Verbose '** BUILD'
 
+# Create a file catalog for the module folder. The catalog file will contain
+# hashes for all files. This is used to validate the whole module content.
+New-FileCatalog -Path "$ProjectPath\Sources\$ModuleName" -CatalogFilePath "$ProjectPath\Sources\$ModuleName\$ModuleName.cat" -CatalogVersion 2.0
+
 # In case of PowerShell, creating a build means zipping the requried files.
 # Thanks to the project structure, all requried but no extra files are in
 # the sources folder.
