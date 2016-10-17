@@ -11,5 +11,8 @@ Split-Path -Path $PSScriptRoot |
         Get-ChildItem -Include '*.ps1' -Exclude '*.Tests.*' -Recurse |
             ForEach-Object { . $_.FullName }
 
+# Update format data
+Update-FormatData "$PSScriptRoot\..\Sources\SecurityFever\Resources\SecurityFever.Formats.ps1xml"
+
 # Execute deubg
 # ToDo...
