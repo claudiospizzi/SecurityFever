@@ -17,6 +17,11 @@
     Test the interactive provided credentials against the local system.
 
     .EXAMPLE
+    PS C:\> Test-Credential -Credential 'DOMAIN\user' -Throw
+    Test the interactive provided credentials against the local system, and
+    throws an exception if the credentials are not valid.
+
+    .EXAMPLE
     PS C:\> Test-Credential -Username $Username -Password $Password -Method ActiveDirectory
     Test the provided username and password pair against the Active Directory.
 
@@ -54,7 +59,12 @@ function Test-Credential
         [Parameter(Mandatory = $false)]
         [ValidateSet('StartProcess', 'ActiveDirectory')]
         [System.String]
-        $Method = 'StartProcess'
+        $Method = 'StartProcess',
+
+        # Throw an terminating exception if the credentials are not valid.
+        [Parameter(Mandatory = $false)]
+        [System.Management.Automation.SwitchParameter]
+        $Throw
     )
 
     begin
@@ -72,8 +82,9 @@ function Test-Credential
             if ($Method -eq 'StartProcess')
             {
                 # Create a new local process with the given credentials. This
-                # does not validate the credentials against a target system, but
-                # tests if they are valid locally.
+                # does not validate the credentials against an external target
+                # system, but tests if they are valid locally. Of courese, it's
+                # possible to validate domain credentials too.
                 $startInfo = New-Object -TypeName System.Diagnostics.ProcessStartInfo
                 $startInfo.FileName        = 'cmd.exe'
                 $startInfo.Arguments       = '/C', 'echo %USERDOMAIN%\%USERNAME%'
@@ -107,13 +118,23 @@ function Test-Credential
                 }
             }
 
-            return $true
+            if (-not $Throw.IsPresent)
+            {
+                return $true
+            }
         }
         catch
         {
             Write-Warning -Message "Credential validation failed: $_"
 
-            return $false
+            if ($Throw.IsPresent)
+            {
+                throw "Credential validation failed: $_"
+            }
+            else
+            {
+                return $false
+            }
         }
     }
 }
