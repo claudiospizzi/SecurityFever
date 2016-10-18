@@ -75,7 +75,7 @@ manually on your local system:
 
 ## Versions
 
-### Unreleased
+### 1.0.1
 
 * Test-Credential: Support positional parameter and pipeline input
 * Test-Credential: Fix issues with for unaccessiable working directory
