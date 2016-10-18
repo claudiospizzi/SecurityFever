@@ -79,6 +79,7 @@ manually on your local system:
 
 * Test-Credential: Support positional parameter and pipeline input
 * Test-Credential: Fix issues with for unaccessiable working directory
+* Test-Credential: Replace -Throw with -Quiet
 * Get-SecurityActivity: Remove 'run as admin' requirement for remote calls
 * Get-SecurityActivity: Add 'After' parameter to narrow down event span
 * Fix suppression in script analyzer tests

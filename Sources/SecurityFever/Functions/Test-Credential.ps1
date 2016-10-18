@@ -1,29 +1,39 @@
 <#
     .SYNOPSIS
-    Test the provided credentials with the choosen test method.
+    Test the provided credentials with the choosen test method against the local
+    system or Active Directory.
 
     .DESCRIPTION
     Test the provided credentials against the local system by starting a simple
     process or against Active Directory by binding to the root via ADSI.
 
     .INPUTS
-    None.
+    System.Management.Automation.PSCredential
 
     .OUTPUTS
-    System.Boolean. Indicates if the credentials are valid or not.
+    System.Management.Automation.PSCredential
+    System.Boolean
 
     .EXAMPLE
     PS C:\> Test-Credential -Credential 'DOMAIN\user'
-    Test the interactive provided credentials against the local system.
+    Test the interactive provided credentials against the local system. If the
+    credential are not valid, an exception is thrown.
 
     .EXAMPLE
-    PS C:\> Test-Credential -Credential 'DOMAIN\user' -Throw
-    Test the interactive provided credentials against the local system, and
-    throws an exception if the credentials are not valid.
+    PS C:\> Test-Credential -Credential 'DOMAIN\user' -Quiet
+    Test the interactive provided credentials against the local system and
+    return $true if the credentials are valid, else return $false.
 
     .EXAMPLE
     PS C:\> Test-Credential -Username $Username -Password $Password -Method ActiveDirectory
     Test the provided username and password pair against the Active Directory.
+
+    .EXAMPLE
+    PS C:\> $cred = Get-Credential 'DOMAIN\user' | Test-Credential
+    Request the user to enter the password for DOMAIN\user and test it
+    immediately with Test-Credential against the local system. If the
+    credentials are valid, they are returned and stored in $cred. If not, an
+    terminating exception is thrown.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -37,6 +47,7 @@ function Test-Credential
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
+    [OutputType([System.Management.Automation.PSCredential])]
     param
     (
         # PowerShell credentials object to test.
@@ -61,10 +72,10 @@ function Test-Credential
         [System.String]
         $Method = 'StartProcess',
 
-        # Throw an terminating exception if the credentials are not valid.
+        # Return a boolean value which indicates if the credentials are valid.
         [Parameter(Mandatory = $false)]
         [System.Management.Automation.SwitchParameter]
-        $Throw
+        $Quiet
     )
 
     begin
@@ -77,9 +88,11 @@ function Test-Credential
 
     process
     {
-        try
+        $exception = $null
+
+        if ($Method -eq 'StartProcess')
         {
-            if ($Method -eq 'StartProcess')
+            try
             {
                 # Create a new local process with the given credentials. This
                 # does not validate the credentials against an external target
@@ -99,42 +112,69 @@ function Test-Credential
                 $process = New-Object -TypeName  System.Diagnostics.Process
                 $process.StartInfo = $startInfo
                 $process.Start() | Out-Null
-            }
 
-            if ($Method -eq 'ActiveDirectory')
+                # If the process start does not throw an exception, the
+                # credentials are valid.
+            }
+            catch
+            {
+                # Hide the $process.Start() method call exception, by expanding
+                # the inner exception.
+                if ($_.Exception.Message -like 'Exception calling "Start" with "0" argument(s):*')
+                {
+                    $exception = $_.Exception.InnerException
+                }
+                else
+                {
+                    $exception = $_.Exception
+                }
+            }
+        }
+
+        if ($Method -eq 'ActiveDirectory')
+        {
+            try
             {
                 # We use an empty path, because we just test the credential
                 # binding and not any object access in Active Directory.
                 $directoryEntryArgs = @{
-                     TypeName     = 'System.DirectoryServices.DirectoryEntry'
-                     ArgumentList = '',
+                        TypeName     = 'System.DirectoryServices.DirectoryEntry'
+                        ArgumentList = '',
                                     $Credential.GetNetworkCredential().UserName,
                                     $Credential.GetNetworkCredential().Password
                 }
-                $directoryEntry = New-Object @directoryEntryArgs
+                $directoryEntry = New-Object @directoryEntryArgs -ErrorAction Stop
 
-                if ($null -eq $directoryEntry)
+                if ($null -eq $directoryEntry -or [String]::IsNullOrEmpty($directoryEntry.distinguisedNamey))
                 {
                     throw 'Unable to create an ADSI connection.'
                 }
             }
-
-            if (-not $Throw.IsPresent)
+            catch
             {
-                return $true
+                $exception = $_.Exception
             }
         }
-        catch
-        {
-            Write-Warning -Message "Credential validation failed: $_"
 
-            if ($Throw.IsPresent)
+        # Check the exception variable if an exception occured and return a
+        # boolean or the credentials. In case of an exception, throw a custom
+        # exception.
+        if ($Quiet.IsPresent)
+        {
+            Write-Output [bool]($null -eq $exception)
+        }
+        else
+        {
+            if ($null -eq $exception)
             {
-                throw "Credential validation failed: $_"
+                Write-Output $Credential
             }
             else
             {
-                return $false
+                $errorRecordArgs = $exception, '0', [System.Management.Automation.ErrorCategory]::AuthenticationError, $Credential
+                $errorRecord     = New-Object -TypeName 'System.Management.Automation.ErrorRecord' -ArgumentList $errorRecordArgs
+
+                $PSCmdlet.ThrowTerminatingError($errorRecord)
             }
         }
     }
