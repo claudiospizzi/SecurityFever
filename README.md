@@ -78,6 +78,8 @@ manually on your local system:
 ### Unreleased
 
 * Test-Credential: Support positional parameter and pipeline input
+* Get-SecurityActivity: Remove 'run as admin' requirement for remote calls
+* Get-SecurityActivity: Add 'After' parameter to narrow down event span
 * Fix suppression in script analyzer tests
 
 ### 1.0.0

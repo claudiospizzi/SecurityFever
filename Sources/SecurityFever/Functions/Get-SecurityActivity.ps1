@@ -62,6 +62,11 @@ function Get-SecurityActivity
         [System.Management.Automation.Credential()]
         $Credential,
 
+        # Specify a time limit for the records.
+        [Parameter(Mandatory = $false)]
+        [System.DateTime]
+        $After = ([DateTime]::MinValue),
+
         # Show only filtered recommended events.
         [Parameter(Mandatory = $false)]
         [System.Management.Automation.SwitchParameter]
@@ -113,30 +118,37 @@ function Get-SecurityActivity
 
     # Warning messages, if the audit policy is disabled for the requested
     # activity.
-    if ($Activity -contains 'Startup')
+    if ($PSCmdlet.ParameterSetName -eq 'Local')
     {
-        if(-not (Get-SecurityAuditPolicySetting -Category 'System' -Subcategory 'Security State Change' -Setting 'Success'))
+        if ($Activity -contains 'Startup')
         {
-            Write-Warning "System audit policy for 'System' > 'Security State Change' > 'Success' is not enabled."
+            if(-not (Get-SecurityAuditPolicySetting -Category 'System' -Subcategory 'Security State Change' -Setting 'Success'))
+            {
+                Write-Warning "System audit policy for 'System' > 'Security State Change' > 'Success' is not enabled."
+            }
+        }
+        if ($Activity -contains 'Logon')
+        {
+            if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Success'))
+            {
+                Write-Warning "System audit policy for 'Logon/Logoff' > 'Logon' > 'Success' is not enabled."
+            }
+            if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Failure'))
+            {
+                Write-Warning "System audit policy for 'Logon/Logoff' > 'Logon' > 'Failure' is not enabled."
+            }
+        }
+        if ($Activity -contains 'Logoff')
+        {
+            if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logoff' -Setting 'Success'))
+            {
+                Write-Warning "System audit policy for 'Logon/Logoff' > 'Logoff' > 'Success' is not enabled."
+            }
         }
     }
-    if ($Activity -contains 'Logon')
+    if ($PSCmdlet.ParameterSetName -eq 'Remote')
     {
-        if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Success'))
-        {
-            Write-Warning "System audit policy for 'Logon/Logoff' > 'Logon' > 'Success' is not enabled."
-        }
-        if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Failure'))
-        {
-            Write-Warning "System audit policy for 'Logon/Logoff' > 'Logon' > 'Failure' is not enabled."
-        }
-    }
-    if ($Activity -contains 'Logoff')
-    {
-        if(-not (Get-SecurityAuditPolicySetting -Category 'Logon/Logoff' -Subcategory 'Logoff' -Setting 'Success'))
-        {
-            Write-Warning "System audit policy for 'Logon/Logoff' > 'Logoff' > 'Success' is not enabled."
-        }
+        Write-Warning "Unable to verify the audit policy settings for $ComputerName."
     }
 
     # Build the xml filter to query the system and security log.
@@ -146,11 +158,11 @@ function Get-SecurityActivity
     $filterSecurityIds = $eventLogMap.GetEnumerator() | Where-Object { $_.Value.Activity -in $Activity -and $_.Value.Log -eq 'Security' } | ForEach-Object Name
     if ($filterSystemIds.Count -gt 0)
     {
-        $filterSystem = '<Select Path="System">*[System[({0})]]</Select>' -f ([String]::Join(' or ', ($filterSystemIds | ForEach-Object { "EventID=$_" })))
+        $filterSystem = '<Select Path="System">*[System[(({0}) and TimeCreated[@SystemTime&gt;=''{1}''])]]</Select>' -f ([String]::Join(' or ', ($filterSystemIds | ForEach-Object { "EventID=$_" }))), $After.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
     }
     if ($filterSecurityIds.Count -gt 0)
     {
-        $filterSecurity = '<Select Path="Security">*[System[({0})]]</Select>' -f ([String]::Join(' or ', ($filterSecurityIds | ForEach-Object { "EventID=$_" })))
+        $filterSecurity = '<Select Path="Security">*[System[(({0}) and TimeCreated[@SystemTime&gt;=''{1}''])]]</Select>' -f ([String]::Join(' or ', ($filterSecurityIds | ForEach-Object { "EventID=$_" }))), $After.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
     }
     $filter = '<QueryList><Query Id="0" Path="Security">{0}{1}</Query></QueryList>' -f $filterSystem, $filterSecurity
 
@@ -163,7 +175,7 @@ function Get-SecurityActivity
     {
         $invokeCommandParam = @{
             ComputerName = $ComputerName
-            ScriptBlock  = { param ($filter) Get-WinEvent -FilterXml $filter -ErrorAction Stop | Select-Object * }
+            ScriptBlock  = { param ($filter) Get-WinEvent -FilterXml $filter -ErrorAction Stop | Select-Object Id, MachineName, TimeCreated, Properties }
             ArgumentList = $filter
         }
         if ($null -ne $Credential)
