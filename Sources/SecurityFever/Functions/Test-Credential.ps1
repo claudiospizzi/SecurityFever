@@ -86,14 +86,15 @@ function Test-Credential
                 # system, but tests if they are valid locally. Of courese, it's
                 # possible to validate domain credentials too.
                 $startInfo = New-Object -TypeName System.Diagnostics.ProcessStartInfo
-                $startInfo.FileName        = 'cmd.exe'
-                $startInfo.Arguments       = '/C', 'echo %USERDOMAIN%\%USERNAME%'
-                $startInfo.Domain          = $Credential.GetNetworkCredential().Domain
-                $startInfo.UserName        = $Credential.GetNetworkCredential().UserName
-                $startInfo.Password        = $Credential.GetNetworkCredential().SecurePassword
-                $startInfo.WindowStyle     = [System.Diagnostics.ProcessWindowStyle]::Hidden
-                $startInfo.CreateNoWindow  = $true
-                $startInfo.UseShellExecute = $false
+                $startInfo.FileName         = 'cmd.exe'
+                $startInfo.WorkingDirectory = $env:SystemRoot
+                $startInfo.Arguments        = '/C', 'echo %USERDOMAIN%\%USERNAME%'
+                $startInfo.Domain           = $Credential.GetNetworkCredential().Domain
+                $startInfo.UserName         = $Credential.GetNetworkCredential().UserName
+                $startInfo.Password         = $Credential.GetNetworkCredential().SecurePassword
+                $startInfo.WindowStyle      = [System.Diagnostics.ProcessWindowStyle]::Hidden
+                $startInfo.CreateNoWindow   = $true
+                $startInfo.UseShellExecute  = $false
 
                 $process = New-Object -TypeName  System.Diagnostics.Process
                 $process.StartInfo = $startInfo
