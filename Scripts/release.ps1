@@ -42,10 +42,10 @@ param
 
 ## PREPARE
 
-# Extract the module name from the sources folder, anything else from the module
+# Extract the module name from the modules folder, anything else from the module
 # definition file.
-$ModuleName    = (Get-ChildItem -Path "$ProjectPath\Sources" | Select-Object -First 1 -ExpandProperty Name)
-$ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleName\$ModuleName.psd1").ModuleVersion
+$ModuleName    = (Get-ChildItem -Path "$ProjectPath\Modules" | Select-Object -First 1 -ExpandProperty Name)
+$ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Modules\$ModuleName\$ModuleName.psd1").ModuleVersion
 
 
 ## RELEASE (APPVEYOR)
@@ -106,7 +106,7 @@ if ($AppVeyor.IsPresent)
         Write-Verbose '** RELEASE (APPVEYOR) [PSGALLERY]'
 
         # Update the module path
-        $env:PSModulePath += ';' + "$ProjectPath\Sources"
+        $env:PSModulePath += ';' + "$ProjectPath\Modules"
 
         # Publish to module to the PowerShell Gallery
         Publish-Module -Name $ModuleName -RequiredVersion $releaseVersion -NuGetApiKey $PSGalleryKey -ErrorAction Stop

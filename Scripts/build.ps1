@@ -37,10 +37,10 @@ param
 
 ## PREPARE
 
-# Extract the module name from the sources folder, anything else from the module
+# Extract the module name from the modules folder, anything else from the module
 # definition file.
-$ModuleName    = (Get-ChildItem -Path "$ProjectPath\Sources" | Select-Object -First 1 -ExpandProperty Name)
-$ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Sources\$ModuleName\$ModuleName.psd1").ModuleVersion
+$ModuleName    = (Get-ChildItem -Path "$ProjectPath\Modules" | Select-Object -First 1 -ExpandProperty Name)
+$ModuleVersion = (Import-PowerShellDataFile -Path "$ProjectPath\Modules\$ModuleName\$ModuleName.psd1").ModuleVersion
 
 
 ## BUILD
@@ -49,12 +49,12 @@ Write-Verbose '** BUILD'
 
 # Create a file catalog for the module folder. The catalog file will contain
 # hashes for all files. This is used to validate the whole module content.
-New-FileCatalog -Path "$ProjectPath\Sources\$ModuleName" -CatalogFilePath "$ProjectPath\Sources\$ModuleName\$ModuleName.cat" -CatalogVersion 2.0 -Verbose:$VerbosePreference | Out-Null
+New-FileCatalog -Path "$ProjectPath\Modules\$ModuleName" -CatalogFilePath "$ProjectPath\Modules\$ModuleName\$ModuleName.cat" -CatalogVersion 2.0 -Verbose:$VerbosePreference | Out-Null
 
 # In case of PowerShell, creating a build means zipping the requried files.
 # Thanks to the project structure, all requried but no extra files are in
-# the sources folder.
-Compress-Archive -Path "$ProjectPath\Sources\$ModuleName" -DestinationPath "$StagingPath\$ModuleName-$ModuleVersion.zip" -Force -Verbose:$VerbosePreference
+# the modules folder.
+Compress-Archive -Path "$ProjectPath\Modules\$ModuleName" -DestinationPath "$StagingPath\$ModuleName-$ModuleVersion.zip" -Force -Verbose:$VerbosePreference
 
 
 ## BUILD (APPVEYOR)

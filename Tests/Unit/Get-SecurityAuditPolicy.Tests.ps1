@@ -1,5 +1,5 @@
 
-$ModulePath = Resolve-Path -Path "$PSScriptRoot\..\..\Sources" | ForEach-Object Path
+$ModulePath = Resolve-Path -Path "$PSScriptRoot\..\..\Modules" | ForEach-Object Path
 $ModuleName = Get-ChildItem -Path $ModulePath | Select-Object -First 1 -ExpandProperty BaseName
 
 Remove-Module -Name $ModuleName -Force -ErrorAction SilentlyContinue
