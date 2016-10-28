@@ -1,3 +1,6 @@
+#Requires -Version 5.0
+#Requires -Modules Pester, PSScriptAnalyzer
+
 <#
     .SYNOPSIS
     Test the PowerShell module with Pester and upload the results to AppVeyor.

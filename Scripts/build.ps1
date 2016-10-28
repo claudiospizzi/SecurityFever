@@ -1,3 +1,5 @@
+#Requires -Version 5.0
+
 <#
     .SYNOPSIS
     Build the PowerShell module and upload the artifact to AppVeyor.
