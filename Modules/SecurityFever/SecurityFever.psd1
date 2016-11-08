@@ -7,6 +7,9 @@
     Description        = 'PowerShell Module with additional custom functions and cmdlets related to Windows and application security.'
     PowerShellVersion  = '3.0'
     RequiredModules    = @()
+    RequiredAssemblies = @(
+        'SecurityFever.dll'
+    )
     ScriptsToProcess   = @()
     TypesToProcess     = @(
         'Resources\SecurityFever.Types.ps1xml'
