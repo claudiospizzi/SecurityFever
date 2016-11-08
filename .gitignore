@@ -260,3 +260,6 @@ Tests/Meta/FileEncoding.Tests.ps1
 Tests/Meta/FileFormatting.Tests.ps1
 Tests/Meta/ProjectStructure.Tests.ps1
 Tests/Meta/ScriptAnalyzer.Tests.ps1
+
+# Ignore assembly
+Modules/SecurityFever/SecurityFever.dll
