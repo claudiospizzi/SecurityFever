@@ -100,7 +100,7 @@ Describe 'Test-Credential' {
             $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
 
             # Act
-            { Test-Credential -Credential $invalidCredential -Method StartProcess -Quiet } | Should Throw
+            { Test-Credential -Credential $invalidCredential -Method StartProcess } | Should Throw
         }
 
         It 'should throw an exception for invalid username and password' {
@@ -110,7 +110,7 @@ Describe 'Test-Credential' {
             $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
 
             # Act
-            { Test-Credential -Username $invalidUsername -Password $invalidPassword -Method StartProcess -Quiet } | Should Throw
+            { Test-Credential -Username $invalidUsername -Password $invalidPassword -Method StartProcess } | Should Throw
         }
 
         AfterAll {
