@@ -11,11 +11,14 @@ namespace SecurityFever.CredentialManager
         {
             IList<CredentialEntry> credentials = new List<CredentialEntry>();
 
+            // Out-variables for the CredEnumerate function
             int count;
             IntPtr credentialArrayPtr;
 
+            // By default, no flags are used
             NativeMethods.CredentialEnumerateFlags flags = NativeMethods.CredentialEnumerateFlags.None;
 
+            // Check for a filter and set AllCredentials-flag if necessary
             if (string.IsNullOrEmpty(filter) || filter == "*")
             {
                 filter = null;

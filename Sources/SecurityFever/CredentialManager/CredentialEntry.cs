@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SecurityFever.CredentialManager
 {
@@ -13,14 +9,24 @@ namespace SecurityFever.CredentialManager
     {
         internal CredentialEntry(NativeMethods.Credential nativeCredential)
         {
-            TargetAlias = nativeCredential.TargetAlias;
-            TargetName  = nativeCredential.TargetName;
-            Comment     = nativeCredential.Comment;
+            TargetAlias = nativeCredential.TargetAlias ?? string.Empty;
+            TargetName  = nativeCredential.TargetName ?? string.Empty;
+            Comment     = nativeCredential.Comment ?? string.Empty;
+
             Type        = (CredentialType) nativeCredential.Type;
             Persist     = (CredentialPersist) nativeCredential.Persist;
-            Username    = nativeCredential.UserName;
-            Password    = IntPtrToSecureString(nativeCredential.CredentialBlob, nativeCredential.CredentialBlobSize); 
-            Credential  = new PSCredential(Username, Password);
+
+            Username    = nativeCredential.UserName ?? string.Empty;
+            Password    = IntPtrToSecureString(nativeCredential.CredentialBlob, nativeCredential.CredentialBlobSize);
+
+            if (!string.IsNullOrEmpty(Username))
+            {
+                Credential = new PSCredential(Username, Password);
+            }
+            else
+            {
+                Credential = new PSCredential(TargetName, Password);
+            }
         }
 
         public string TargetAlias
@@ -29,13 +35,11 @@ namespace SecurityFever.CredentialManager
             get;
         }
 
-
         public string TargetName
         {
             private set;
             get;
         }
-
 
         public string Comment
         {
@@ -73,7 +77,7 @@ namespace SecurityFever.CredentialManager
             get;
         }
 
-        private SecureString IntPtrToSecureString(IntPtr pointer, uint size)
+        private static SecureString IntPtrToSecureString(IntPtr pointer, uint size)
         {
             SecureString secure = new SecureString();
 
