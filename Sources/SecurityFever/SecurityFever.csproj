@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CredentialManager\CredentialEntry.cs" />
+    <Compile Include="CredentialManager\CredentialHelper.cs" />
     <Compile Include="CredentialManager\CredentialPersist.cs" />
     <Compile Include="CredentialManager\CredentialStore.cs" />
     <Compile Include="CredentialManager\CredentialType.cs" />

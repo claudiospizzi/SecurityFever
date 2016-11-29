@@ -1,36 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Management.Automation;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SecurityFever.CredentialManager
 {
     public static class CredentialStore
     {
-        public static IEnumerable<CredentialEntry> GetCredentials(string filter = null)
+        public static CredentialEntry GetCredential(String targetName)
         {
-            IList<CredentialEntry> credentials = new List<CredentialEntry>();
+            IEnumerable<CredentialEntry> credentials = GetCredentials();
 
-            // Out-variables for the CredEnumerate function
-            int count;
-            IntPtr credentialArrayPtr;
-
-            // By default, no flags are used
-            NativeMethods.CredentialEnumerateFlags flags = NativeMethods.CredentialEnumerateFlags.None;
-
-            // Check for a filter and set AllCredentials-flag if necessary
-            if (string.IsNullOrEmpty(filter) || filter == "*")
+            foreach (CredentialEntry credential in credentials)
             {
-                filter = null;
-
-                // Flag is only valid on Vista an later
-                if (Environment.OSVersion.Version.Major >= 6)
+                if (credential.TargetName == targetName)
                 {
-                    flags = NativeMethods.CredentialEnumerateFlags.AllCredentials;
+                    return credential;
                 }
             }
 
-            if (NativeMethods.CredEnumerate(filter, flags, out count, out credentialArrayPtr))
+            throw new Win32Exception("Credentials not found!");
+        }
+
+        public static IEnumerable<CredentialEntry> GetCredentials()
+        {
+            IList<CredentialEntry> credentials = new List<CredentialEntry>();
+
+            int count;
+            IntPtr credentialArrayPtr;
+
+            NativeMethods.CredentialEnumerateFlags flags = NativeMethods.CredentialEnumerateFlags.None;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                flags = NativeMethods.CredentialEnumerateFlags.AllCredentials;
+            }
+
+            if (NativeMethods.CredEnumerate(null, flags, out count, out credentialArrayPtr))
             {
                 for (int i = 0; i < count; i += 1)
                 {
@@ -42,7 +49,7 @@ namespace SecurityFever.CredentialManager
                     {
                         NativeMethods.Credential nativeCredential = Marshal.PtrToStructure<NativeMethods.Credential>(credentialPtr);
 
-                        credentials.Add(new CredentialEntry(nativeCredential));
+                        credentials.Add(new CredentialEntry(nativeCredential, flags));
                     }
                 }
             }
@@ -52,6 +59,39 @@ namespace SecurityFever.CredentialManager
             }
 
             return credentials;
+        }
+
+        public static CredentialEntry CreateCredential(string targetName, CredentialType type, CredentialPersist persist, PSCredential credential)
+        {
+            NativeMethods.Credential nativeCredential = new NativeMethods.Credential()
+            {
+                TargetName         = targetName,
+                Type               = (NativeMethods.CredentialType)type,
+                Persist            = (NativeMethods.CredentialPersist)persist,
+                AttributeCount     = 0,
+                UserName           = credential.UserName,
+                CredentialBlob     = Marshal.StringToCoTaskMemUni(credential.GetNetworkCredential().Password),
+                CredentialBlobSize = (uint)Encoding.Unicode.GetByteCount(credential.GetNetworkCredential().Password)
+            };
+
+            try
+            {
+                if (NativeMethods.CredWrite(ref nativeCredential, 0))
+                {
+                    return GetCredential(targetName);
+                }
+                else
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+            }
+            finally
+            {
+                if (nativeCredential.CredentialBlob != IntPtr.Zero)
+                {
+                    Marshal.FreeCoTaskMem(nativeCredential.CredentialBlob);
+                }
+            }
         }
     }
 }

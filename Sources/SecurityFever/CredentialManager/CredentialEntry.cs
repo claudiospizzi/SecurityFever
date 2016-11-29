@@ -2,22 +2,46 @@
 using System.Management.Automation;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text.RegularExpressions;
 
 namespace SecurityFever.CredentialManager
 {
     public class CredentialEntry
     {
-        internal CredentialEntry(NativeMethods.Credential nativeCredential)
+        internal CredentialEntry(NativeMethods.Credential nativeCredential, NativeMethods.CredentialEnumerateFlags flags)
         {
-            TargetAlias = nativeCredential.TargetAlias ?? string.Empty;
+            Namespace   = string.Empty;
+            Attribute   = string.Empty;
             TargetName  = nativeCredential.TargetName ?? string.Empty;
+            TargetAlias = nativeCredential.TargetAlias ?? string.Empty;
             Comment     = nativeCredential.Comment ?? string.Empty;
-
             Type        = (CredentialType) nativeCredential.Type;
             Persist     = (CredentialPersist) nativeCredential.Persist;
-
             Username    = nativeCredential.UserName ?? string.Empty;
-            Password    = IntPtrToSecureString(nativeCredential.CredentialBlob, nativeCredential.CredentialBlobSize);
+            Password    = CredentialHelper.IntPtrToSecureString(nativeCredential.CredentialBlob, nativeCredential.CredentialBlobSize);
+
+            if (flags == NativeMethods.CredentialEnumerateFlags.AllCredentials)
+            {
+                Match match = Regex.Match(TargetName, "(.*):(.*)=(.*)");
+                
+                if (match.Success)
+                {
+                    if (match.Groups.Count >= 2)
+                    {
+                        Namespace = match.Groups[1].Value;
+                    }
+
+                    if (match.Groups.Count >= 3)
+                    {
+                        Attribute = match.Groups[2].Value;
+                    }
+
+                    if (match.Groups.Count >= 4)
+                    {
+                        TargetName = match.Groups[3].Value;
+                    }
+                }
+            }
 
             if (!string.IsNullOrEmpty(Username))
             {
@@ -27,6 +51,18 @@ namespace SecurityFever.CredentialManager
             {
                 Credential = new PSCredential(TargetName, Password);
             }
+        }
+
+        public string Namespace
+        {
+            private set;
+            get;
+        }
+
+        public string Attribute
+        {
+            private set;
+            get;
         }
 
         public string TargetAlias
@@ -75,28 +111,6 @@ namespace SecurityFever.CredentialManager
         {
             private set;
             get;
-        }
-
-        private static SecureString IntPtrToSecureString(IntPtr pointer, uint size)
-        {
-            SecureString secure = new SecureString();
-
-            if (size > 0)
-            {
-                string plain = Marshal.PtrToStringUni(pointer, (int)size / 2);
-
-                if (!string.IsNullOrEmpty(plain))
-                {
-                    foreach (var c in plain)
-                    {
-                        secure.AppendChar(c);
-                    }
-                }
-            }
-
-            secure.MakeReadOnly();
-
-            return secure;
         }
     }
 }
