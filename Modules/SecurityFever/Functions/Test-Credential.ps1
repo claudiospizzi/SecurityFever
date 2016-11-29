@@ -92,6 +92,8 @@ function Test-Credential
 
         if ($Method -eq 'StartProcess')
         {
+            Write-Verbose "Test credentials $($Credential.UserName) by starting a local cmd.exe process"
+
             try
             {
                 # Create a new local process with the given credentials. This
@@ -133,6 +135,8 @@ function Test-Credential
 
         if ($Method -eq 'ActiveDirectory')
         {
+            Write-Verbose "Test credentials $($Credential.UserName) by binding the default domain with ADSI"
+
             try
             {
                 # We use an empty path, because we just test the credential

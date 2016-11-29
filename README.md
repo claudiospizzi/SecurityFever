@@ -75,6 +75,10 @@ manually on your local system:
 
 ## Versions
 
+### Unreleased
+
+* Test-Credential: Add verbose output
+
 ### 1.0.2
 
 * Test-Credential: Fix wrong output in quiet mode
