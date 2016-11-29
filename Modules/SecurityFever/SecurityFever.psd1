@@ -18,11 +18,13 @@
         'Resources\SecurityFever.Formats.ps1xml'
     )
     FunctionsToExport  = @(
+        'Invoke-Elevated'
+        'Test-Credential'
+        'Get-VaultCredential'
+        'Get-VaultCredentialValue'
         'Get-SecurityActivity'
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
-        'Invoke-Elevated'
-        'Test-Credential'
     )
     CmdletsToExport    = @()
     VariablesToExport  = @()

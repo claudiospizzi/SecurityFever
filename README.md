@@ -45,19 +45,6 @@ manually on your local system:
 
 ## Features
 
-* **Get-SecurityActivity**  
-  Get security and life-cycle related events on the target computer like start
-  up / shutdown, user log on / log off, workstation locked /unlocked, session
-  reconnected / disconnected and screen saver invoke / dismiss.
-
-* **Get-SecurityAuditPolicy**  
-  List the current local security audit policy settings. It will execute the
-  auditpol.exe command and parse the result into objects.
-
-* **Get-SecurityAuditPolicySetting**  
-  Return the value of one security audit policy setting. It will use the
-  Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
-
 * **Invoke-Elevated**  
   Invoke a script block or an executable in an elevated session. It will handle
   the parameter passing into the elevated session and return the result as
@@ -72,11 +59,36 @@ manually on your local system:
   multiple testing with wrong credentials can lock out the used account
   depending on your security settings. 
 
+* **Get-VaultCredential**  
+  With this cmdlet, the entires form the Windows Credential Manager can be
+  retrieved. The entries contain a PSCredential object and all additional
+  informations like target name, type and persistence.
+
+* **Get-VaultCredentialValue**  
+  This cmdlet works similar as the Get-VaultCredential, but returns only native
+  PSCredential objects without additional informations. This is useful if a
+  simple PSCredential object is required for the caller.
+
+* **Get-SecurityActivity**  
+  Get security and life-cycle related events on the target computer like start
+  up / shutdown, user log on / log off, workstation locked /unlocked, session
+  reconnected / disconnected and screen saver invoke / dismiss.
+
+* **Get-SecurityAuditPolicy**  
+  List the current local security audit policy settings. It will execute the
+  auditpol.exe command and parse the result into objects.
+
+* **Get-SecurityAuditPolicySetting**  
+  Return the value of one security audit policy setting. It will use the
+  Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
+
+
 
 ## Versions
 
 ### Unreleased
 
+* Add cmdlets for the Windows Credential Manager Vault
 * Test-Credential: Add verbose output
 
 ### 1.0.2
