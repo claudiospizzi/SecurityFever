@@ -1,6 +1,6 @@
 @{
     RootModule         = 'SecurityFever.psm1'
-    ModuleVersion      = '1.0.1'
+    ModuleVersion      = '1.0.2'
     GUID               = '6BAE79AD-CE6B-4969-933A-0C37EE3708FA'
     Author             = 'Claudio Spizzi'
     Copyright          = 'Copyright (c) 2016 by Claudio Spizzi. Licensed under MIT license.'

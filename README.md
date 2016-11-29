@@ -75,7 +75,7 @@ manually on your local system:
 
 ## Versions
 
-### Unreleased
+### 1.0.2
 
 * Test-Credential: Fix wrong output in quiet mode
 * Test-Credential: Fix failing Active Directory verification method
