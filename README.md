@@ -79,6 +79,7 @@ manually on your local system:
 
 * Test-Credential: Fix wrong output in quiet mode
 * Test-Credential: Fix failing Active Directory verification method
+* Test-Credential: Add unit tests
 
 ### 1.0.1
 
