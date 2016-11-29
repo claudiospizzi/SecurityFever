@@ -92,6 +92,8 @@ function Test-Credential
 
         if ($Method -eq 'StartProcess')
         {
+            Write-Verbose "Test credentials $($Credential.UserName) by starting a local cmd.exe process"
+
             try
             {
                 # Create a new local process with the given credentials. This
@@ -133,19 +135,21 @@ function Test-Credential
 
         if ($Method -eq 'ActiveDirectory')
         {
+            Write-Verbose "Test credentials $($Credential.UserName) by binding the default domain with ADSI"
+
             try
             {
                 # We use an empty path, because we just test the credential
                 # binding and not any object access in Active Directory.
                 $directoryEntryArgs = @{
                         TypeName     = 'System.DirectoryServices.DirectoryEntry'
-                        ArgumentList = '',
-                                    $Credential.GetNetworkCredential().UserName,
-                                    $Credential.GetNetworkCredential().Password
+                        ArgumentList = '', # Bind to the local default domain
+                                       $Credential.GetNetworkCredential().UserName,
+                                       $Credential.GetNetworkCredential().Password
                 }
                 $directoryEntry = New-Object @directoryEntryArgs -ErrorAction Stop
 
-                if ($null -eq $directoryEntry -or [String]::IsNullOrEmpty($directoryEntry.distinguisedNamey))
+                if ($null -eq $directoryEntry -or [String]::IsNullOrEmpty($directoryEntry.distinguishedName))
                 {
                     throw 'Unable to create an ADSI connection.'
                 }
@@ -161,7 +165,7 @@ function Test-Credential
         # exception.
         if ($Quiet.IsPresent)
         {
-            Write-Output [bool]($null -eq $exception)
+            Write-Output ($null -eq $exception)
         }
         else
         {
