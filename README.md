@@ -75,6 +75,11 @@ manually on your local system:
 
 ## Versions
 
+### Unreleased
+
+* Test-Credential: Fix wrong output in quiet mode
+* Test-Credential: Fix failing Active Directory verification method
+
 ### 1.0.1
 
 * Test-Credential: Support positional parameter and pipeline input
