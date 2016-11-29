@@ -161,7 +161,7 @@ function Test-Credential
         # exception.
         if ($Quiet.IsPresent)
         {
-            Write-Output [bool]($null -eq $exception)
+            Write-Output ($null -eq $exception)
         }
         else
         {
