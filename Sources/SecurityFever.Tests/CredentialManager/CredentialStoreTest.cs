@@ -38,22 +38,22 @@ namespace SecurityFever.Tests.CredentialManager
             Assert.AreEqual(expectedPassword, actualCredentialEntry.Credential.GetNetworkCredential().Password);
         }
 
-        [TestMethod]
-        public void TestRemoveCredential()
-        {
-            // Arrange
+        //[TestMethod]
+        //public void TestRemoveCredential()
+        //{
+        //    // Arrange
 
-            // Act
+        //    // Act
 
-            // Assert
-        }
+        //    // Assert
+        //}
 
-        [TestMethod]
-        public void TestCredentialStore()
-        {
-            IEnumerable<CredentialEntry> credentials = CredentialStore.GetCredentials();
+        //[TestMethod]
+        //public void TestCredentialStore()
+        //{
+        //    IEnumerable<CredentialEntry> credentials = CredentialStore.GetCredentials();
 
-            Assert.AreNotEqual(credentials.ToList<CredentialEntry>().Count, 0);
-        }
+        //    Assert.AreNotEqual(credentials.ToList<CredentialEntry>().Count, 0);
+        //}
     }
 }
