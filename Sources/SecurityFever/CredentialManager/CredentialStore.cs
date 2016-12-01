@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -9,22 +11,25 @@ namespace SecurityFever.CredentialManager
 {
     public static class CredentialStore
     {
-        public static CredentialEntry GetCredential(String targetName)
+        public static CredentialEntry GetCredential(String targetName, CredentialType type, CredentialPersist persist)
         {
-            IEnumerable<CredentialEntry> credentials = GetCredentials();
+            IList<CredentialEntry> credentials = GetCredentials(targetName, type, persist).ToList();
 
-            foreach (CredentialEntry credential in credentials)
+            if (credentials.Count == 1)
             {
-                if (credential.TargetName == targetName)
-                {
-                    return credential;
-                }
+                return credentials[0];
             }
-
-            throw new Win32Exception("Credentials not found!");
+            else if (credentials.Count < 1)
+            {
+                throw new Win32Exception("Credentials not found!");
+            }
+            else
+            {
+                throw new Win32Exception("No unique credential found!");
+            }
         }
 
-        public static IEnumerable<CredentialEntry> GetCredentials()
+        public static IEnumerable<CredentialEntry> GetCredentials(String targetName = null, CredentialType? type = null, CredentialPersist? persist = null)
         {
             IList<CredentialEntry> credentials = new List<CredentialEntry>();
 
@@ -49,7 +54,14 @@ namespace SecurityFever.CredentialManager
                     {
                         NativeMethods.Credential nativeCredential = Marshal.PtrToStructure<NativeMethods.Credential>(credentialPtr);
 
-                        credentials.Add(new CredentialEntry(nativeCredential, flags));
+                        CredentialEntry credential = new CredentialEntry(nativeCredential, flags);
+
+                        if ((targetName == null || credential.TargetName == targetName) &&
+                            (!type.HasValue || credential.Type == type.Value) &&
+                            (!persist.HasValue || credential.Persist == persist.Value))
+                        {
+                            credentials.Add(credential);
+                        }
                     }
                 }
             }
@@ -78,7 +90,7 @@ namespace SecurityFever.CredentialManager
             {
                 if (NativeMethods.CredWrite(ref nativeCredential, 0))
                 {
-                    return GetCredential(targetName);
+                    return GetCredential(targetName, type, persist);
                 }
                 else
                 {
@@ -91,6 +103,14 @@ namespace SecurityFever.CredentialManager
                 {
                     Marshal.FreeCoTaskMem(nativeCredential.CredentialBlob);
                 }
+            }
+        }
+
+        public static void RemoveCredential(string targetName, CredentialType type)
+        {
+            if (!NativeMethods.CredDelete(targetName, (NativeMethods.CredentialType)type, 0))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
             }
         }
     }
