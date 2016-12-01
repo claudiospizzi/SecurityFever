@@ -17,5 +17,8 @@ Update-FormatData "$PSScriptRoot\..\Modules\SecurityFever\Resources\SecurityFeve
 # Update type data
 Update-TypeData "$PSScriptRoot\..\Modules\SecurityFever\Resources\SecurityFever.Types.ps1xml"
 
+# Update assembly
+Add-Type -Path "$PSScriptRoot\..\Modules\SecurityFever\SecurityFever.dll"
+
 # Execute deubg
 # ToDo...
