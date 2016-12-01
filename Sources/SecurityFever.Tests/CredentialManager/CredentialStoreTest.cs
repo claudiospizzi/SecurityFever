@@ -73,7 +73,7 @@ namespace SecurityFever.Tests.CredentialManager
             IEnumerable<CredentialEntry> actualCredentialEntries = CredentialStore.GetCredentials();
 
             // Assert
-            Assert.IsTrue(actualCredentialEntries.Count() > 0);
+            Assert.AreNotEqual(actualCredentialEntries.Count(), 0);
         }
 
         [TestMethod]
@@ -99,23 +99,5 @@ namespace SecurityFever.Tests.CredentialManager
                 Assert.IsTrue(true);
             }
         }
-
-        //[TestMethod]
-        //public void TestRemoveCredential()
-        //{
-        //    // Arrange
-
-        //    // Act
-
-        //    // Assert
-        //}
-
-        //[TestMethod]
-        //public void TestCredentialStore()
-        //{
-        //    IEnumerable<CredentialEntry> credentials = CredentialStore.GetCredentials();
-
-        //    Assert.AreNotEqual(credentials.ToList<CredentialEntry>().Count, 0);
-        //}
     }
 }
