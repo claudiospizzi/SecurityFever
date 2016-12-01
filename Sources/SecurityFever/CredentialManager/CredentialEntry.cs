@@ -22,7 +22,7 @@ namespace SecurityFever.CredentialManager
 
             if (flags == NativeMethods.CredentialEnumerateFlags.AllCredentials)
             {
-                Match match = Regex.Match(TargetName, "(.*):(.*)=(.*)");
+                Match match = Regex.Match(TargetName, "(.*?):(.*?)=(.*)");
                 
                 if (match.Success)
                 {
