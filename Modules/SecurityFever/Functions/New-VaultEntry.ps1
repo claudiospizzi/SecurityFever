@@ -63,17 +63,17 @@
 
     .EXAMPLE
     PS C:\> New-VaultEntry -TargetName 'MyUserCred' -Credential $credential
-    Create a new entry in the Credeitnal Manager vault with the name MyUserCred
+    Create a new entry in the Credential Manager vault with the name MyUserCred
     and the credentials specified in the variable.
 
     .EXAMPLE
     PS C:\> New-VaultEntry -TargetName 'MyUserCred' -Username 'DOMAIN\user' -Password $secretPassword
-    Create a new entry in the Credeitnal Manager vault with the name MyUserCred,
+    Create a new entry in the Credential Manager vault with the name MyUserCred,
     the username user and the password specified in the variable.
 
     .EXAMPLE
     PS C:\> New-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -Persist 'Session' -Credential $credential
-    Create a new entry in the Credeitnal Manager vault with non-default type
+    Create a new entry in the Credential Manager vault with non-default type
     and persist options. Check the description for detailed information about
     the types and persit locations.
 
