@@ -1,13 +1,13 @@
 
 <#
     .SYNOPSIS
-    Get a secure string object from the Windows Credential Manager vault.
+    Get the secure string objects from the Windows Credential Manager vault.
 
     .DESCRIPTION
-    This cmdlet uses the native unmanaged Win32 api to retrieve an entry from
-    the Windows Credential Manager vault. The entry is of type secure string. To
-    get the full credential entry with all properties like target name, use the
-    Get-VaultEntry cmdlet.
+    This cmdlet uses the native unmanaged Win32 api to retrieve all entries from
+    the Windows Credential Manager vault. The entries are of type secure string.
+    To get the full credential entries with all properties like target name, use
+    the Get-VaultEntry cmdlet.
 
     .INPUTS
     None.
@@ -17,7 +17,7 @@
 
     .EXAMPLE
     PS C:\> Get-VaultEntrySecureString -TargetName 'MyUserCred'
-    Return the secure string object with the target name 'MyUserCred'.
+    Return the secure string objects with the target name 'MyUserCred'.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -33,14 +33,29 @@ function Get-VaultEntrySecureString
     [OutputType([System.Security.SecureString])]
     param
     (
-        # Use the target name to get one secure string. Does not support
-        # wildcards.
-        [Parameter(Mandatory = $true)]
+        # Filter the credentials by target name. Does not support wildcards. 
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
         [System.String]
-        $TargetName
+        $TargetName,
+
+        # Filter the credentials by type.
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
+        [SecurityFever.CredentialManager.CredentialType]
+        $Type,
+
+        # Filter the credentials by persist location.
+        [Parameter(Mandatory = $false)]
+        [AllowNull()]
+        [SecurityFever.CredentialManager.CredentialPersist]
+        $Persist
     )
 
-    $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::GetCredential($TargetName)
-
-    Write-Output $credentialEntry.Credential.Password
+    $credentialEntries = Get-VaultEntry @PSBoundParameters
+    
+    foreach ($credentialEntry in $credentialEntries)
+    {
+        Write-Output $credentialEntry.Credential.Password
+    }
 }
