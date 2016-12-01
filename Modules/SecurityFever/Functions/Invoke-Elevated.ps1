@@ -1,3 +1,4 @@
+
 <#
     .SYNOPSIS
     Runs the specified command in an elevated context.
