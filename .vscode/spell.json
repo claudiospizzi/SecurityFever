@@ -23,7 +23,11 @@
     "-Scope",
     "Get-SecurityActivity",
     "Get-SecurityAuditPolicy",
-    "Get-SecurityAuditPolicySetting"
+    "Get-SecurityAuditPolicySetting",
+    "PSCredential",
+    "Get-VaultEntry",
+    "Get-VaultEntryCredential",
+    "Get-VaultEntrySecureString"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",

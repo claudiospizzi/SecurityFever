@@ -13,7 +13,18 @@ Windows and application security.
 ## Introduction
 
 This is a personal PowerShell Module created by Claudio Spizzi. I've collected
-all my security related functions into this module, ready to use. 
+all my security related functions into this module, ready to use.
+
+You can invoke PowerShell scripts or script blocks in an elevated context with
+sudo, test your credentials against the local system or an Active Directory
+domain.
+
+With the security activity and audit policy cmdlets, you can get the security
+related configuration of security audit events in the **Audit Policy** and check
+the latest activity on the target computer.
+
+With the **Vault** cmdlets, you can interact with the Windows Credential Manager
+to store and received PowerShell credentials and secure strings. 
 
 
 ## Requirements
@@ -59,15 +70,20 @@ manually on your local system:
   multiple testing with wrong credentials can lock out the used account
   depending on your security settings. 
 
-* **Get-VaultCredential**  
-  With this cmdlet, the entires form the Windows Credential Manager can be
+* **Get-VaultEntry**  
+  With this cmdlet, the entires form the Windows Credential Manager vault can be
   retrieved. The entries contain a PSCredential object and all additional
-  informations like target name, type and persistence.
+  metadata like target name, type and persistence location.
 
-* **Get-VaultCredentialValue**  
-  This cmdlet works similar as the Get-VaultCredential, but returns only native
-  PSCredential objects without additional informations. This is useful if a
-  simple PSCredential object is required for the caller.
+* **Get-VaultEntryCredential**  
+  This cmdlet works similar like the Get-VaultEntry, but returns only a native
+  PSCredential object without additional metadata. This is useful if just the
+  simple PSCredential object is required.
+
+* **Get-VaultEntrySecureString**  
+  This cmdlet works similar like the Get-VaultEntry, but returns only a native
+  secure string object containing the password without additional metadata. This
+  is useful if just the simple secure string object is required.
 
 * **Get-SecurityActivity**  
   Get security and life-cycle related events on the target computer like start

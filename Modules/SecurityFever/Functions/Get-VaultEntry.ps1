@@ -7,7 +7,8 @@
     This cmdlet uses the native unmanaged Win32 api to retrieve all entries from
     the Windows Credential Manager vault. The entries are not objects of type
     PSCredential. The PSCredential is available on the Credential property or
-    with the Get-VaultCredentialValue cmdlet.
+    with the Get-VaultEntryCredential cmdlet or you can get a secure string
+    with the Get-VaultEntrySecureString cmdlet.
 
     .INPUTS
     None.
@@ -16,11 +17,11 @@
     SecurityFever.CredentialManager.CredentialEntry.
 
     .EXAMPLE
-    PS C:\> Get-VaultCredential
+    PS C:\> Get-VaultEntry
     Returns all available credential entries.
 
     .EXAMPLE
-    PS C:\> Get-VaultCredential -TargetName 'MyUserCred'
+    PS C:\> Get-VaultEntry -TargetName 'MyUserCred'
     Return the credential entry with the target name 'MyUserCred'.
 
     .NOTES
@@ -31,7 +32,7 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Get-VaultCredential
+function Get-VaultEntry
 {
     [CmdletBinding()]
     [OutputType([SecurityFever.CredentialManager.CredentialEntry])]
@@ -46,15 +47,17 @@ function Get-VaultCredential
 
     if ([String]::IsNullOrEmpty($TargetName))
     {
-        $credentials = [SecurityFever.CredentialManager.CredentialStore]::GetCredentials()
+        $credentialEntries = [SecurityFever.CredentialManager.CredentialStore]::GetCredentials()
 
-        foreach ($credential in $credentials)
+        foreach ($credentialEntry in $credentialEntries)
         {
-            Write-Output $credential
+            Write-Output $credentialEntry
         }
     }
     else
     {
-        [SecurityFever.CredentialManager.CredentialStore]::GetCredential($TargetName)
+        $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::GetCredential($TargetName)
+
+        Write-Output $credentialEntry
     }
 }
