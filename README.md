@@ -85,6 +85,11 @@ manually on your local system:
   secure string object containing the password without additional metadata. This
   is useful if just the simple secure string object is required.
 
+* **New-VaultEntry**  
+  Create a new entry in the Windows Credential Manager vault. he credential type
+  and persist location can be specified. By default, a generic entry with no
+  special purpose is created on the local machine persist location.
+
 * **Get-SecurityActivity**  
   Get security and life-cycle related events on the target computer like start
   up / shutdown, user log on / log off, workstation locked /unlocked, session
