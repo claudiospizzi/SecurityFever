@@ -86,9 +86,13 @@ manually on your local system:
   is useful if just the simple secure string object is required.
 
 * **New-VaultEntry**  
-  Create a new entry in the Windows Credential Manager vault. he credential type
-  and persist location can be specified. By default, a generic entry with no
-  special purpose is created on the local machine persist location.
+  Create a new entry in the Windows Credential Manager vault. The credential
+  type and persist location can be specified. By default, a generic entry with
+  no special purpose is created on the local machine persist location.
+
+* **Remove-VaultEntry**  
+  Remove an existing entry in the Windows Credential Manager vault. The cmdlet
+  accepts pipeline input with credential entry objects.
 
 * **Get-SecurityActivity**  
   Get security and life-cycle related events on the target computer like start
