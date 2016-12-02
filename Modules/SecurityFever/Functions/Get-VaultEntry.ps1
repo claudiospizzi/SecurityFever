@@ -54,21 +54,16 @@ function Get-VaultEntry
         [Parameter(Mandatory = $false)]
         [AllowNull()]
         [SecurityFever.CredentialManager.CredentialPersist]
-        $Persist
+        $Persist,
+
+        # Filter the credentials by username. Does not support wildcards. 
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [System.String]
+        $Username
     )
 
-    # Create a second variable, because the TargetName parameter is a string and
-    # will only be empty and never null.
-    if ([String]::IsNullOrEmpty($TargetName))
-    {
-        $filterTargetName = $null
-    }
-    else
-    {
-        $filterTargetName = $TargetName
-    }
-
-    $credentialEntries = [SecurityFever.CredentialManager.CredentialStore]::GetCredentials($filterTargetName, $Type, $Persist)
+    $credentialEntries = [SecurityFever.CredentialManager.CredentialStore]::GetCredentials($TargetName, $Type, $Persist, $Username)
 
     foreach ($credentialEntry in $credentialEntries)
     {

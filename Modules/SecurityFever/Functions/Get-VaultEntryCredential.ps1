@@ -49,11 +49,17 @@ function Get-VaultEntryCredential
         [Parameter(Mandatory = $false)]
         [AllowNull()]
         [SecurityFever.CredentialManager.CredentialPersist]
-        $Persist
+        $Persist,
+
+        # Filter the credentials by username. Does not support wildcards. 
+        [Parameter(Mandatory = $false)]
+        [AllowEmptyString()]
+        [System.String]
+        $Username
     )
 
-    $credentialEntries = Get-VaultEntry @PSBoundParameters
-    
+    $credentialEntries = [SecurityFever.CredentialManager.CredentialStore]::GetCredentials($TargetName, $Type, $Persist, $Username)
+
     foreach ($credentialEntry in $credentialEntries)
     {
         Write-Output $credentialEntry.Credential
