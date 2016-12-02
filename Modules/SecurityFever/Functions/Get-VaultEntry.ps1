@@ -38,7 +38,7 @@ function Get-VaultEntry
     [OutputType([SecurityFever.CredentialManager.CredentialEntry])]
     param
     (
-        # Filter the credentials by target name. Does not support wildcards. 
+        # Filter the credentials by target name. Does not support wildcards.
         [Parameter(Mandatory = $false)]
         [AllowEmptyString()]
         [System.String]
@@ -56,7 +56,7 @@ function Get-VaultEntry
         [SecurityFever.CredentialManager.CredentialPersist]
         $Persist,
 
-        # Filter the credentials by username. Does not support wildcards. 
+        # Filter the credentials by username. Does not support wildcards.
         [Parameter(Mandatory = $false)]
         [AllowEmptyString()]
         [System.String]
