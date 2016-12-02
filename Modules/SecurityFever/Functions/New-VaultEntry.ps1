@@ -122,6 +122,11 @@ function New-VaultEntry
         [System.Security.SecureString]
         $Password
     )
+
+    if (([SecurityFever.CredentialManager.CredentialStore]::ExistCredential($TargetName, $Type)))
+    {
+        throw "Entry with target name $TargetName and type $Type already exists!"
+    }
  
     if ($PSCmdlet.ParameterSetName -eq 'UsernamePassword')
     {
