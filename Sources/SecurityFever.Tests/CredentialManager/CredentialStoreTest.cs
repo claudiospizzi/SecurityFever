@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SecurityFever.CredentialManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
@@ -53,7 +54,7 @@ namespace SecurityFever.Tests.CredentialManager
             PSCredential expectedCredential = new PSCredential(expectedUsername, CredentialHelper.StringToSecureString(expectedPassword));
 
             // Act
-            CredentialEntry actualCredentialEntry = CredentialStore.GetCredential(expectedTargetName, expectedType, expectedPersist);
+            CredentialEntry actualCredentialEntry = CredentialStore.GetCredential(expectedTargetName, expectedType);
 
             // Assert
             Assert.AreEqual(expectedNamespace, actualCredentialEntry.Namespace);
@@ -64,6 +65,20 @@ namespace SecurityFever.Tests.CredentialManager
             Assert.AreEqual(expectedPersist, actualCredentialEntry.Persist);
             Assert.AreEqual(expectedUsername, actualCredentialEntry.Credential.UserName);
             Assert.AreEqual(expectedPassword, actualCredentialEntry.Credential.GetNetworkCredential().Password);
+        }
+
+        [TestMethod]
+        public void TestExistCredential()
+        {
+            // Arrange
+            string targetName = "Unit Test Demo";
+            CredentialType type = CredentialType.Generic;
+
+            // Act
+            Boolean exists = CredentialStore.ExistCredential(targetName, type);
+
+            // Assert
+            Assert.IsTrue(exists);
         }
 
         [TestMethod]
@@ -82,7 +97,6 @@ namespace SecurityFever.Tests.CredentialManager
             // Arrange
             string targetName         = "Unit Test Demo";
             CredentialType type       = CredentialType.Generic;
-            CredentialPersist persist = CredentialPersist.LocalMachine;
 
             // Act
             CredentialStore.RemoveCredential(targetName, type);
@@ -90,7 +104,7 @@ namespace SecurityFever.Tests.CredentialManager
             // Assert
             try
             {
-                CredentialStore.GetCredential(targetName, type, persist);
+                CredentialStore.GetCredential(targetName, type);
 
                 Assert.Fail("The GetCredential() returns the credential which should be deleted!");
             }

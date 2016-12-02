@@ -11,9 +11,9 @@ namespace SecurityFever.CredentialManager
 {
     public static class CredentialStore
     {
-        public static CredentialEntry GetCredential(String targetName, CredentialType type, CredentialPersist persist)
+        public static CredentialEntry GetCredential(String targetName, CredentialType type)
         {
-            IList<CredentialEntry> credentials = GetCredentials(targetName, type, persist).ToList();
+            IList<CredentialEntry> credentials = GetCredentials(targetName, type).ToList();
 
             if (credentials.Count == 1)
             {
@@ -29,7 +29,7 @@ namespace SecurityFever.CredentialManager
             }
         }
 
-        public static IEnumerable<CredentialEntry> GetCredentials(String targetName = null, CredentialType? type = null, CredentialPersist? persist = null)
+        public static IEnumerable<CredentialEntry> GetCredentials(String targetName = null, CredentialType? type = null, CredentialPersist? persist = null, String username = null)
         {
             IList<CredentialEntry> credentials = new List<CredentialEntry>();
 
@@ -56,9 +56,10 @@ namespace SecurityFever.CredentialManager
 
                         CredentialEntry credential = new CredentialEntry(nativeCredential, flags);
 
-                        if ((targetName == null || credential.TargetName == targetName) &&
+                        if ((string.IsNullOrEmpty(targetName) || credential.TargetName == targetName) &&
                             (!type.HasValue || credential.Type == type.Value) &&
-                            (!persist.HasValue || credential.Persist == persist.Value))
+                            (!persist.HasValue || credential.Persist == persist.Value) &&
+                            (string.IsNullOrEmpty(username) || credential.Credential.UserName == username))
                         {
                             credentials.Add(credential);
                         }
@@ -71,6 +72,13 @@ namespace SecurityFever.CredentialManager
             }
 
             return credentials;
+        }
+
+        public static Boolean ExistCredential(string targetName, CredentialType type)
+        {
+            IList<CredentialEntry> credentials = GetCredentials(targetName, type).ToList();
+
+            return credentials.Count > 0;
         }
 
         public static CredentialEntry CreateCredential(string targetName, CredentialType type, CredentialPersist persist, PSCredential credential)
@@ -90,7 +98,7 @@ namespace SecurityFever.CredentialManager
             {
                 if (NativeMethods.CredWrite(ref nativeCredential, 0))
                 {
-                    return GetCredential(targetName, type, persist);
+                    return GetCredential(targetName, type);
                 }
                 else
                 {
