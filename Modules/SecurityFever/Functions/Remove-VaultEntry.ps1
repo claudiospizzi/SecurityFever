@@ -49,7 +49,7 @@ function Remove-VaultEntry
         # The type of the target entry to delete.
         [Parameter(Mandatory = $true, ParameterSetName = 'Properties')]
         [SecurityFever.CredentialManager.CredentialType]
-        $Type = 'Generic'
+        $Type
     )
 
     process
