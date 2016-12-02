@@ -157,14 +157,6 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>Namespace</Label>
-            <Width>18</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Label>Attribute</Label>
-            <Width>12</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
             <Label>Target Name</Label>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -173,22 +165,16 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Type</Label>
-            <Width>18</Width>
+            <Width>20</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Persist</Label>
-            <Width>12</Width>
+            <Width>14</Width>
           </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>Namespace</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Attribute</PropertyName>
-              </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>TargetName</PropertyName>
               </TableColumnItem>
