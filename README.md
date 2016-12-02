@@ -88,7 +88,14 @@ manually on your local system:
 * **New-VaultEntry**  
   Create a new entry in the Windows Credential Manager vault. The credential
   type and persist location can be specified. By default, a generic entry with
-  no special purpose is created on the local machine persist location.
+  no special purpose is created on the local machine persist location. It will
+  not override existing entries.
+
+* **Update-VaultEntry**  
+  Update an existing entry in the Windows Credential Manager vault. The
+  credential target name and type are required to identify the entry to update.
+  The persist location and the credentials (or username/password) can be
+  updated.
 
 * **Remove-VaultEntry**  
   Remove an existing entry in the Windows Credential Manager vault. The cmdlet
