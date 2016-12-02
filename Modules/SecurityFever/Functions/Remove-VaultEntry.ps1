@@ -32,7 +32,7 @@
 
 function Remove-VaultEntry
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     [OutputType([void])]
     param
     (
@@ -49,7 +49,12 @@ function Remove-VaultEntry
         # The type of the target entry to delete.
         [Parameter(Mandatory = $true, ParameterSetName = 'Properties')]
         [SecurityFever.CredentialManager.CredentialType]
-        $Type
+        $Type,
+
+        # Force the removal.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $Force
     )
 
     process
@@ -62,7 +67,10 @@ function Remove-VaultEntry
         {
             foreach ($object in $InputObject)
             {
-                [SecurityFever.CredentialManager.CredentialStore]::RemoveCredential($object.TargetName, $object.Type)
+                if ($Force.IsPresent -or $PSCmdlet.ShouldProcess("$($object.TargetName) ($($object.Type))", "Remove Entry"))
+                {
+                    [SecurityFever.CredentialManager.CredentialStore]::RemoveCredential($object.TargetName, $object.Type)
+                }
             }
         }
     }

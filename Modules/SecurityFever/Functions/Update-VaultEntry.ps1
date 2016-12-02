@@ -30,7 +30,7 @@
 
 function Update-VaultEntry
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([SecurityFever.CredentialManager.CredentialEntry])]
     param
     (
@@ -72,7 +72,12 @@ function Update-VaultEntry
         [Parameter(Mandatory = $false)]
         [AllowNull()]
         [System.Security.SecureString]
-        $NewPassword
+        $NewPassword,
+
+        # Force the update.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $Force
     )
 
     process
@@ -108,11 +113,14 @@ function Update-VaultEntry
                     }
                 }
 
-                # Finally, invoke the NewCredential() method to update the
-                # credential entry.
-                $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::CreateCredential($object.TargetName, $object.Type, $NewPersist, $NewCredential)
+                if ($Force.IsPresent -or $PSCmdlet.ShouldProcess("$($object.TargetName) ($($object.Type))", "Update Entry"))
+                {
+                    # Finally, invoke the NewCredential() method to update the
+                    # credential entry.
+                    $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::CreateCredential($object.TargetName, $object.Type, $NewPersist, $NewCredential)
 
-                Write-Output $credentialEntry
+                    Write-Output $credentialEntry
+                }
             }
             else
             {

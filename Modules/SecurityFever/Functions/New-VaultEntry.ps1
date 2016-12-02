@@ -87,7 +87,7 @@
 
 function New-VaultEntry
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([SecurityFever.CredentialManager.CredentialEntry])]
     param
     (
@@ -120,20 +120,28 @@ function New-VaultEntry
         # The password to store in the vault. Specify username too.
         [Parameter(Mandatory = $true, ParameterSetName = 'UsernamePassword')]
         [System.Security.SecureString]
-        $Password
+        $Password,
+
+        # Override any existing entry.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $Force
     )
 
-    if (([SecurityFever.CredentialManager.CredentialStore]::ExistCredential($TargetName, $Type)))
+    if ((-not $Force.IsPresent) -and ([SecurityFever.CredentialManager.CredentialStore]::ExistCredential($TargetName, $Type)))
     {
         throw "Entry with target name $TargetName and type $Type already exists!"
     }
- 
+
     if ($PSCmdlet.ParameterSetName -eq 'UsernamePassword')
     {
         $Credential = New-Object -TypeName PSCredential -ArgumentList $Username, $Password
     }
 
-    $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::CreateCredential($TargetName, $Type, $Persist, $Credential)
+    if ($Force.IsPresent -or $PSCmdlet.ShouldProcess("$TargetName ($Type)", "Create Entry"))
+    {
+        $credentialEntry = [SecurityFever.CredentialManager.CredentialStore]::CreateCredential($TargetName, $Type, $Persist, $Credential)
 
-    Write-Output $credentialEntry
+        Write-Output $credentialEntry
+    }
 }
