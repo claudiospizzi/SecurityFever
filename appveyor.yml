@@ -18,12 +18,22 @@ install:
 # Set version to build number
 version: '{build}'
 
+# Build configuration
+configuration: Release
+platform: Any CPU
+
 # Execute test script
 test_script:
   - ps: .\Scripts\test.ps1 -AppVeyor -Verbose
 
 # Execute build script
-build_script:
+# build_script:
+#   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
+
+# Execute compile and build
+build: 
+  verbosity: minimal
+after_build:
   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
 
 # Execute deploy script
