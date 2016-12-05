@@ -31,7 +31,7 @@ test_script:
 #   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
 
 # Execute compile and build
-build: 
+build:
   verbosity: minimal
 after_build:
   - ps: .\Scripts\build.ps1 -AppVeyor -Verbose
