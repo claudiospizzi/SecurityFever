@@ -118,7 +118,7 @@ manually on your local system:
 
 ## Versions
 
-### Unreleased
+### 1.1.0
 
 * Add cmdlets for the Windows Credential Manager Vault
 * Test-Credential: Add verbose output
