@@ -115,7 +115,6 @@ manually on your local system:
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
 
 
-
 ## Versions
 
 ### 1.1.0
@@ -132,7 +131,7 @@ manually on your local system:
 ### 1.0.1
 
 * Test-Credential: Support positional parameter and pipeline input
-* Test-Credential: Fix issues with for unaccessiable working directory
+* Test-Credential: Fix issues with for inaccessible working directory
 * Test-Credential: Replace -Throw with -Quiet
 * Get-SecurityActivity: Remove 'run as admin' requirement for remote calls
 * Get-SecurityActivity: Add 'After' parameter to narrow down event span
