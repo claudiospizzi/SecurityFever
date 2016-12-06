@@ -27,7 +27,12 @@
     "PSCredential",
     "Get-VaultEntry",
     "Get-VaultEntryCredential",
-    "Get-VaultEntrySecureString"
+    "Get-VaultEntrySecureString",
+    "New-VaultEntry",
+    "Update-VaultEntry",
+    "Remove-VaultEntry",
+    "Throw",
+    "-Quiet"
   ],
   "mistakeTypeToStatus": {
     "Passive voice": "Hint",
