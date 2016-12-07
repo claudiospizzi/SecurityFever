@@ -7,128 +7,256 @@ Import-Module -Name "$ModulePath\$ModuleName" -Force
 
 Describe 'Test-Credential' {
 
+    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(([Security.Principal.WindowsBuiltInRole]::Administrator))
+
     $expectedUsername = 'SecurityFever'
     $expectedPassword = ConvertTo-SecureString -String 'Pa$$w0rd' -AsPlainText -Force
 
     $expectedCredential = New-Object -TypeName PSCredential -ArgumentList $expectedUsername, $expectedPassword
 
-    foreach ($method in 'StartProcess', 'ActiveDirectory')
-    {
-        Context "Method $method" {
+    Context "Method StartProcess" {
 
-            BeforeAll {
+        BeforeAll {
 
-                Write-Verbose "Create local test account $expectedUsername"
+            if ($isAdmin)
+            {
+                Write-Verbose "Create local test account: $expectedUsername"
 
                 New-LocalUser -Name $expectedUsername -Password $expectedPassword
             }
+        }
 
-            Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -eq $expectedUsername } {
-                return @{ distinguishedName = 'DC=contoso,DC=com' }
+        It 'should return true for valid credentials' {
+
+            # Skip test if user is not admin
+            if (-not $isAdmin)
+            {
+                Set-TestInconclusive
+                return
             }
 
-            Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -ne $expectedUsername } {
-                throw 'Logon failure: unknown user name or bad password'
+            # Arrange
+            $expectedResult = $true
+
+            # Act
+            $actualResult = Test-Credential -Credential $expectedCredential -Method 'StartProcess' -Quiet
+
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
+
+        It 'should return true for valid username and password' {
+
+            # Skip test if user is not admin
+            if (-not $isAdmin)
+            {
+                Set-TestInconclusive
+                return
             }
 
-            It 'should return true for valid credentials' {
+            # Arrange
+            $expectedResult = $true
 
-                # Arrange
-                $expectedResult = $true
+            # Act
+            $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'StartProcess' -Quiet
 
-                # Act
-                $actualResult = Test-Credential -Credential $expectedCredential -Method $method -Quiet
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
 
-                # Assert
-                $actualResult | Should Be $expectedResult
+        It 'should return a credential object for valid credentials' {
+
+            # Skip test if user is not admin
+            if (-not $isAdmin)
+            {
+                Set-TestInconclusive
+                return
             }
 
-            It 'should return true for valid username and password' {
+            # Act
+            $actualResult = Test-Credential -Credential $expectedCredential -Method 'StartProcess'
 
-                # Arrange
-                $expectedResult = $true
+            # Assert
+            $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
+            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+        }
 
-                # Act
-                $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method $method -Quiet
+        It 'should return a credential object for valid username and password' {
 
-                # Assert
-                $actualResult | Should Be $expectedResult
+            # Skip test if user is not admin
+            if (-not $isAdmin)
+            {
+                Set-TestInconclusive
+                return
             }
 
-            It 'should return a credential object for valid credentials' {
+            # Act
+            $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'StartProcess'
 
-                # Act
-                $actualResult = Test-Credential -Credential $expectedCredential -Method $method
+            # Assert
+            $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
+            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+        }
 
-                # Assert
-                $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-                $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-                $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
-            }
+        It 'should return false for invalid credentials' {
 
-            It 'should return a credential object for valid username and password' {
+            # Arrange
+            $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
+            $expectedResult    = $false
 
-                # Act
-                $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method $method
+            # Act
+            $actualResult = Test-Credential -Credential $invalidCredential -Method 'StartProcess' -Quiet
 
-                # Assert
-                $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-                $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-                $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
-            }
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
 
-            It 'should return false for invalid credentials' {
+        It 'should return false for invalid username and password' {
 
-                # Arrange
-                $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
-                $expectedResult    = $false
+            # Arrange
+            $invalidUsername = 'DoesNotExist'
+            $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
+            $expectedResult  = $false
 
-                # Act
-                $actualResult = Test-Credential -Credential $invalidCredential -Method $method -Quiet
+            # Act
+            $actualResult = Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'StartProcess' -Quiet
 
-                # Assert
-                $actualResult | Should Be $expectedResult
-            }
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
 
-            It 'should return false for invalid username and password' {
+        It 'should throw an exception for invalid credentials' {
 
-                # Arrange
-                $invalidUsername = 'DoesNotExist'
-                $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
-                $expectedResult  = $false
+            # Arrange
+            $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
 
-                # Act
-                $actualResult = Test-Credential -Username $invalidUsername -Password $invalidPassword -Method $method -Quiet
+            # Act
+            { Test-Credential -Credential $invalidCredential -Method 'StartProcess' } | Should Throw
+        }
 
-                # Assert
-                $actualResult | Should Be $expectedResult
-            }
+        It 'should throw an exception for invalid username and password' {
 
-            It 'should throw an exception for invalid credentials' {
+            # Arrange
+            $invalidUsername = 'DoesNotExist'
+            $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
 
-                # Arrange
-                $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
+            # Act
+            { Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'StartProcess' } | Should Throw
+        }
 
-                # Act
-                { Test-Credential -Credential $invalidCredential -Method $method } | Should Throw
-            }
+        AfterAll {
 
-            It 'should throw an exception for invalid username and password' {
-
-                # Arrange
-                $invalidUsername = 'DoesNotExist'
-                $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
-
-                # Act
-                { Test-Credential -Username $invalidUsername -Password $invalidPassword -Method $method } | Should Throw
-            }
-
-            AfterAll {
-
-                Write-Verbose 'Remove local test account'
+            if ($isAdmin)
+            {
+                Write-Verbose "Remove local test account: $expectedUsername"
 
                 Remove-LocalUser -Name $expectedUsername
             }
+        }
+    }
+
+    Context "Method ActiveDirectory" {
+
+        Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -eq $expectedUsername } {
+            return @{ distinguishedName = 'DC=contoso,DC=com' }
+        }
+
+        Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -ne $expectedUsername } {
+            throw 'Logon failure: unknown user name or bad password'
+        }
+
+        It 'should return true for valid credentials' {
+
+            # Arrange
+            $expectedResult = $true
+
+            # Act
+            $actualResult = Test-Credential -Credential $expectedCredential -Method 'ActiveDirectory' -Quiet
+
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
+
+        It 'should return true for valid username and password' {
+
+            # Arrange
+            $expectedResult = $true
+
+            # Act
+            $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'ActiveDirectory' -Quiet
+
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
+
+        It 'should return a credential object for valid credentials' {
+
+            # Act
+            $actualResult = Test-Credential -Credential $expectedCredential -Method 'ActiveDirectory'
+
+            # Assert
+            $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
+            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+        }
+
+        It 'should return a credential object for valid username and password' {
+
+            # Act
+            $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'ActiveDirectory'
+
+            # Assert
+            $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
+            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+        }
+
+        It 'should return false for invalid credentials' {
+
+            # Arrange
+            $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
+            $expectedResult    = $false
+
+            # Act
+            $actualResult = Test-Credential -Credential $invalidCredential -Method 'ActiveDirectory' -Quiet
+
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
+
+        It 'should return false for invalid username and password' {
+
+            # Arrange
+            $invalidUsername = 'DoesNotExist'
+            $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
+            $expectedResult  = $false
+
+            # Act
+            $actualResult = Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'ActiveDirectory' -Quiet
+
+            # Assert
+            $actualResult | Should Be $expectedResult
+        }
+
+        It 'should throw an exception for invalid credentials' {
+
+            # Arrange
+            $invalidCredential = New-Object -TypeName PSCredential -ArgumentList 'DoesNotExist', (ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force)
+
+            # Act
+            { Test-Credential -Credential $invalidCredential -Method 'ActiveDirectory' } | Should Throw
+        }
+
+        It 'should throw an exception for invalid username and password' {
+
+            # Arrange
+            $invalidUsername = 'DoesNotExist'
+            $invalidPassword = ConvertTo-SecureString -String 'TheWrongPassword' -AsPlainText -Force
+
+            # Act
+            { Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'ActiveDirectory' } | Should Throw
         }
     }
 }
