@@ -1,1 +1,12 @@
-#
+
+TOPIC
+    about_SecurityFever
+
+SHORT DESCRIPTION
+    PowerShell Module with additional custom functions and cmdlets related to
+    Windows and application security.
+
+LONG DESCRIPTION
+    To get more information about this module, check the open source GitHub
+    repository readme or the cmdlet based help for the module functions:
+    https://github.com/claudiospizzi/SecurityFever
