@@ -63,6 +63,10 @@ manually on your local system:
   XML serialization is used to return the result. The cmdlet has the alias
   **sudo**, as used on *nix systems.
 
+* **Invoke-PowerShell**  
+  Start a new PowerShell Console session with alternative credentials. The
+  cmdlet has the alias **posh**.
+
 * **Test-Credential**  
   With this cmdlet, credential objects or username and password pairs can be
   tested, if they are valid. With the method parameter, it's possible to choose
@@ -116,6 +120,10 @@ manually on your local system:
 
 
 ## Versions
+
+### Unreleased
+
+* Add Invoke-PowerShell function with (alias: posh)
 
 ### 1.1.0
 

@@ -19,6 +19,7 @@
     )
     FunctionsToExport  = @(
         'Invoke-Elevated'
+        'Invoke-PowerShell'
         'Test-Credential'
         'Get-VaultEntry'
         'Get-VaultEntryCredential'
@@ -34,6 +35,7 @@
     VariablesToExport  = @()
     AliasesToExport    = @(
         'sudo'
+        'posh'
     )
     PrivateData        = @{
         PSData             = @{
