@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Show security relevant activities on a system.

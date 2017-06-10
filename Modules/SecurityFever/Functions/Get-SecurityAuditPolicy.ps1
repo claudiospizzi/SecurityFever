@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     List the current audit policy setting on the local system.

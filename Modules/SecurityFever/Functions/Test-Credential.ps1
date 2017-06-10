@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Test the provided credentials with the choosen test method against the local

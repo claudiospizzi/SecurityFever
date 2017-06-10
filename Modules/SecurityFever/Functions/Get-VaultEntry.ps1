@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Get the credential entries from the Windows Credential Manager vault.

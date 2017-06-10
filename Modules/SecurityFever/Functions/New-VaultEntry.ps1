@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Create a new entry in the Windows Credential Manager vault.

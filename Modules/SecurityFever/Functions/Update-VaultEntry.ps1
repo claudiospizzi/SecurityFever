@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Update an existing entry in the Windows Credential Manager vault.

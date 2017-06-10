@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Get one audit policy setting on the local system.

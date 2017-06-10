@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Start a new PowerShell Console session.

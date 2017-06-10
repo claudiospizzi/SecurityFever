@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     Get the PSCredential objects from the Windows Credential Manager vault.
