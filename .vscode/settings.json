@@ -1,0 +1,14 @@
+{
+    "files.trimTrailingWhitespace": false,
+    "files.exclude": {
+        "bin/**": true,
+        "tst/**": true
+    },
+
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+
+    "search.exclude": {
+        "bin": true,
+        "tst": true
+    }
+}

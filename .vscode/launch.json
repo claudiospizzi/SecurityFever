@@ -2,12 +2,32 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "PowerShell",
             "type": "PowerShell",
             "request": "launch",
-            "program": "${workspaceRoot}/Scripts/debug.ps1",
+            "name": "PowerShell Launch Current File",
+            "script": "${file}",
             "args": [],
-            "cwd": "${workspaceRoot}/Scripts/debug.ps1"
+            "cwd": "${file}"
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "PowerShell Launch Current Module",
+            "script": "Invoke-psake build.psake.ps1 -taskList Build",
+            "cwd": "${workspaceRoot}"
+        },
+        {
+            "type": "PowerShell",
+            "request": "attach",
+            "name": "PowerShell Attach to Host Process",
+            "processId": "${command:PickPSHostProcess}",
+            "runspaceId": 1
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "PowerShell Interactive Session",
+            "cwd": "${workspaceRoot}"
         }
     ]
 }

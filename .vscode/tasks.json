@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+
+    "windows": {
+        "command": "${env.windir}\\sysnative\\windowspowershell\\v1.0\\PowerShell.exe",
+        "args": [ "-NoProfile", "-ExecutionPolicy", "Bypass" ]
+    },
+    "linux": {
+        "command": "/usr/bin/powershell",
+        "args": [ "-NoProfile" ]
+    },
+    "osx": {
+        "command": "/usr/local/bin/powershell",
+        "args": [ "-NoProfile" ]
+    },
+
+    "showOutput": "always",
+
+    "tasks": [
+        {
+            "taskName": "Default",
+            "suppressTaskName": true,
+            "isTestCommand": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Default' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Default -notr;"
+            ]
+        },
+        {
+            "taskName": "Init",
+            "suppressTaskName": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Init' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Init -notr;"
+            ]
+        },
+        {
+            "taskName": "Clean",
+            "suppressTaskName": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Clean' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Clean -notr;"
+            ]
+        },
+        {
+            "taskName": "Stage",
+            "suppressTaskName": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Stage' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Stage -notr;"
+            ]
+        },
+        {
+            "taskName": "Build",
+            "suppressTaskName": true,
+            "isBuildCommand": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Build' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Build -notr;"
+            ]
+        },
+        {
+            "taskName": "Test",
+            "suppressTaskName": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Test' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Test -notr;"
+            ],
+            "problemMatcher": "$pester"
+        },
+        {
+            "taskName": "Analyze",
+            "suppressTaskName": true,
+            "showOutput": "always",
+            "args": [
+                "Write-Host 'PS> Invoke-psake build.psake.ps1 -taskList Analyze' \"`n\";",
+                "Invoke-psake build.psake.ps1 -taskList Analyze -notr;"
+            ]
+        }
+    ]
+}
