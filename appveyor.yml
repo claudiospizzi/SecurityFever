@@ -4,14 +4,15 @@ os: WMF 5
 
 # Secret deployment keys
 environment:
-  GitHubToken:
-    secure: g7atusVu/SvLWa4397EhDExCquI2srCWwO2JetLpnQ57V8Pzm27Eq9kj/v8X6wkd
   PSGalleryKey:
     secure: +o4/iom8ZO0TkCMSM0gInMHq/ioFlK7LRh2jJULTBejba3nCjp2EOv94DcTS2r20
+  GitHubToken:
+    secure: g7atusVu/SvLWa4397EhDExCquI2srCWwO2JetLpnQ57V8Pzm27Eq9kj/v8X6wkd
 
 # Install required Pester and PSScriptAnalyzer modules
 install:
   - ps: Install-PackageProvider NuGet -Force | Out-Null
+  - ps: Install-Module psake -Force
   - ps: Install-Module Pester -Force
   - ps: Install-Module PSScriptAnalyzer -Force
 
@@ -22,18 +23,20 @@ version: '{build}'
 configuration: Release
 platform: Any CPU
 
-# Execute compile and build
-before_build:
-  - nuget restore "Sources"
-build:
-  verbosity: minimal
-after_build:
-  - ps: .\Scripts\build.ps1 -AppVeyor
+# Execute psake build task
+build_script:
+  - ps: >-
+      Invoke-psake build.psake.ps1 -taskList Build -notr
 
-# Execute test script
+# Execute psake test and analyze task
 test_script:
-  - ps: .\Scripts\test.ps1 -AppVeyor
+  - ps: >-
+      Invoke-psake build.psake.ps1 -taskList Test, Analyze -notr
 
-# Execute deploy script
+# Execute psake deploy task
 deploy_script:
-  - ps: .\Scripts\release.ps1 -AppVeyor
+  - ps: >-
+      if ($env:APPVEYOR_REPO_TAG -eq 'true' -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
+      {
+        Invoke-psake build.psake.ps1 -taskList Deploy -properties @{ GalleryKey = $Env:PSGalleryKey; GitHubKey = $Env:GitHubToken } -notr
+      }
