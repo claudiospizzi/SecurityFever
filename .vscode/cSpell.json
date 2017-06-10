@@ -1,0 +1,53 @@
+// cSpell Settings
+{
+    // Version of the setting file.  Always 0.1
+    "version": "0.1",
+    // language - current active spelling language
+    "language": "en",
+    // words - list of words to be always considered correct
+    "words": [
+        "cmdlets",
+        "Spizzi",
+        "cmdlet",
+        "CHANGELOG",
+        "Veyor",
+        "AppVeyor",
+        "GitHub",
+        "PowerShell",
+        "SecurityFever",
+        "cmdlets",
+        "PowerShellGet",
+        "cmdlet",
+        "powershell",
+        "R2",
+        "WMF",
+        "Spizzi",
+        "CurrentUser",
+        "AllUsers",
+        "auditpol",
+        "exe",
+        "sudo",
+        "ps1",
+        "claudiospizzi",
+        "PowerShellModuleBase",
+        "-Scope",
+        "Get-SecurityActivity",
+        "Get-SecurityAuditPolicy",
+        "Get-SecurityAuditPolicySetting",
+        "PSCredential",
+        "Get-VaultEntry",
+        "Get-VaultEntryCredential",
+        "Get-VaultEntrySecureString",
+        "New-VaultEntry",
+        "Update-VaultEntry",
+        "Remove-VaultEntry",
+        "Throw",
+        "-Quiet"
+    ],
+    // flagWords - list of words to be always considered incorrect
+    // This is useful for offensive words and common spelling errors.
+    // For example "hte" should be "the"
+    "flagWords": [
+        "hte"
+    ]
+}
