@@ -251,15 +251,6 @@ paket-files/
 .idea/
 *.sln.iml
 
-# Ignore debug script file
-Scripts/debug.ps1
-
-# Ignore meta test files
-Tests/Meta/FileContent.Tests.ps1
-Tests/Meta/FileEncoding.Tests.ps1
-Tests/Meta/FileFormatting.Tests.ps1
-Tests/Meta/ProjectStructure.Tests.ps1
-Tests/Meta/ScriptAnalyzer.Tests.ps1
-
-# Ignore assembly
-Modules/SecurityFever/SecurityFever.dll
+# Ignore project files
+/bin/
+/tst/
