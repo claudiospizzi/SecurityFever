@@ -29,23 +29,7 @@ to store and received PowerShell credentials and secure strings.
 
 ## Features
 
-* **Invoke-Elevated**  
-  Invoke a script block or an executable in an elevated session. It will handle
-  the parameter passing into the elevated session and return the result as
-  object to the caller. Because it's running in a different elevated process,
-  XML serialization is used to return the result. The cmdlet has the alias
-  **sudo**, as used on *nix systems.
-
-* **Invoke-PowerShell**  
-  Start a new PowerShell Console session with alternative credentials. The
-  cmdlet has the alias **posh**.
-
-* **Test-Credential**  
-  With this cmdlet, credential objects or username and password pairs can be
-  tested, if they are valid. With the method parameter, it's possible to choose
-  how the credentials are validated (start process, Active Directory). Be aware,
-  multiple testing with wrong credentials can lock out the used account
-  depending on your security settings. 
+### Windows Credential Manager (Vault)
 
 * **Get-VaultEntry**  
   With this cmdlet, the entires form the Windows Credential Manager vault can be
@@ -78,10 +62,7 @@ to store and received PowerShell credentials and secure strings.
   Remove an existing entry in the Windows Credential Manager vault. The cmdlet
   accepts pipeline input with credential entry objects.
 
-* **Get-SecurityActivity**  
-  Get security and life-cycle related events on the target computer like start
-  up / shutdown, user log on / log off, workstation locked /unlocked, session
-  reconnected / disconnected and screen saver invoke / dismiss.
+### Audit Policy
 
 * **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
@@ -90,6 +71,31 @@ to store and received PowerShell credentials and secure strings.
 * **Get-SecurityAuditPolicySetting**  
   Return the value of one security audit policy setting. It will use the
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
+
+### Other
+
+* **Invoke-Elevated**  
+  Invoke a script block or an executable in an elevated session. It will handle
+  the parameter passing into the elevated session and return the result as
+  object to the caller. Because it's running in a different elevated process,
+  XML serialization is used to return the result. The cmdlet has the alias
+  **sudo**, as used on *nix systems.
+
+* **Invoke-PowerShell**  
+  Start a new PowerShell Console session with alternative credentials. The
+  cmdlet has the alias **posh**.
+
+* **Test-Credential**  
+  With this cmdlet, credential objects or username and password pairs can be
+  tested, if they are valid. With the method parameter, it's possible to choose
+  how the credentials are validated (start process, Active Directory). Be aware,
+  multiple testing with wrong credentials can lock out the used account
+  depending on your security settings. 
+
+* **Get-SecurityActivity**  
+  Get security and life-cycle related events on the target computer like start
+  up / shutdown, user log on / log off, workstation locked /unlocked, session
+  reconnected / disconnected and screen saver invoke / dismiss.
 
 
 ## Versions
