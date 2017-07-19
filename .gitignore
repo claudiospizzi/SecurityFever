@@ -254,3 +254,6 @@ paket-files/
 # Ignore project files
 /bin/
 /tst/
+
+# Ignore Module DDL file
+/Modules/SecurityFever/SecurityFever.dll
