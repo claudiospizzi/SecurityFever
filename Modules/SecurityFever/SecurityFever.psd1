@@ -1,30 +1,30 @@
 @{
     # Script module or binary module file associated with this manifest.
-    RootModule         = 'SecurityFever.psm1'
+    RootModule = 'SecurityFever.psm1'
 
     # Version number of this module.
-    ModuleVersion      = '1.2.0'
+    ModuleVersion = '1.2.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID               = '6BAE79AD-CE6B-4969-933A-0C37EE3708FA'
+    GUID = '6BAE79AD-CE6B-4969-933A-0C37EE3708FA'
 
     # Author of this module
-    Author             = 'Claudio Spizzi'
+    Author = 'Claudio Spizzi'
 
     # Company or vendor of this module
     # CompanyName = ''
 
     # Copyright statement for this module
-    Copyright          = 'Copyright (c) 2016 by Claudio Spizzi. Licensed under MIT license.'
+    Copyright = 'Copyright (c) 2016 by Claudio Spizzi. Licensed under MIT license.'
 
     # Description of the functionality provided by this module
-    Description        = 'PowerShell Module with custom functions and cmdlets related to Windows and application security.'
+    Description = 'PowerShell Module with custom functions and cmdlets related to Windows and application security.'
 
     # Minimum version of the Windows PowerShell engine required by this module
-    PowerShellVersion  = '3.0'
+    PowerShellVersion = '3.0'
 
     # Name of the Windows PowerShell host required by this module
     # PowerShellHostName = ''
@@ -53,12 +53,12 @@
     # ScriptsToProcess = @()
 
     # Type files (.ps1xml) to be loaded when importing this module
-    TypesToProcess     = @(
+    TypesToProcess = @(
         'Resources\SecurityFever.Types.ps1xml'
     )
 
     # Format files (.ps1xml) to be loaded when importing this module
-    FormatsToProcess   = @(
+    FormatsToProcess = @(
         'Resources\SecurityFever.Formats.ps1xml'
     )
 
@@ -66,7 +66,7 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport  = @(
+    FunctionsToExport = @(
         'Invoke-Elevated'
         'Invoke-PowerShell'
         'Test-Credential'
@@ -80,7 +80,7 @@
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
     )
-    
+
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     # CmdletsToExport = @()
 
@@ -88,11 +88,11 @@
     # VariablesToExport = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport    = @(
+    AliasesToExport = @(
         'sudo'
         'posh'
     )
-    
+
     # DSC resources to export from this module
     # DscResourcesToExport = @()
 
@@ -103,18 +103,18 @@
     # FileList = @()
 
     # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
-    PrivateData        = @{
+    PrivateData = @{
 
-        PSData             = @{
+        PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags               = @('PSModule', 'Security')
-            
+            Tags = @('PSModule', 'Security')
+
             # A URL to the license for this module.
-            LicenseUri         = 'https://raw.githubusercontent.com/claudiospizzi/SecurityFever/master/LICENSE'
+            LicenseUri = 'https://raw.githubusercontent.com/claudiospizzi/SecurityFever/master/LICENSE'
             
             # A URL to the main website for this project.
-            ProjectUri         = 'https://github.com/claudiospizzi/SecurityFever'
+            ProjectUri = 'https://github.com/claudiospizzi/SecurityFever'
 
             # A URL to an icon representing this module.
             # IconUri = ''
