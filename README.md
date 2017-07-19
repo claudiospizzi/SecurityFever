@@ -136,8 +136,20 @@ Please feel free to contribute by opening new issues or providing pull requests.
 For the best development experience, open this project as a folder in Visual
 Studio Code and ensure that the PowerShell extension is installed.
 
-* [Visual Studio Code]
-* [PowerShell Extension]
+* [Visual Studio Code] with the [PowerShell Extension]
+* [Pester], [PSScriptAnalyzer] and [psake] PowerShell Modules
+
+To release a new version in the PowerShell Gallery and the GitHub Releases
+section by using the release pipeline on AppVeyor, use the following procedure:
+
+1. Commit all changes in the dev branch
+2. Push the commits to GitHub
+3. Merge all commits to the master branch
+4. Update the version number and release notes in the module manifest and CHANGELOG.md
+5. Commit all changes in the master branch (comment: Version x.y.z)
+6. Push the commits to GitHub
+7. Tag the last commit with the version number
+8. Push the tag to GitHub
 
 
 
@@ -149,3 +161,6 @@ Studio Code and ensure that the PowerShell extension is installed.
 
 [Visual Studio Code]: https://code.visualstudio.com/
 [PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
+[Pester]: https://www.powershellgallery.com/packages/Pester
+[PSScriptAnalyzer]: https://www.powershellgallery.com/packages/PSScriptAnalyzer
+[psake]: https://www.powershellgallery.com/packages/psake
