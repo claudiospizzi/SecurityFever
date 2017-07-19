@@ -108,7 +108,7 @@ Describe 'Get-SecurityAuditPolicy' {
 
             $auditPolicies = Get-SecurityAuditPolicy
 
-            ($auditPolicies[0] | Get-Member).TypeName | Should Be 'SecurityFever.AuditPolicy'
+            ($auditPolicies | Get-Member).TypeName | Select-Object -First 1 | Should Be 'SecurityFever.AuditPolicy'
         }
     }
 }
