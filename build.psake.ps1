@@ -33,8 +33,25 @@ Task Clean -depends Init -requiredVariables ReleasePath, TestPath, AnalyzePath {
     Get-ChildItem -Path $AnalyzePath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 }
 
+# Compile C# solutions
+Task Compile -depends Clean -requiredVariables SourcePath, SourceNames, MSBuildPath {
+
+    if (Test-Path -Path $SourcePath)
+    {
+        if ($Env:Path -notlike "*$MSBuildPath*")
+        {
+            $Env:Path = "$MSBuildPath;$Env:Path"
+        }
+
+        foreach ($sourceName in $SourceNames)
+        {
+            MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release
+        }
+    }
+}
+
 # Copy all required module files to the release folder
-Task Stage -depends Clean -requiredVariables ReleasePath, ModulePath, ModuleNames {
+Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNames {
 
     foreach ($moduleName in $ModuleNames)
     {
