@@ -1,9 +1,9 @@
 
-$ModulePath = Resolve-Path -Path "$PSScriptRoot\..\..\Modules" | ForEach-Object Path
-$ModuleName = Get-ChildItem -Path $ModulePath | Select-Object -First 1 -ExpandProperty BaseName
+$modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Select-Object -ExpandProperty Path
+$moduleName = Resolve-Path -Path "$PSScriptRoot\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
 
-Remove-Module -Name $ModuleName -Force -ErrorAction SilentlyContinue
-Import-Module -Name "$ModulePath\$ModuleName" -Force
+Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+Import-Module -Name "$modulePath\$moduleName" -Force
 
 Describe 'Get-SecurityAuditPolicySettings' {
 
