@@ -10,14 +10,12 @@ Properties {
 
     $ReleasePath = Join-Path -Path $PSScriptRoot -ChildPath 'bin'
 
-    $TestPath = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
-    $TestFile = 'pester.xml'
+    $PesterPath = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
+    $PesterFile = 'pester.xml'
 
-    $MSBuildPath = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319'
-
-    $AnalyzePath  = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
-    $AnalyzeFile  = 'scriptanalyzer.json'
-    $AnalyzeRules = Get-ScriptAnalyzerRule
+    $ScriptAnalyzerPath  = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
+    $ScriptAnalyzerFile  = 'scriptanalyzer.json'
+    $ScriptAnalyzerRules = Get-ScriptAnalyzerRule | Where-Object { $_.RuleName -ne 'PSAvoidUsingConvertToSecureStringWithPlainText' }
 
     $GalleryEnabled = $true
     $GalleryName    = 'PSGallery'

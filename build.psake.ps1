@@ -2,39 +2,50 @@
 . $PSScriptRoot\build.settings.ps1
 
 # Default tasks
-Task Default -depends Build, Test, Analyze
+Task Default -depends Build, Test
+
+# Overall build task
+Task Build -depends Init, Clean, Compile, Stage, Merge
+
+# Overall test task
+Task Test -depends Build, TestPester, TestScriptAnalyzer
+
+# Overall deploy task
+Task Deploy -depends Test, DeployGallery, DeployGitHub
 
 # Create release and test folders
-Task Init -requiredVariables ReleasePath, TestPath, AnalyzePath {
+Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
 
     if (!(Test-Path -Path $ReleasePath))
     {
         New-Item -Path $ReleasePath -ItemType Directory -Verbose:$VerbosePreference > $null
     }
 
-    if (!(Test-Path -Path $TestPath))
+    if (!(Test-Path -Path $PesterPath))
     {
-        New-Item -Path $TestPath -ItemType Directory -Verbose:$VerbosePreference > $null
+        New-Item -Path $PesterPath -ItemType Directory -Verbose:$VerbosePreference > $null
     }
 
-    if (!(Test-Path -Path $AnalyzePath))
+    if (!(Test-Path -Path $ScriptAnalyzerPath))
     {
-        New-Item -Path $AnalyzePath -ItemType Directory -Verbose:$VerbosePreference > $null
+        New-Item -Path $ScriptAnalyzerPath -ItemType Directory -Verbose:$VerbosePreference > $null
     }
 }
 
 # Remove any items in the release and test folders
-Task Clean -depends Init -requiredVariables ReleasePath, TestPath, AnalyzePath {
+Task Clean -depends Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
 
     Get-ChildItem -Path $ReleasePath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 
-    Get-ChildItem -Path $TestPath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
+    Get-ChildItem -Path $PesterPath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 
-    Get-ChildItem -Path $AnalyzePath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
+    Get-ChildItem -Path $ScriptAnalyzerPath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 }
 
 # Compile C# solutions
-Task Compile -depends Clean -requiredVariables SourceEnabled, SourcePath, SourceNames, MSBuildPath {
+Task Compile -depends Clean -requiredVariables SourceEnabled, SourcePath, SourceNames {
+
+    $msBuildPath = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319'
 
     if (!$SourceEnabled)
     {
@@ -64,8 +75,8 @@ Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNa
     }
 }
 
-# Build the module by copying all helper and cmdlet functions to the psm1 file
-Task Build -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleNames {
+# Merge the module by copying all helper and cmdlet functions to the psm1 file
+Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleNames {
 
     foreach ($moduleName in $ModuleNames)
     {
@@ -108,7 +119,7 @@ Task Build -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
 }
 
 # Invoke Pester tests and return result as NUnit XML file
-Task Test -depends Build -requiredVariables ReleasePath, ModuleNames, TestPath, TestFile {
+Task TestPester -requiredVariables ReleasePath, ModuleNames, PesterPath, PesterFile {
 
     if (!(Get-Module -Name 'Pester' -ListAvailable))
     {
@@ -120,14 +131,14 @@ Task Test -depends Build -requiredVariables ReleasePath, ModuleNames, TestPath, 
 
     foreach ($moduleName in $ModuleNames)
     {
-        $moduleTestFile = Join-Path -Path $TestPath -ChildPath "$moduleName-$TestFile"
+        $modulePesterFile = Join-Path -Path $PesterPath -ChildPath "$moduleName-$PesterFile"
 
         try
         {
             Push-Location -Path "$ReleasePath\$moduleName"
 
             $invokePesterParams = @{
-                OutputFile   = $moduleTestFile
+                OutputFile   = $modulePesterFile
                 OutputFormat = 'NUnitXml'
                 PassThru     = $true
                 Verbose      = $VerbosePreference
@@ -147,14 +158,14 @@ Task Test -depends Build -requiredVariables ReleasePath, ModuleNames, TestPath, 
             if ($env:APPVEYOR)
             {
                 $webClient = New-Object -TypeName 'System.Net.WebClient'
-                $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$env:APPVEYOR_JOB_ID", $moduleTestFile)
+                $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$env:APPVEYOR_JOB_ID", $modulePesterFile)
             }
         }
     }
 }
 
-# Invoke Script Analyzer
-Task Analyze -depends Build -requiredVariables ReleasePath, ModuleNames, AnalyzePath, AnalyzeFile, AnalyzeRules {
+# Invoke Script Analyzer tests and stop if any test fails
+Task TestScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, ScriptAnalyzerPath, ScriptAnalyzerFile, ScriptAnalyzerRules {
 
     if (!(Get-Module -Name 'PSScriptAnalyzer' -ListAvailable))
     {
@@ -166,22 +177,19 @@ Task Analyze -depends Build -requiredVariables ReleasePath, ModuleNames, Analyze
 
     foreach ($moduleName in $ModuleNames)
     {
-        $moduleAnalyzeFile = Join-Path -Path $AnalyzePath -ChildPath "$moduleName-$AnalyzeFile"
+        $moduleScriptAnalyzerFile = Join-Path -Path $ScriptAnalyzerPath -ChildPath "$moduleName-$ScriptAnalyzerFile"
 
-        $analyzeResults = Invoke-ScriptAnalyzer -Path .\Modules\WindowsFever -IncludeRule $AnalyzeRules -Recurse
-        $analyzeResults | ConvertTo-Json | Out-File -FilePath $moduleAnalyzeFile -Encoding UTF8
+        $analyzeResults = Invoke-ScriptAnalyzer -Path "$ModulePath\$moduleName" -IncludeRule $ScriptAnalyzerRules -Recurse
+        $analyzeResults | ConvertTo-Json | Out-File -FilePath $moduleScriptAnalyzerFile -Encoding UTF8
 
-        Show-ScriptAnalyzerResult -ModuleName $moduleName -Rule $AnalyzeRules -Result $analyzeResults
+        Show-ScriptAnalyzerResult -ModuleName $moduleName -Rule $ScriptAnalyzerRules -Result $analyzeResults
 
         Assert -conditionToCheck ($analyzeResults.Count -eq 0) -failureMessage "One or more Script Analyzer tests failed, build cannot continue."
     }
 }
 
-# Execute all Deploy tasks
-Task Deploy -depends DeployGallery, DeployGitHub
-
 # Deploy to the public PowerShell Gallery
-Task DeployGallery -depends Build -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
+Task DeployGallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
 
     if (!$GalleryEnabled)
     {
@@ -204,7 +212,7 @@ Task DeployGallery -depends Build -requiredVariables ReleasePath, ModuleNames, G
 }
 
 # Deploy a release to the GitHub repository
-Task DeployGitHub -depends Build -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
+Task DeployGitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
 
     if (!$GitHubEnabled)
     {
