@@ -34,19 +34,21 @@ Task Clean -depends Init -requiredVariables ReleasePath, TestPath, AnalyzePath {
 }
 
 # Compile C# solutions
-Task Compile -depends Clean -requiredVariables SourcePath, SourceNames, MSBuildPath {
+Task Compile -depends Clean -requiredVariables SourceEnabled, SourcePath, SourceNames, MSBuildPath {
 
-    if (Test-Path -Path $SourcePath)
+    if (!$SourceEnabled)
     {
-        if ($Env:Path -notlike "*$MSBuildPath*")
-        {
-            $Env:Path = "$MSBuildPath;$Env:Path"
-        }
+        return
+    }
 
-        foreach ($sourceName in $SourceNames)
-        {
-            MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release
-        }
+    if ($Env:Path -notlike "*$MSBuildPath*")
+    {
+        $Env:Path = "$MSBuildPath;$Env:Path"
+    }
+
+    foreach ($sourceName in $SourceNames)
+    {
+        MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release
     }
 }
 
