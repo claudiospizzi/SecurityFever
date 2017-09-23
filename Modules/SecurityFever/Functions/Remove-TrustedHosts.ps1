@@ -31,7 +31,7 @@
 
 function Remove-TrustedHosts
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -72,7 +72,10 @@ function Remove-TrustedHosts
         # Join the remaining entries
         $trustedHosts = [String]::Join(',', @($trustedHostsList))
 
-        # Finally, set the item
-        Set-Item -Path 'WSMan:\localhost\Client\TrustedHosts' -Value $trustedHosts -Force
+        if ($PSCmdlet.ShouldProcess($trustedHosts, "Set"))
+        {
+            # Finally, set the item
+            Set-Item -Path 'WSMan:\localhost\Client\TrustedHosts' -Value $trustedHosts -Force
+        }
     }
 }

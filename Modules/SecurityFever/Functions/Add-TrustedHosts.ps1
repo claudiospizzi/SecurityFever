@@ -30,7 +30,7 @@
 
 function Add-TrustedHosts
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -62,7 +62,10 @@ function Add-TrustedHosts
 
     end
     {
-        # Finally, set the item
-        Set-Item -Path 'WSMan:\localhost\Client\TrustedHosts' -Value $trustedHosts -Force
+        if ($PSCmdlet.ShouldProcess($trustedHosts, "Set"))
+        {
+            # Finally, set the item
+            Set-Item -Path 'WSMan:\localhost\Client\TrustedHosts' -Value $trustedHosts -Force
+        }
     }
 }

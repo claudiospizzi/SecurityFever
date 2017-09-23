@@ -14,7 +14,7 @@ Describe 'Remove-TrustedHosts' {
         It 'should throw an exception' {
 
             # Arrange, Act, Assert
-            { Remove-TrustedHosts -ComputerName '' } | Should Throw
+            { Remove-TrustedHosts -ComputerName $Env:COMPUTERNAME } | Should Throw
         }
     }
 

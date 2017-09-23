@@ -14,7 +14,7 @@ Describe 'Add-TrustedHosts' {
         It 'should throw an exception' {
 
             # Arrange, Act, Assert
-            { Add-TrustedHosts -ComputerName '' } | Should Throw
+            { Add-TrustedHosts -ComputerName $Env:COMPUTERNAME } | Should Throw
         }
     }
 
