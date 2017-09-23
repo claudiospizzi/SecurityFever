@@ -31,12 +31,12 @@ build_script:
 # Execute psake test and analyze task
 test_script:
   - ps: >-
-      Invoke-psake build.psake.ps1 -taskList TestPester, TestScriptAnalyzer -notr
+      Invoke-psake build.psake.ps1 -taskList Pester, ScriptAnalyzer -notr
 
 # Execute psake deploy task
 deploy_script:
   - ps: >-
       if ($env:APPVEYOR_REPO_TAG -eq 'true' -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
       {
-        Invoke-psake build.psake.ps1 -taskList DeployGallery, DeployGitHub -properties @{ GalleryKey = $Env:PSGalleryKey; GitHubKey = $Env:GitHubToken } -notr
+        Invoke-psake build.psake.ps1 -taskList Gallery, GitHub -properties @{ GalleryKey = $Env:PSGalleryKey; GitHubKey = $Env:GitHubToken } -notr
       }

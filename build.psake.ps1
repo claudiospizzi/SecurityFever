@@ -1,17 +1,14 @@
 
 . $PSScriptRoot\build.settings.ps1
 
-# Default tasks
+# Default task
 Task Default -depends Build, Test
+
+
+## Build tasks
 
 # Overall build task
 Task Build -depends Init, Clean, Compile, Stage, Merge
-
-# Overall test task
-Task Test -depends Build, TestPester, TestScriptAnalyzer
-
-# Overall deploy task
-Task Deploy -depends Test, DeployGallery, DeployGitHub
 
 # Create release and test folders
 Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
@@ -52,14 +49,16 @@ Task Compile -depends Clean -requiredVariables SourceEnabled, SourcePath, Source
         return
     }
 
-    if ($Env:Path -notlike "*$MSBuildPath*")
+    if ($Env:Path -notlike "*$msBuildPath*")
     {
-        $Env:Path = "$MSBuildPath;$Env:Path"
+        $Env:Path = "$msBuildPath;$Env:Path"
     }
 
     foreach ($sourceName in $SourceNames)
     {
-        MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release
+        $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /verbosity:m)
+
+        $msBuildLog | ForEach-Object { Write-Verbose $_ }
     }
 }
 
@@ -118,8 +117,14 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
     }
 }
 
+
+## Test tasks
+
+# Overall test task
+Task Test -depends Build, Pester, ScriptAnalyzer
+
 # Invoke Pester tests and return result as NUnit XML file
-Task TestPester -requiredVariables ReleasePath, ModuleNames, PesterPath, PesterFile {
+Task Pester -requiredVariables ReleasePath, ModuleNames, PesterPath, PesterFile {
 
     if (!(Get-Module -Name 'Pester' -ListAvailable))
     {
@@ -133,39 +138,23 @@ Task TestPester -requiredVariables ReleasePath, ModuleNames, PesterPath, PesterF
     {
         $modulePesterFile = Join-Path -Path $PesterPath -ChildPath "$moduleName-$PesterFile"
 
-        try
+        powershell.exe -NoLogo -NoProfile -NonInteractive -Command "Set-Location -Path '$ReleasePath\$moduleName'; Invoke-Pester -OutputFile '$modulePesterFile' -OutputFormat 'NUnitXml'"
+
+        $testResults = [Xml] (Get-Content -Path $modulePesterFile)
+
+        Assert -conditionToCheck ($testResults.'test-results'.failures -eq 0) -failureMessage "One or more Pester tests failed, build cannot continue."
+
+        # Publish AppVeyor test results
+        if ($env:APPVEYOR)
         {
-            Push-Location -Path "$ReleasePath\$moduleName"
-
-            $invokePesterParams = @{
-                OutputFile   = $modulePesterFile
-                OutputFormat = 'NUnitXml'
-                PassThru     = $true
-                Verbose      = $VerbosePreference
-                #CodeCoverage = $CodeCoverageFiles
-            }
-            $testResults = Invoke-Pester @invokePesterParams
-
-            Assert -conditionToCheck ($testResults.FailedCount -eq 0) -failureMessage "One or more Pester tests failed, build cannot continue."
-        }
-        finally
-        {
-            Pop-Location
-
-            Remove-Module -Name $moduleName -ErrorAction SilentlyContinue
-
-            # Publish AppVeyor test results
-            if ($env:APPVEYOR)
-            {
-                $webClient = New-Object -TypeName 'System.Net.WebClient'
-                $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$env:APPVEYOR_JOB_ID", $modulePesterFile)
-            }
+            $webClient = New-Object -TypeName 'System.Net.WebClient'
+            $webClient.UploadFile("https://ci.appveyor.com/api/testresults/nunit/$env:APPVEYOR_JOB_ID", $modulePesterFile)
         }
     }
 }
 
 # Invoke Script Analyzer tests and stop if any test fails
-Task TestScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, ScriptAnalyzerPath, ScriptAnalyzerFile, ScriptAnalyzerRules {
+Task ScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, ScriptAnalyzerPath, ScriptAnalyzerFile, ScriptAnalyzerRules {
 
     if (!(Get-Module -Name 'PSScriptAnalyzer' -ListAvailable))
     {
@@ -188,8 +177,14 @@ Task TestScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames,
     }
 }
 
+
+## Deploy tasks
+
+# Overall deploy task
+Task Deploy -depends Test, Gallery, GitHub
+
 # Deploy to the public PowerShell Gallery
-Task DeployGallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
+Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
 
     if (!$GalleryEnabled)
     {
@@ -212,7 +207,7 @@ Task DeployGallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, 
 }
 
 # Deploy a release to the GitHub repository
-Task DeployGitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
+Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
 
     if (!$GitHubEnabled)
     {
@@ -258,7 +253,10 @@ Task DeployGitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, Gi
     }
 }
 
-# Helper Function: Show the Script Analyzer results on the host
+
+## Helper functions
+
+# Show the Script Analyzer results on the host
 function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
 {
     $colorMap = @{
@@ -285,7 +283,7 @@ function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
     Write-Host "Rules: $($Rule.Count) Failed: $($analyzeResults.Count)"
 }
 
-# Helper Function: Extract the Release Notes from the CHANGELOG.md file
+# Extract the Release Notes from the CHANGELOG.md file
 function Get-ReleaseNote($Version)
 {
     $changelogFile = Join-Path -Path $PSScriptRoot -ChildPath 'CHANGELOG.md'
