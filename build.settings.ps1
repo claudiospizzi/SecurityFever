@@ -15,7 +15,7 @@ Properties {
 
     $ScriptAnalyzerPath  = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
     $ScriptAnalyzerFile  = 'scriptanalyzer.json'
-    $ScriptAnalyzerRules = Get-ScriptAnalyzerRule | Where-Object { $_.RuleName -ne 'PSAvoidUsingConvertToSecureStringWithPlainText' }
+    $ScriptAnalyzerRules = Get-ScriptAnalyzerRule
 
     $GalleryEnabled = $true
     $GalleryName    = 'PSGallery'
