@@ -13,3 +13,5 @@ Split-Path -Path $PSCommandPath |
             ForEach-Object { . $_.FullName }
 
 <# -------------------------------------------------------------------------- #>
+
+New-Variable -Name 'ModulePath' -Value $PSScriptRoot
