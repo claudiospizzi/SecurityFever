@@ -5,7 +5,7 @@ $moduleName = Resolve-Path -Path "$PSScriptRoot\..\.." | Get-Item | Select-Objec
 Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
 Import-Module -Name "$modulePath\$moduleName" -Force
 
-Describe 'Remove-TrustedHosts' {
+Describe 'Remove-TrustedHost' {
 
     Context 'Not Administrator' {
 
@@ -14,7 +14,7 @@ Describe 'Remove-TrustedHosts' {
         It 'should throw an exception' {
 
             # Arrange, Act, Assert
-            { Remove-TrustedHosts -ComputerName $Env:COMPUTERNAME } | Should Throw
+            { Remove-TrustedHost -ComputerName $Env:COMPUTERNAME } | Should Throw
         }
     }
 
@@ -36,7 +36,7 @@ Describe 'Remove-TrustedHosts' {
             $list = 'SERVER', '10.0.0.3'
 
             # Act
-            Remove-TrustedHosts -ComputerName $list
+            Remove-TrustedHost -ComputerName $list
 
             # Assert
             Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
@@ -48,7 +48,7 @@ Describe 'Remove-TrustedHosts' {
             $list = 'SERVER', '10.0.0.3'
 
             # Act
-            $list | Remove-TrustedHosts
+            $list | Remove-TrustedHost
 
             # Assert
             Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 2 -Exactly

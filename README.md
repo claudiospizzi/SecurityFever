@@ -97,13 +97,13 @@ to store and received PowerShell credentials and secure strings.
   up / shutdown, user log on / log off, workstation locked /unlocked, session
   reconnected / disconnected and screen saver invoke / dismiss.
 
-* **Get-TrustedHosts**  
+* **Get-TrustedHost**  
   Get trusted host list entries.
 
-* **Add-TrustedHosts**  
+* **Add-TrustedHost**  
   Add an entry to the trusted host list.
 
-* **Remove-TrustedHosts**  
+* **Remove-TrustedHost**  
   Remove an entry from the trusted host list.
 
 

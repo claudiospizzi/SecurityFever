@@ -28,7 +28,7 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Add-TrustedHosts
+function Add-TrustedHost
 {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param

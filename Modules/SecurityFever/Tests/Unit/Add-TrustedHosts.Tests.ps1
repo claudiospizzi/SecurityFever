@@ -5,7 +5,7 @@ $moduleName = Resolve-Path -Path "$PSScriptRoot\..\.." | Get-Item | Select-Objec
 Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
 Import-Module -Name "$modulePath\$moduleName" -Force
 
-Describe 'Add-TrustedHosts' {
+Describe 'Add-TrustedHost' {
 
     Context 'Not Administrator' {
 
@@ -14,7 +14,7 @@ Describe 'Add-TrustedHosts' {
         It 'should throw an exception' {
 
             # Arrange, Act, Assert
-            { Add-TrustedHosts -ComputerName $Env:COMPUTERNAME } | Should Throw
+            { Add-TrustedHost -ComputerName $Env:COMPUTERNAME } | Should Throw
         }
     }
 
@@ -36,7 +36,7 @@ Describe 'Add-TrustedHosts' {
             $list = 'SERVER', '*.contoso.com'
 
             # Act
-            Add-TrustedHosts -ComputerName $list
+            Add-TrustedHost -ComputerName $list
 
             # Assert
             Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
@@ -48,7 +48,7 @@ Describe 'Add-TrustedHosts' {
             $list = 'SERVER', '*.contoso.com'
 
             # Act
-            $list | Add-TrustedHosts
+            $list | Add-TrustedHost
 
             # Assert
             Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 2 -Exactly

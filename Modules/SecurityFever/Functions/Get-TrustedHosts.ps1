@@ -24,7 +24,7 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Get-TrustedHosts
+function Get-TrustedHost
 {
     [CmdletBinding()]
     param ()

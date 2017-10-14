@@ -29,7 +29,7 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Remove-TrustedHosts
+function Remove-TrustedHost
 {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param

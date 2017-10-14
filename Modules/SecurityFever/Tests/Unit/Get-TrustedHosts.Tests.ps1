@@ -5,7 +5,7 @@ $moduleName = Resolve-Path -Path "$PSScriptRoot\..\.." | Get-Item | Select-Objec
 Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
 Import-Module -Name "$modulePath\$moduleName" -Force
 
-Describe 'Get-TrustedHosts' {
+Describe 'Get-TrustedHost' {
 
     Context 'Empty Value' {
 
@@ -19,7 +19,7 @@ Describe 'Get-TrustedHosts' {
             $expected = @()
 
             # Act
-            $actual = @(Get-TrustedHosts)
+            $actual = @(Get-TrustedHost)
 
             # Assert
             $actual.Count | Should Be $expected.Count
@@ -40,7 +40,7 @@ Describe 'Get-TrustedHosts' {
             )
 
             # Act
-            $actual = @(Get-TrustedHosts)
+            $actual = @(Get-TrustedHost)
 
             # Assert
             $actual.Count | Should Be $expected.Count
@@ -64,7 +64,7 @@ Describe 'Get-TrustedHosts' {
             )
 
             # Act
-            $actual = @(Get-TrustedHosts)
+            $actual = @(Get-TrustedHost)
 
             # Assert
             $actual.Count | Should Be $expected.Count
