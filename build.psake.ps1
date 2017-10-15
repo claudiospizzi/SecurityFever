@@ -1,3 +1,58 @@
+<#
+    .SYNOPSIS
+    PSake build script for PowerShell modules.
+
+    .DESCRIPTION
+    This PSake build script supports building PowerShell manifest modules which
+    contain PowerShell script functions and optionally binary C# libraries.
+
+    The build script contains the following tasks:
+    - Init
+      Create folders, which are used by the build system: tst/ and bin/.
+    - Clean
+      Clean the content of build paths to ensure no side effects.
+    - Compile
+      If required, compile the Visual Studio Solutions. Ensure that the build
+      system copies the result into the target Module folder.
+    - Stage
+      Copy all module files to the build directory excluding the Functions and
+      Helpers, these files get merged in the .psm1 file.
+    - Merge
+      Copy the content of all .ps1 files within the Functions and Helpers
+      folders to the .psm1 file. This ensures a faster loading time for the
+      module, but still a nice development experience with one function per
+      file.
+    - Pester
+      Invoke all Pester tests within the module and ensure that all tests pass.
+    - ScriptAnalyzer
+      Invoke all Script Analyzer rules against the PowerShell script files and
+      ensure, that they do not break any rule.
+    - Gallery
+      This task will publish the module to a PowerShell Gallery. The task is not
+      part of the default tasks, it needs to be called manually if needed during
+      a deployment.
+    - GitHub
+      This task will publish the module to the GitHub Releases. The task is not
+      part of the default tasks, it needs to be called manually if needed during
+      a deployment.
+
+    The tasks are grouped to the following task groups:
+    - Default
+      Tasks: Build, Test
+    - Build
+      Tasks: Init, Clean, Compile, Stage, Merge
+    - Test
+      Tasks: Pester, ScriptAnalyzer
+
+    .NOTES
+    Author     : Claudio Spizzi
+    License    : MIT License
+
+    .LINK
+    https://github.com/claudiospizzi
+#>
+
+
 
 . $PSScriptRoot\build.settings.ps1
 
@@ -7,7 +62,7 @@ Task Default -depends Build, Test
 
 ## Build tasks
 
-# Overall build task
+# Overall build  task
 Task Build -depends Init, Clean, Compile, Stage, Merge
 
 # Create release and test folders
@@ -84,13 +139,13 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
             $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
 
             # Load code for all function files
-            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -File -ErrorAction 'SilentlyContinue'))
+            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
             {
                 $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
             }
 
             # Load code for all helpers files
-            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -File -ErrorAction 'SilentlyContinue'))
+            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
             {
                 $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
             }
