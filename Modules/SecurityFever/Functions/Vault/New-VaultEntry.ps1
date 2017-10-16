@@ -72,9 +72,9 @@
 
     .EXAMPLE
     PS C:\> New-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -Persist 'Session' -Credential $credential
-    Create a new entry in the Credential Manager vault with non-default type
-    and persist options. Check the description for detailed information about
-    the types and persit locations.
+    Create a new entry in the Credential Manager vault with a custom type and
+    persist options. Check the description for detailed information about the 
+    types and persist locations.
 
     .NOTES
     Author     : Claudio Spizzi

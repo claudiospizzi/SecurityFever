@@ -5,7 +5,7 @@
     .DESCRIPTION
     This cmdlet uses the native unmanaged Win32 api to update an existing entry
     in the Windows Credential Manager vault. Use a entry object or the target
-    name and type combination to identiy the entry to update.
+    name and type combination to identity the entry to update.
     It is possible to update the persist location, the credentials, the username
     and the password. If you specify new credentials, new username and password
     will be ignored.
