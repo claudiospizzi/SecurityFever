@@ -58,7 +58,8 @@ function Push-ImpersonationContext
 
     # Now, impersonate the new user account
     $impersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($tokenHandle)
-    $Global:ImpersonationContext.Push($impersonationContext)
+    $globalImpersonationContext = Get-Variable -Name 'ImpersonationContext' -Scope 'Global'
+    $globalImpersonationContext.Push($impersonationContext)
 
     # Finally, close the handle to the token
     [Win32.Kernel32]::CloseHandle($tokenHandle) | Out-Null

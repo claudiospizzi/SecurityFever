@@ -30,10 +30,13 @@ function Pop-ImpersonationContext
     
     Initialize-ImpersonationContext
 
-    if ($Global:ImpersonationContext.Count -gt 0)
+    # Get the global impersonation context
+    $globalImpersonationContext = Get-Variable -Name 'ImpersonationContext' -Scope 'Global'
+
+    if ($globalImpersonationContext.Count -gt 0)
     {
         # Get the latest impersonation context
-        $impersonationContext = $Global:ImpersonationContext.Pop()
+        $impersonationContext = $globalImpersonationContext.Pop()
 
         # Undo the impersonation
         $impersonationContext.Undo()
