@@ -14,11 +14,11 @@
     None.
 
     .EXAMPLE
-    PS C:\> Remove-TrsutedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
+    PS C:\> Remove-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
     Remove three entries from the trusted host list.
 
     .EXAMPLE
-    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Remove-TrsutedHosts
+    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Remove-TrustedHosts
     Remove the list of IP addresses from the trusted host list.
 
     .NOTES

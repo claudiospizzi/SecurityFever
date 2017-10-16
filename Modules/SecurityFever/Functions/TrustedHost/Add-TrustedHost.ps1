@@ -13,11 +13,11 @@
     None.
 
     .EXAMPLE
-    PS C:\> Add-TrsutedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
+    PS C:\> Add-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
     Add the three entries to the trusted host list.
 
     .EXAMPLE
-    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Add-TrsutedHosts
+    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Add-TrustedHosts
     Add the list of IP addresses to the trusted host list.
 
     .NOTES

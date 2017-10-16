@@ -13,7 +13,7 @@
     System.String. Array of trusted host list entries.
 
     .EXAMPLE
-    PS C:\> Get-TrsutedHosts
+    PS C:\> Get-TrustedHosts
     Get trusted host list entries.
 
     .NOTES
