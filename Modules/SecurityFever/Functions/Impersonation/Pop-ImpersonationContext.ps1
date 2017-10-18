@@ -1,19 +1,20 @@
 <#
     .SYNOPSIS
-    
+    Leave the current impersonation context.
 
     .DESCRIPTION
-
+    If the current session was impersonated with Push-ImpersonationContext, this
+    command will leave the impersonation context.
 
     .INPUTS
     None.
 
     .OUTPUTS
-    The current impersonation context.
+    None.
 
     .EXAMPLE
-    PS C:\> 
-    
+    PS C:\> Pop-ImpersonationContext
+    Leave the current impersonation context.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -27,7 +28,7 @@ function Pop-ImpersonationContext
 {
     [CmdletBinding()]
     param ()
-    
+
     Initialize-ImpersonationContext
 
     # Get the global impersonation context

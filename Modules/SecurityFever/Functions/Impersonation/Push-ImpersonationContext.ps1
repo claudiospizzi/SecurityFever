@@ -1,19 +1,23 @@
 <#
     .SYNOPSIS
-    
+    Create a new impersonation context by using the specified credentials. All
+    following commands will be executed as the specified user until the context
+    is closed.
 
     .DESCRIPTION
-
+    Use the Win32 unmanaged API in the AdvApi32.dll to logon the user with the
+    specified credentials. With this logon token, the user can be impersonated
+    in the current session.
 
     .INPUTS
     None.
 
     .OUTPUTS
-    The current impersonation context.
+    None.
 
     .EXAMPLE
-    PS C:\> 
-    
+    PS C:\> Push-ImpersonationContext -Credential 'CONTOSO\Operator'
+    Create a new impersonation context for the Contoso Operator user.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -29,10 +33,20 @@ function Push-ImpersonationContext
     param
     (
         # Specifies a user account to impersonate.
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.Credential()]
-        $Credential
+        $Credential,
+
+        # The logon type.
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('Interactive', 'Network', 'Batch', 'Service', 'Unlock', 'NetworkClearText', 'NewCredentials')]
+        $LogonType = 'Interactive',
+
+        # The logon provider.
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('Default', 'WinNT40', 'WinNT50')]
+        $LogonProvider = 'Default'
     )
 
     Initialize-ImpersonationContext
@@ -44,8 +58,8 @@ function Push-ImpersonationContext
     $logonResult = [Win32.AdvApi32]::LogonUser($Credential.GetNetworkCredential().UserName,
                                                $Credential.GetNetworkCredential().Domain,
                                                $Credential.GetNetworkCredential().Password,
-                                               [Win32.Logon32Type]::Interactive,
-                                               [Win32.Logon32Provider]::Default,
+                                               ([Win32.Logon32Type] $LogonType),
+                                               ([Win32.Logon32Provider] $LogonProvider),
                                                [ref] $tokenHandle)
 
     # Error handling, if the logon fails

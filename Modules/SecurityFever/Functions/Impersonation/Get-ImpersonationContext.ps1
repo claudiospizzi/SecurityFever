@@ -1,9 +1,10 @@
 <#
     .SYNOPSIS
-    
+    Get the current impersonation context and the active windows identity.
 
     .DESCRIPTION
-
+    Returns the current impersonation context and the active windows identity
+    available on the GetCurrent() method on the WindowsIdentity .NET class.
 
     .INPUTS
     None.
@@ -12,8 +13,8 @@
     The current impersonation context.
 
     .EXAMPLE
-    PS C:\> 
-    
+    PS C:\> Get-ImpersonationContext
+    Return the current impersonation context.
 
     .NOTES
     Author     : Claudio Spizzi
@@ -27,7 +28,7 @@ function Get-ImpersonationContext
 {
     [CmdletBinding()]
     param ()
-    
+
     Initialize-ImpersonationContext
     
     $windowsIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
