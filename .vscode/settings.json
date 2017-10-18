@@ -10,5 +10,13 @@
     "search.exclude": {
         "bin": true,
         "tst": true
-    }
+    },
+    "cSpell.words": [
+        "Kerberos",
+        "NTLM",
+        "Schannel",
+        "contoso",
+        "unmanaged",
+        "wildcards"
+    ]
 }
