@@ -24,7 +24,11 @@ related configuration of security audit events in the **Audit Policy** and check
 the latest activity on the target computer.
 
 With the **Vault** cmdlets, you can interact with the Windows Credential Manager
-to store and received PowerShell credentials and secure strings. 
+to store and received PowerShell credentials and secure strings.
+
+The **Impersonation** cmdlets allow you to impersonate another user in the
+current session. With this, you can execute certain commands as another user
+account.
 
 
 ## Features
@@ -71,6 +75,19 @@ to store and received PowerShell credentials and secure strings.
 * **Get-SecurityAuditPolicySetting**  
   Return the value of one security audit policy setting. It will use the
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
+
+### Impersonation
+
+* **Get-ImpersonationContext**
+  Get the current impersonation context and the active windows identity.
+
+* **Push-ImpersonationContext**
+  Create a new impersonation context by using the specified credentials. All
+  following commands will be executed as the specified user until the context
+  is closed.
+
+* **Pop-ImpersonationContext**
+  Leave the current impersonation context.
 
 ### Other
 

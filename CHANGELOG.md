@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Added: Cmdlets to push and pop an impersonation context
 * Changed: Rename TrustedHosts commands to singular noun
 
 
