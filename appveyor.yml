@@ -38,5 +38,5 @@ deploy_script:
   - ps: >-
       if ($env:APPVEYOR_REPO_TAG -eq 'true')
       {
-        Invoke-psake build.psake.ps1 -taskList Gallery, GitHub -properties @{ GalleryKey = $Env:PSGalleryKey; GitHubKey = $Env:GitHubToken } -notr
+        Invoke-psake build.psake.ps1 -taskList Gallery, GitHub -notr
       }
