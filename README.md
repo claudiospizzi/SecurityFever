@@ -78,15 +78,15 @@ account.
 
 ### Impersonation
 
-* **Get-ImpersonationContext**
+* **Get-ImpersonationContext**  
   Get the current impersonation context and the active windows identity.
 
-* **Push-ImpersonationContext**
+* **Push-ImpersonationContext**  
   Create a new impersonation context by using the specified credentials. All
   following commands will be executed as the specified user until the context
   is closed.
 
-* **Pop-ImpersonationContext**
+* **Pop-ImpersonationContext**  
   Leave the current impersonation context.
 
 ### Other
