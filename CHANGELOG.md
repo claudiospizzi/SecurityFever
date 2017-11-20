@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## Unreleased
+
+* Added: Add Protect-String and Unprotect-SecureString cmdlets
+
+
 ## 2.0.1 - 2017-11-21
 
 * Changed: Rename Get-VaultEntryCredential to Get-VaultCredential

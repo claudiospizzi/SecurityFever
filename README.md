@@ -114,6 +114,12 @@ account.
   up / shutdown, user log on / log off, workstation locked /unlocked, session
   reconnected / disconnected and screen saver invoke / dismiss.
 
+* **Protect-String**  
+  Convert a string into a secure string.
+
+* **Unprotect-SecureString**  
+  Convert a secure string into a string.
+
 * **Get-TrustedHost**  
   Get trusted host list entries.
 
