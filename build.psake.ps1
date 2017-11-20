@@ -36,13 +36,16 @@
       part of the default tasks, it needs to be called manually if needed during
       a deployment.
 
-    The tasks are grouped to the following task groups:
+    The tasks are grouped to the following task groups. The deploy task is not
+    part of the default tasks.
     - Default
       Tasks: Build, Test
     - Build
       Tasks: Init, Clean, Compile, Stage, Merge
     - Test
       Tasks: Pester, ScriptAnalyzer
+    - Deploy
+      Tasks: Gallery, GitHub
 
     .NOTES
     Author     : Claudio Spizzi
