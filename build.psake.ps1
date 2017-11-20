@@ -53,7 +53,39 @@
 #>
 
 
+## Configuration and Default task
 
+# Default build configuration
+Properties {
+
+    $ModulePath  = Join-Path -Path $PSScriptRoot -ChildPath 'Modules'
+    $ModuleNames = ''
+
+    $SourcePath    = Join-Path -Path $PSScriptRoot -ChildPath 'Sources'
+    $SourceNames   = ''
+    $SourcePublish = ''
+
+    $ReleasePath = Join-Path -Path $PSScriptRoot -ChildPath 'bin'
+
+    $PesterPath = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
+    $PesterFile = 'pester.xml'
+
+    $ScriptAnalyzerPath  = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
+    $ScriptAnalyzerFile  = 'scriptanalyzer.json'
+    $ScriptAnalyzerRules = Get-ScriptAnalyzerRule
+
+    $GalleryEnabled = $false
+    $GalleryName    = 'PSGallery'
+    $GallerySource  = 'https://www.powershellgallery.com/api/v2/'
+    $GalleryPublish = 'https://www.powershellgallery.com/api/v2/package/'
+    $GalleryKey     = ''
+
+    $GitHubEnabled  = $false
+    $GitHubRepoName = ''
+    $GitHubKey      = ''
+}
+
+# Load project configuration
 . $PSScriptRoot\build.settings.ps1
 
 # Default task
@@ -67,7 +99,7 @@ Task Build -depends Init, Clean, Compile, Stage, Merge
 
 # Create release and test folders
 Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
-
+    write-verbose (Get-ReleaseNote -Version '2.0.0' | out-string)
     if (!(Test-Path -Path $ReleasePath))
     {
         New-Item -Path $ReleasePath -ItemType Directory -Verbose:$VerbosePreference > $null
@@ -85,46 +117,75 @@ Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
 }
 
 # Remove any items in the release and test folders
-Task Clean -depends Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
+Task Clean -depends Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath, SourcePath, SourceNames {
 
     Get-ChildItem -Path $ReleasePath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 
     Get-ChildItem -Path $PesterPath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
 
     Get-ChildItem -Path $ScriptAnalyzerPath | Remove-Item -Recurse -Force -Verbose:$VerbosePreference
+
+    if ($null -ne $SourceNames -and -not [string]::IsNullOrEmpty($SourceNames))
+    {
+        $msBuildPath = 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin'
+
+        if ($Env:Path -notlike "*$msBuildPath*")
+        {
+            $Env:Path = "$msBuildPath;$Env:Path"
+        }
+
+        foreach ($sourceName in $SourceNames)
+        {
+            $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Clean /p:Configuration=Release)
+
+            $msBuildLog | ForEach-Object { Write-Verbose $_ }
+        }
+    }
 }
 
 # Compile C# solutions
-Task Compile -depends Clean -requiredVariables SourceEnabled, SourcePath, SourceNames {
+Task Compile -depends Clean -requiredVariables SourcePath, SourcePublish, SourceNames {
 
-    $msBuildPath = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319'
-
-    if (!$SourceEnabled)
+    if ($null -ne $SourceNames -and -not [string]::IsNullOrEmpty($SourceNames))
     {
-        return
-    }
+        $msBuildPath = 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin'
 
-    if ($Env:Path -notlike "*$msBuildPath*")
-    {
-        $Env:Path = "$msBuildPath;$Env:Path"
-    }
+        if ($Env:Path -notlike "*$msBuildPath*")
+        {
+            $Env:Path = "$msBuildPath;$Env:Path"
+        }
 
-    foreach ($sourceName in $SourceNames)
-    {
-        $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /verbosity:m)
+        foreach ($sourceName in $SourceNames)
+        {
+            $nuGetLog = (nuget.exe restore "Sources")
 
-        $msBuildLog | ForEach-Object { Write-Verbose $_ }
+            $nuGetLog | ForEach-Object { Write-Verbose $_ }
+
+            if ([String]::IsNullOrEmpty($SourcePublish))
+            {
+                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /verbosity:m)
+            }
+            else
+            {
+                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=$SourcePublish /verbosity:m)
+            }
+
+            $msBuildLog | ForEach-Object { Write-Verbose $_ }
+        }
     }
 }
 
 # Copy all required module files to the release folder
 Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNames {
 
-    foreach ($moduleName in $ModuleNames)
+    if ($null -ne $ModuleNames -and -not [string]::IsNullOrEmpty($ModuleNames))
     {
-        foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude 'Functions', 'Helpers'))
+        foreach ($moduleName in $ModuleNames)
         {
-            Copy-Item -Path $item.FullName -Destination "$ReleasePath\$moduleName\$($item.Name)" -Recurse -Verbose:$VerbosePreference
+            foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude 'Functions', 'Helpers'))
+            {
+                Copy-Item -Path $item.FullName -Destination "$ReleasePath\$moduleName\$($item.Name)" -Recurse -Verbose:$VerbosePreference
+            }
         }
     }
 }
@@ -132,42 +193,45 @@ Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNa
 # Merge the module by copying all helper and cmdlet functions to the psm1 file
 Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleNames {
 
-    foreach ($moduleName in $ModuleNames)
+    if ($null -ne $ModuleNames -and -not [string]::IsNullOrEmpty($ModuleNames))
     {
-        try
+        foreach ($moduleName in $ModuleNames)
         {
-            $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
-
-            # Load code for all function files
-            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+            try
             {
-                $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
-            }
+                $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
 
-            # Load code for all helpers files
-            foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                # Load code for all function files
+                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                {
+                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                }
+
+                # Load code for all helpers files
+                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                {
+                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                }
+
+                # Load code of the module file itself
+                $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 15) -join "`r`n")
+
+                # Concatenate whole code into the module file
+                $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
+
+                # Compress
+                Compress-Archive -Path "$ReleasePath\$moduleName" -DestinationPath "$ReleasePath\$moduleName.zip" -Verbose:$VerbosePreference
+
+                # Publish AppVeyor artifacts
+                if ($env:APPVEYOR)
+                {
+                    Push-AppveyorArtifact -Path "$ReleasePath\$moduleName.zip" -DeploymentName $moduleName -Verbose:$VerbosePreference
+                }
+            }
+            catch
             {
-                $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                Assert -conditionToCheck $false -failureMessage "Build failed: $_"
             }
-
-            # Load code of the module file itself
-            $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 15) -join "`r`n")
-
-            # Concatenate whole code into the module file
-            $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
-
-            # Compress
-            Compress-Archive -Path "$ReleasePath\$moduleName" -DestinationPath "$ReleasePath\$moduleName.zip" -Verbose:$VerbosePreference
-
-            # Publish AppVeyor artifacts
-            if ($env:APPVEYOR)
-            {
-                Push-AppveyorArtifact -Path "$ReleasePath\$moduleName.zip" -DeploymentName $moduleName -Verbose:$VerbosePreference
-            }
-        }
-        catch
-        {
-            Assert -conditionToCheck $false -failureMessage "Build failed: $_"
         }
     }
 }
@@ -277,7 +341,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         # Create GitHub release
         $releaseParams = @{
             Method  = 'Post'
-            Uri     = "https://api.github.com/repos/claudiospizzi/$GitHubRepoName/releases"
+            Uri     = "https://api.github.com/repos/$GitHubRepoName/releases"
             Headers = @{
                 'Accept'        = 'application/vnd.github.v3+json'
                 'Authorization' = "token $GitHubKey"
@@ -296,7 +360,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         # Upload artifact to GitHub
         $artifactParams = @{
             Method          = 'Post'
-            Uri             = "https://uploads.github.com/repos/claudiospizzi/$GitHubRepoName/releases/$($release.id)/assets?name=$moduleName-$moduleVersion.zip"
+            Uri             = "https://uploads.github.com/repos/$GitHubRepoName/releases/$($release.id)/assets?name=$moduleName-$moduleVersion.zip"
             Headers         = @{
                 'Accept'        = 'application/vnd.github.v3+json'
                 'Authorization' = "token $GitHubKey"
@@ -343,13 +407,13 @@ function Get-ReleaseNote($Version)
 {
     $changelogFile = Join-Path -Path $PSScriptRoot -ChildPath 'CHANGELOG.md'
 
-    $releaseNotes = @()
+    $releaseNotes = @('Release Notes:')
 
     $isCurrentVersion = $false
 
     foreach ($line in (Get-Content -Path $changelogFile))
     {
-        if ($line -eq "## $Version")
+        if ($line -like "## $Version - ????-??-??")
         {
             $isCurrentVersion = $true
         }
@@ -358,7 +422,7 @@ function Get-ReleaseNote($Version)
             $isCurrentVersion = $false
         }
 
-        if ($isCurrentVersion -and $line -like '- *')
+        if ($isCurrentVersion -and ($line.StartsWith('* ') -or $line.StartsWith('- ')))
         {
             $releaseNotes += $line
         }
