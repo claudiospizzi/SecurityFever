@@ -6,6 +6,12 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 2.0.1 - 2017-11-21
+
+* Changed: Rename Get-VaultEntryCredential to Get-VaultCredential
+* Changed: Rename Get-VaultEntrySecureString to Get-VaultSecureString
+
+
 ## 2.0.0 - 2017-10-18
 
 * Added: Cmdlets to push and pop an impersonation context
