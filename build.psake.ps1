@@ -310,6 +310,11 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         return
     }
 
+    if ([String]::IsNullOrEmpty($GalleryKey))
+    {
+        throw 'PowerShell Gallery key is null or empty!'
+    }
+
     # Register the target PowerShell Gallery, if it does not exist
     if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
     {
@@ -331,6 +336,11 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
     if (!$GitHubEnabled)
     {
         return
+    }
+
+    if ([String]::IsNullOrEmpty($GitHubKey))
+    {
+        throw 'GitHub key is null or empty!'
     }
 
     foreach ($moduleName in $ModuleNames)
