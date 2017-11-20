@@ -32,11 +32,3 @@ build_script:
 test_script:
   - ps: >-
       Invoke-psake build.psake.ps1 -taskList Pester, ScriptAnalyzer -notr
-
-# Execute psake deploy task
-deploy_script:
-  - ps: >-
-      if ($env:APPVEYOR_REPO_TAG -eq 'true')
-      {
-        Invoke-psake build.psake.ps1 -taskList Gallery, GitHub -notr
-      }
