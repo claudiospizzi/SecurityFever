@@ -99,7 +99,7 @@ Task Build -depends Init, Clean, Compile, Stage, Merge
 
 # Create release and test folders
 Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
-    write-verbose (Get-ReleaseNote -Version '2.0.0' | out-string)
+
     if (!(Test-Path -Path $ReleasePath))
     {
         New-Item -Path $ReleasePath -ItemType Directory -Verbose:$VerbosePreference > $null
