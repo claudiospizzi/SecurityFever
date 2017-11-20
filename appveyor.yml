@@ -2,13 +2,6 @@
 # PowerShell 5.0 build worker
 os: WMF 5
 
-# Secret deployment keys
-environment:
-  PSGalleryKey:
-    secure: +o4/iom8ZO0TkCMSM0gInMHq/ioFlK7LRh2jJULTBejba3nCjp2EOv94DcTS2r20
-  GitHubToken:
-    secure: g7atusVu/SvLWa4397EhDExCquI2srCWwO2JetLpnQ57V8Pzm27Eq9kj/v8X6wkd
-
 # Install required Pester and PSScriptAnalyzer modules
 install:
   - ps: Install-PackageProvider NuGet -Force | Out-Null
