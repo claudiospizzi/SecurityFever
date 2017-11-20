@@ -40,12 +40,12 @@ account.
   retrieved. The entries contain a PSCredential object and all additional
   metadata like target name, type and persistence location.
 
-* **Get-VaultEntryCredential**  
+* **Get-VaultCredential**  
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   PSCredential object without additional metadata. This is useful if just the
   simple PSCredential object is required.
 
-* **Get-VaultEntrySecureString**  
+* **Get-VaultSecureString**  
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   secure string object containing the password without additional metadata. This
   is useful if just the simple secure string object is required.

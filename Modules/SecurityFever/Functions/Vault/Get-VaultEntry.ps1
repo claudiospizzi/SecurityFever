@@ -6,8 +6,8 @@
     This cmdlet uses the native unmanaged Win32 api to retrieve all entries from
     the Windows Credential Manager vault. The entries are not objects of type
     PSCredential. The PSCredential is available on the Credential property or
-    with the Get-VaultEntryCredential cmdlet or you can get a secure string
-    with the Get-VaultEntrySecureString cmdlet.
+    with the Get-VaultCredential cmdlet or you can get a secure string with the
+    Get-VaultSecureString cmdlet.
 
     .INPUTS
     None.

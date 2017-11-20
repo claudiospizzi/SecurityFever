@@ -15,7 +15,7 @@
     System.Security.SecureString.
 
     .EXAMPLE
-    PS C:\> Get-VaultEntrySecureString -TargetName 'MyUserCred'
+    PS C:\> Get-VaultSecureString -TargetName 'MyUserCred'
     Return the secure string objects with the target name 'MyUserCred'.
 
     .NOTES
@@ -26,9 +26,10 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Get-VaultEntrySecureString
+function Get-VaultSecureString
 {
     [CmdletBinding()]
+    [Alias('Get-VaultEntrySecureString')]
     [OutputType([System.Security.SecureString])]
     param
     (

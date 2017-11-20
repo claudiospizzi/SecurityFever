@@ -15,7 +15,7 @@
     System.Management.Automation.PSCredential.
 
     .EXAMPLE
-    PS C:\> Get-VaultEntryCredential -TargetName 'MyUserCred'
+    PS C:\> Get-VaultCredential -TargetName 'MyUserCred'
     Return the PSCredential objects with the target name 'MyUserCred'.
 
     .NOTES
@@ -26,9 +26,10 @@
     https://github.com/claudiospizzi/SecurityFever
 #>
 
-function Get-VaultEntryCredential
+function Get-VaultCredential
 {
     [CmdletBinding()]
+    [Alias('Get-VaultEntryCredential')]
     [OutputType([System.Management.Automation.PSCredential])]
     param
     (
