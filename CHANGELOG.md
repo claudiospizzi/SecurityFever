@@ -6,7 +6,7 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## Unreleased
+## 2.0.0 - 2017-10-18
 
 * Added: Cmdlets to push and pop an impersonation context
 * Changed: Rename TrustedHosts commands to singular noun
