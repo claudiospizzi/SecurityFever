@@ -1,16 +1,28 @@
 {
-    "files.trimTrailingWhitespace": false,
+    "files.trimTrailingWhitespace": true,
     "files.exclude": {
         "bin/**": true,
-        "tst/**": true
+        "tst/**": true,
+        "Sources/*/.vs/**": true,
+        "Sources/*/packages/**": true,
+        "Sources/*/TestResults/**": true
     },
-
-    "powershell.codeFormatting.openBraceOnSameLine": false,
 
     "search.exclude": {
         "bin": true,
         "tst": true
     },
+
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.codeFormatting.newLineAfterCloseBrace": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+    "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+    "powershell.codeFormatting.whitespaceAroundOperator": true,
+    "powershell.codeFormatting.whitespaceAfterSeparator": true,
+    "powershell.codeFormatting.ignoreOneLineBlock": true,
+    "powershell.codeFormatting.alignPropertyValuePairs": true,
+
     "cSpell.words": [
         "-Quiet",
         "-Scope",
