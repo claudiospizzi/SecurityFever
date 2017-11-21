@@ -404,7 +404,7 @@ function Test-GitRepo
 
     $mergeStatus = Get-GitMergeStatus -Branch 'master'
 
-    if ($mergeStatus -contains 'dev')
+    if ($mergeStatus -notcontains 'dev')
     {
         throw "Git Exception: dev branch is not merged into the master branch!"
     }
