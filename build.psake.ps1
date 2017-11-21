@@ -318,6 +318,8 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         throw 'PowerShell Gallery key is null or empty!'
     }
 
+    Test-GitRepo
+
     # Register the target PowerShell Gallery, if it does not exist
     if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
     {
@@ -345,6 +347,8 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
     {
         throw 'GitHub key is null or empty!'
     }
+
+    Test-GitRepo
 
     foreach ($moduleName in $ModuleNames)
     {
@@ -387,6 +391,42 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
 
 
 ## Helper functions
+
+# Check if the git repo is ready for a deployment
+function Test-GitRepo
+{
+    $gitStatus = Get-GitStatus
+
+    if ($gitStatus.Branch -ne 'master')
+    {
+        throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!"
+    }
+
+    $mergeStatus = Get-GitMergeStatus -Branch 'master'
+
+    if ($mergeStatus -contains 'dev')
+    {
+        throw "Git Exception: dev branch is not merged into the master branch!"
+    }
+
+    if ($gitStatus.AheadBy -ne 0)
+    {
+        throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!"
+    }
+}
+
+# Check if a source branch is merged to the target branch
+function Get-GitMergeStatus($Branch)
+{
+    $mergedBranches = (git.exe branch --merged "$Branch")
+
+    foreach ($mergedBranch in $mergedBranches)
+    {
+        $mergedBranch = $mergedBranch.Trim('* ')
+
+        Write-Output $mergedBranch
+    }
+}
 
 # Show the Script Analyzer results on the host
 function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
