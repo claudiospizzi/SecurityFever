@@ -139,7 +139,7 @@ Task Clean -depends Init -requiredVariables ReleasePath, PesterPath, ScriptAnaly
 
         foreach ($sourceName in $SourceNames)
         {
-            $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Clean /p:Configuration=Release)
+            $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName\$sourceName.sln" /target:Clean /p:Configuration=Release)
 
             $msBuildLog | ForEach-Object { Write-Verbose $_ }
         }
@@ -166,11 +166,11 @@ Task Compile -depends Clean -requiredVariables SourcePath, SourcePublish, Source
 
             if ([String]::IsNullOrEmpty($SourcePublish))
             {
-                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /verbosity:m)
+                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName\$sourceName.sln" /target:Build /p:Configuration=Release /verbosity:m)
             }
             else
             {
-                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName.sln" /target:Build /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=$SourcePublish /verbosity:m)
+                $msBuildLog = (MSBuild.exe "$SourcePath\$sourceName\$sourceName.sln" /target:Build /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=$SourcePublish /verbosity:m)
             }
 
             $msBuildLog | ForEach-Object { Write-Verbose $_ }
