@@ -160,7 +160,7 @@ Task Compile -depends Clean -requiredVariables SourcePath, SourcePublish, Source
 
         foreach ($sourceName in $SourceNames)
         {
-            $nuGetLog = (nuget.exe restore "Sources")
+            $nuGetLog = (nuget.exe restore "Sources\$sourceName")
 
             $nuGetLog | ForEach-Object { Write-Verbose $_ }
 
