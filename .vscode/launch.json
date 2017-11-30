@@ -4,46 +4,11 @@
         {
             "type": "PowerShell",
             "request": "launch",
-            "name": "PowerShell Launch Current File",
-            "script": "${file}",
+            "name": "PowerShell Launch Debug File",
+            "script": "${workspaceRoot}\\build.debug.ps1",
             "args": [],
-            "cwd": "${file}"
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "PowerShell Launch Current Module",
-            "script": "Invoke-psake build.psake.ps1 -taskList Build",
-            "cwd": "${workspaceRoot}"
-        },
-        {
-            "type": "PowerShell",
-            "request": "attach",
-            "name": "PowerShell Attach to Host Process",
-            "processId": "${command:PickPSHostProcess}",
-            "runspaceId": 1,
-            "preLaunchTask": "Build"
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "PowerShell Interactive Session",
-            "cwd": "${workspaceRoot}\\bin",
-            "preLaunchTask": "Build"
-        },
-        {
-            "type": "PowerShell",
-            "request": "launch",
-            "name": "PowerShell Module Test",
-            "script": "Import-Module",
-            "args": [
-                "-NAme",
-                ".\\Modules\\SecurityFever\\SecurityFever.psd1",
-                ";",
-                "Write-Host",
-                "whoop"
-            ],
-            "cwd": "${workspaceRoot}"
+            "cwd": "${workspaceRoot}",
+            "createTemporaryIntegratedConsole": true
         }
     ]
 }
