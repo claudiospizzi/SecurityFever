@@ -6,9 +6,9 @@ Properties {
     $SourceNames = 'SecurityFever'
 
     $GalleryEnabled = $true
-    $GalleryKey     = Get-VaultSecureString -TargetName 'PS-SecureString-GalleryKey' | Unprotect-SecureString
+    $GalleryKey     = Get-VaultSecureString -TargetName 'PS-SecureString-GalleryKey'
 
     $GitHubEnabled  = $true
     $GitHubRepoName = 'claudiospizzi/SecurityFever'
-    $GitHubKey      = Get-VaultSecureString -TargetName 'PS-SecureString-GitHubToken' | Unprotect-SecureString
+    $GitHubToken    = Get-VaultSecureString -TargetName 'PS-SecureString-GitHubToken'
 }

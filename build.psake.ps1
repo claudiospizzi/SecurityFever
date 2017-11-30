@@ -85,7 +85,7 @@ Properties {
 
     $GitHubEnabled  = $false
     $GitHubRepoName = ''
-    $GitHubKey      = ''
+    $GitHubToken    = ''
 }
 
 # Load project configuration
@@ -331,24 +331,28 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         $moduleVersion = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
         $releaseNotes  = Get-ReleaseNote -Version $moduleVersion
 
-        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $GalleryKey -ReleaseNotes $releaseNotes
+        $plainGalleryKey = $GalleryKey | Unprotect-SecureString
+
+        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $plainGalleryKey -ReleaseNotes $releaseNotes
     }
 }
 
 # Deploy a release to the GitHub repository
-Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubKey {
+Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubToken {
 
     if (!$GitHubEnabled)
     {
         return
     }
 
-    if ([String]::IsNullOrEmpty($GitHubKey))
+    if ([String]::IsNullOrEmpty($GitHubToken))
     {
         throw 'GitHub key is null or empty!'
     }
 
     Test-GitRepo
+
+    $plainGitHubToken = $GitHubToken | Unprotect-SecureString
 
     foreach ($moduleName in $ModuleNames)
     {
@@ -361,7 +365,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
             Uri     = "https://api.github.com/repos/$GitHubRepoName/releases"
             Headers = @{
                 'Accept'        = 'application/vnd.github.v3+json'
-                'Authorization' = "token $GitHubKey"
+                'Authorization' = "token $plainGitHubToken"
             }
             Body   = @{
                 tag_name         = $moduleVersion
@@ -380,7 +384,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
             Uri             = "https://uploads.github.com/repos/$GitHubRepoName/releases/$($release.id)/assets?name=$moduleName-$moduleVersion.zip"
             Headers         = @{
                 'Accept'        = 'application/vnd.github.v3+json'
-                'Authorization' = "token $GitHubKey"
+                'Authorization' = "token $plainGitHubToken"
                 'Content-Type'  = 'application/zip'
             }
             InFile          = "$ReleasePath\$ModuleName.zip"
@@ -437,21 +441,29 @@ function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
         Information = 'Blue'
     }
 
-    Write-Host "Module $ModuleName" -ForegroundColor Magenta
+    Write-Host "`nModule $ModuleName" -ForegroundColor Green
 
     foreach ($currentRule in $Rule)
     {
-        Write-Host "   Rule $($currentRule.RuleName)" -ForegroundColor Magenta
+        Write-Host "`n   Rule $($currentRule.RuleName)" -ForegroundColor Green
 
-        foreach ($record in $Result.Where({$_.RuleName -eq $currentRule.RuleName}))
+        $records = $Result.Where({$_.RuleName -eq $currentRule.RuleName})
+
+        if ($records.Count -eq 0)
         {
-            Write-Host "    [-] $($record.Severity): $($record.Message)" -ForegroundColor $colorMap[[String]$record.Severity]
-            Write-Host "      at $($record.ScriptPath): line $($record.Line)" -ForegroundColor $colorMap[[String]$record.Severity]
-
+            Write-Host "    [+] No rule violation found" -ForegroundColor DarkGreen
+        }
+        else
+        {
+            foreach ($record in $records)
+            {
+                Write-Host "    [-] $($record.Severity): $($record.Message)" -ForegroundColor $colorMap[[String]$record.Severity]
+                Write-Host "      at $($record.ScriptPath): line $($record.Line)" -ForegroundColor $colorMap[[String]$record.Severity]
+            }
         }
     }
 
-    Write-Host "Script Analyzer completed"
+    Write-Host "`nScript Analyzer completed"
     Write-Host "Rules: $($Rule.Count) Failed: $($analyzeResults.Count)"
 }
 
