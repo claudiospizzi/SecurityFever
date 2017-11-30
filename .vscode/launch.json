@@ -21,12 +21,28 @@
             "request": "attach",
             "name": "PowerShell Attach to Host Process",
             "processId": "${command:PickPSHostProcess}",
-            "runspaceId": 1
+            "runspaceId": 1,
+            "preLaunchTask": "Build"
         },
         {
             "type": "PowerShell",
             "request": "launch",
             "name": "PowerShell Interactive Session",
+            "cwd": "${workspaceRoot}\\bin",
+            "preLaunchTask": "Build"
+        },
+        {
+            "type": "PowerShell",
+            "request": "launch",
+            "name": "PowerShell Module Test",
+            "script": "Import-Module",
+            "args": [
+                "-NAme",
+                ".\\Modules\\SecurityFever\\SecurityFever.psd1",
+                ";",
+                "Write-Host",
+                "whoop"
+            ],
             "cwd": "${workspaceRoot}"
         }
     ]
