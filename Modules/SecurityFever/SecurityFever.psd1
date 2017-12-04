@@ -3,7 +3,7 @@
     RootModule = 'SecurityFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '2.1.2'
+    ModuleVersion = '2.2.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -87,6 +87,7 @@
         'Pop-ImpersonationContext'
         'Protect-String'
         'Unprotect-SecureString'
+        'Get-TimeBasedOneTimePassword'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -99,6 +100,7 @@
     AliasesToExport = @(
         'sudo'
         'posh'
+        'Get-TOTP'
     )
 
     # DSC resources to export from this module
@@ -116,7 +118,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('PSModule', 'Security')
+            Tags = @('PSModule', 'Security', 'Credential Manager', 'Impersonation', 'TOTP')
 
             # A URL to the license for this module.
             LicenseUri = 'https://raw.githubusercontent.com/claudiospizzi/SecurityFever/master/LICENSE'
