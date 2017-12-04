@@ -118,7 +118,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('PSModule', 'Security', 'Credential Manager', 'Impersonation', 'TOTP')
+            Tags = @('PSModule', 'Security', 'CredentialManager', 'Impersonation', 'TOTP')
 
             # A URL to the license for this module.
             LicenseUri = 'https://raw.githubusercontent.com/claudiospizzi/SecurityFever/master/LICENSE'
