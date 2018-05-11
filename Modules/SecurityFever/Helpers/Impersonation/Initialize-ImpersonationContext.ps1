@@ -58,14 +58,9 @@ function Initialize-ImpersonationContext
         '
     }
 
-    # Get the global impersonation context
-    $globalImpersonationContext = Get-Variable -Name 'ImpersonationContext' -Scope 'Global'
-
     # Global variable to hold the impersonation context
-    if ($null -eq $globalImpersonationContext)
+    if ($null -eq $Script:ImpersonationContext)
     {
-        $stack = New-Object -TypeName 'System.Collections.Generic.Stack[System.Security.Principal.WindowsImpersonationContext]'
-
-        New-Variable -Name 'ImpersonationContext' -Value $stack -Option ReadOnly -Scope Global -Force
+        $Script:ImpersonationContext = New-Object -TypeName 'System.Collections.Generic.Stack[System.Security.Principal.WindowsImpersonationContext]'
     }
 }

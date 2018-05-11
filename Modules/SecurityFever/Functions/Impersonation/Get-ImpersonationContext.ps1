@@ -30,11 +30,12 @@ function Get-ImpersonationContext
     param ()
 
     Initialize-ImpersonationContext
-    
+
     $windowsIdentity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 
     [PSCustomObject] @{
         ImpersonationLevel = $windowsIdentity.ImpersonationLevel
+        ImpersonationStack = $Script:ImpersonationContext.Count
         WindowsIdentity    = $windowsIdentity.Name
         AuthenticationType = $windowsIdentity.AuthenticationType
         IsAuthenticated    = $windowsIdentity.IsAuthenticated
