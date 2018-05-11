@@ -1,48 +1,47 @@
 <#
     .SYNOPSIS
-    Runs the specified command in an elevated context.
+        Runs the specified command in an elevated context.
 
     .DESCRIPTION
-    Runs the specified command in an elevated context. This is useful on Windows
-    systems where the user account control is enabled. Input object and result
-    objects are serialized using XML.
-    It's important, the command does use the current user context. This means,
-    the current user needs administrative permissions on the local system.
-    If no file path or script block is specified, the current running process
-    will be run as administrator.
+        Runs the specified command in an elevated context. This is useful on
+        Windows systems where the user account control is enabled. Input object
+        and result objects are serialized using XML.
+        It's important, the command does use the current user context. This
+        means, the current user needs administrative permissions on the local
+        system. If no file path or script block is specified, the current
+        running process will be run as administrator.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    Output of the invoked script block or command.
+        Output of the invoked script block or command.
 
     .EXAMPLE
-    PS C:\> Invoke-Elevated
-    Will start the current process, e.g. PowerShell Console or ISE, in an
-    elevated session as Administrator.
+        PS C:\> Invoke-Elevated
+        Will start the current process, e.g. PowerShell Console or ISE, in an
+        elevated session as Administrator.
 
     .EXAMPLE
-    PS C:\> Invoke-Elevated -FilePath 'C:\Temp\script.ps1'
-    Start the script in an elevated session and return the result.
+        PS C:\> Invoke-Elevated -FilePath 'C:\Temp\script.ps1'
+        Start the script in an elevated session and return the result.
 
     .EXAMPLE
-    PS C:\> Invoke-Elevated -ScriptBlock { Get-DscLocalConfigurationManager }
-    Start the script in an elevated session and return the result.
+        PS C:\> Invoke-Elevated -ScriptBlock { Get-DscLocalConfigurationManager }
+        Start the script in an elevated session and return the result.
 
     .EXAMPLE
-    PS C:\> Invoke-Elevated -ScriptBlock { param ($Path) Remove-Item -Path $Path } -ArgumentList 'C:\Windows\test.txt'
-    Delete a file from the program files folder with elevated permission,
-    beacuse a normal user account has no permissions.
+        PS C:\> Invoke-Elevated -ScriptBlock { param ($Path) Remove-Item -Path $Path } -ArgumentList 'C:\Windows\test.txt'
+        Delete a file from the program files folder with elevated permission,
+        beacuse a normal user account has no permissions.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Invoke-Elevated
 {
     [CmdletBinding(DefaultParameterSetName = 'None')]

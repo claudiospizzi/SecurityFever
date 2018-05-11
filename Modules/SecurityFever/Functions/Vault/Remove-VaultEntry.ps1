@@ -1,34 +1,33 @@
 <#
     .SYNOPSIS
-    Removes an existing entry in the Windows Credential Manager vault.
+        Removes an existing entry in the Windows Credential Manager vault.
 
     .DESCRIPTION
-    This cmdlet uses the native unmanaged Win32 api to remove a existing entry
-    in the Windows Credential Manager vault.
+        This cmdlet uses the native unmanaged Win32 api to remove a existing
+        entry in the Windows Credential Manager vault.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Get-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -Persist 'Session' | Remove-VaultEntry
-    Remove the Credential Manager vault entry which was piped to the cmdlet.
+        PS C:\> Get-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -Persist 'Session' | Remove-VaultEntry
+        Remove the Credential Manager vault entry which was piped to the cmdlet.
 
     .EXAMPLE
-    PS C:\> Remove-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword'
-    Remove the Credential Manager vault entry with the specified target name and
-    type.
+        PS C:\> Remove-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword'
+        Remove the Credential Manager vault entry with the specified target name
+        and type.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Remove-VaultEntry
 {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]

@@ -1,32 +1,31 @@
 <#
     .SYNOPSIS
-    Update an existing entry in the Windows Credential Manager vault.
+        Update an existing entry in the Windows Credential Manager vault.
 
     .DESCRIPTION
-    This cmdlet uses the native unmanaged Win32 api to update an existing entry
-    in the Windows Credential Manager vault. Use a entry object or the target
-    name and type combination to identity the entry to update.
-    It is possible to update the persist location, the credentials, the username
-    and the password. If you specify new credentials, new username and password
-    will be ignored.
+        This cmdlet uses the native unmanaged Win32 api to update an existing
+        entry in the Windows Credential Manager vault. Use a entry object or the
+        target name and type combination to identity the entry to update.
+        It is possible to update the persist location, the credentials, the
+        username and the password. If you specify new credentials, new username
+        and password will be ignored.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    SecurityFever.CredentialManager.CredentialEntry.
+        SecurityFever.CredentialManager.CredentialEntry.
 
     .EXAMPLE
-    PS C:\>
+        PS C:\> Update-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -NewCredential $cred
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Update-VaultEntry
 {
     [CmdletBinding(SupportsShouldProcess = $true)]

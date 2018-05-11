@@ -1,33 +1,32 @@
 <#
     .SYNOPSIS
-    Add an entry to the trusted host list.
+        Add an entry to the trusted host list.
 
     .DESCRIPTION
-    Append the entry to the trusted host list separated by a comma and store it
-    in the path WSMan:\localhost\Client\TrustedHosts.
+        Append the entry to the trusted host list separated by a comma and store
+        it in the path WSMan:\localhost\Client\TrustedHosts.
 
     .INPUTS
-    System.String. Trusted host list entry.
+        System.String. Trusted host list entry.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Add-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
-    Add the three entries to the trusted host list.
+        PS C:\> Add-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
+        Add the three entries to the trusted host list.
 
     .EXAMPLE
-    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Add-TrustedHosts
-    Add the list of IP addresses to the trusted host list.
+        PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Add-TrustedHosts
+        Add the list of IP addresses to the trusted host list.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Add-TrustedHost
 {
     [CmdletBinding(SupportsShouldProcess = $true)]

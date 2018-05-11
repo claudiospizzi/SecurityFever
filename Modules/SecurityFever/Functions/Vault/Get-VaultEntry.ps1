@@ -1,36 +1,35 @@
 <#
     .SYNOPSIS
-    Get the credential entries from the Windows Credential Manager vault.
+        Get the credential entries from the Windows Credential Manager vault.
 
     .DESCRIPTION
-    This cmdlet uses the native unmanaged Win32 api to retrieve all entries from
-    the Windows Credential Manager vault. The entries are not objects of type
-    PSCredential. The PSCredential is available on the Credential property or
-    with the Get-VaultCredential cmdlet or you can get a secure string with the
-    Get-VaultSecureString cmdlet.
+        This cmdlet uses the native unmanaged Win32 api to retrieve all entries
+        from the Windows Credential Manager vault. The entries are not objects
+        of type PSCredential. The PSCredential is available on the Credential
+        property or with the Get-VaultCredential cmdlet or you can get a secure
+        string with the Get-VaultSecureString cmdlet.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    SecurityFever.CredentialManager.CredentialEntry.
+        SecurityFever.CredentialManager.CredentialEntry.
 
     .EXAMPLE
-    PS C:\> Get-VaultEntry
-    Returns all available credential entries.
+        PS C:\> Get-VaultEntry
+        Returns all available credential entries.
 
     .EXAMPLE
-    PS C:\> Get-VaultEntry -TargetName 'MyUserCred'
-    Return the credential entry with the target name 'MyUserCred'.
+        PS C:\> Get-VaultEntry -TargetName 'MyUserCred'
+        Return the credential entry with the target name 'MyUserCred'.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Get-VaultEntry
 {
     [CmdletBinding()]

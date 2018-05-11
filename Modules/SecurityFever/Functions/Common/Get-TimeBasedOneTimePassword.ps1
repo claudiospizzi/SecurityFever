@@ -1,31 +1,30 @@
 <#
     .SYNOPSIS
-    Generate a Time-Base One-Time Password based on RFC 6238.
+        Generate a Time-Base One-Time Password based on RFC 6238.
 
     .DESCRIPTION
-    This command uses the reference implementation of RFC 6238 to calculate a
-    Time-Base One-Time Password. It bases on the HMAC SHA-1 hash function to
-    generate a shot living One-Time Password.
+        This command uses the reference implementation of RFC 6238 to calculate
+        a Time-Base One-Time Password. It bases on the HMAC SHA-1 hash function
+        to generate a shot living One-Time Password.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    System.String. The one time password.
+        System.String. The one time password.
 
     .EXAMPLE
-    PS C:\> Get-TimeBasedOneTimePassword -SharedSecret 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    Get the Time-Based One-Time Password at the moment.
+        PS C:\> Get-TimeBasedOneTimePassword -SharedSecret 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        Get the Time-Based One-Time Password at the moment.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
-    https://tools.ietf.org/html/rfc6238
+        https://github.com/claudiospizzi/SecurityFever
+        https://tools.ietf.org/html/rfc6238
 #>
-
 function Get-TimeBasedOneTimePassword
 {
     [CmdletBinding()]

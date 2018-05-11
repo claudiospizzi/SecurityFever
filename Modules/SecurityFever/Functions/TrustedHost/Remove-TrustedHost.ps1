@@ -1,34 +1,33 @@
 <#
     .SYNOPSIS
-    Remove an entry from the trusted host list.
+        Remove an entry from the trusted host list.
 
     .DESCRIPTION
-    Remove an entry from the trusted host list and regenerate a new list with
-    all the remaining entries, separated by a comma, and store it in the path
-    WSMan:\localhost\Client\TrustedHosts.
+        Remove an entry from the trusted host list and regenerate a new list
+        with all the remaining entries, separated by a comma, and store it in
+        the path WSMan:\localhost\Client\TrustedHosts.
 
     .INPUTS
-    System.String. Trusted host list entry.
+        System.String. Trusted host list entry.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Remove-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
-    Remove three entries from the trusted host list.
+        PS C:\> Remove-TrustedHosts -ComputerName 'SERVER', '10.0.0.1', '*.contoso.com'
+        Remove three entries from the trusted host list.
 
     .EXAMPLE
-    PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Remove-TrustedHosts
-    Remove the list of IP addresses from the trusted host list.
+        PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Remove-TrustedHosts
+        Remove the list of IP addresses from the trusted host list.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Remove-TrustedHost
 {
     [CmdletBinding(SupportsShouldProcess = $true)]

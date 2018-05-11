@@ -1,48 +1,49 @@
 <#
     .SYNOPSIS
-    Test the provided credentials with the choosen test method against the local
-    system or Active Directory.
+        Test the provided credentials with the choosen test method against the
+        local system or Active Directory.
 
     .DESCRIPTION
-    Test the provided credentials against the local system by starting a simple
-    process or against Active Directory by binding to the root via ADSI.
+        Test the provided credentials against the local system by starting a
+        simple process or against Active Directory by binding to the root via
+        ADSI.
 
     .INPUTS
-    System.Management.Automation.PSCredential
+        System.Management.Automation.PSCredential
 
     .OUTPUTS
-    System.Management.Automation.PSCredential
-    System.Boolean
+        System.Management.Automation.PSCredential
+        System.Boolean
 
     .EXAMPLE
-    PS C:\> Test-Credential -Credential 'DOMAIN\user'
-    Test the interactive provided credentials against the local system. If the
-    credential are not valid, an exception is thrown.
+        PS C:\> Test-Credential -Credential 'DOMAIN\user'
+        Test the interactive provided credentials against the local system. If
+        the credential are not valid, an exception is thrown.
 
     .EXAMPLE
-    PS C:\> Test-Credential -Credential 'DOMAIN\user' -Quiet
-    Test the interactive provided credentials against the local system and
-    return $true if the credentials are valid, else return $false.
+        PS C:\> Test-Credential -Credential 'DOMAIN\user' -Quiet
+        Test the interactive provided credentials against the local system and
+        return $true if the credentials are valid, else return $false.
 
     .EXAMPLE
-    PS C:\> Test-Credential -Username $Username -Password $Password -Method ActiveDirectory
-    Test the provided username and password pair against the Active Directory.
+        PS C:\> Test-Credential -Username $Username -Password $Password -Method ActiveDirectory
+        Test the provided username and password pair against the Active
+        Directory.
 
     .EXAMPLE
-    PS C:\> $cred = Get-Credential 'DOMAIN\user' | Test-Credential
-    Request the user to enter the password for DOMAIN\user and test it
-    immediately with Test-Credential against the local system. If the
-    credentials are valid, they are returned and stored in $cred. If not, an
-    terminating exception is thrown.
+        PS C:\> $cred = Get-Credential 'DOMAIN\user' | Test-Credential
+        Request the user to enter the password for DOMAIN\user and test it
+        immediately with Test-Credential against the local system. If the
+        credentials are valid, they are returned and stored in $cred. If not, an
+        terminating exception is thrown.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Test-Credential
 {
     [CmdletBinding()]

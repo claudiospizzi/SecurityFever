@@ -1,44 +1,43 @@
 <#
     .SYNOPSIS
-    Show security relevant activities on a system.
+        Show security relevant activities on a system.
 
     .DESCRIPTION
-    Show security relevant activities on a system. This includes:
-    - Startup / Shutdown
-    - Awake / Sleep
-    - Logon / Logoff
+        Show security relevant activities on a system. This includes:
+        - Startup / Shutdown
+        - Awake / Sleep
+        - Logon / Logoff
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    SecurityFever.ActivityRecord. Array of custom activity records.
+        SecurityFever.ActivityRecord. Array of custom activity records.
 
     .EXAMPLE
-    PS C:\> Get-SecurityActivity
-    Get all available security activity records on the system.
+        PS C:\> Get-SecurityActivity
+        Get all available security activity records on the system.
 
     .EXAMPLE
-    PS C:\> Get-SecurityActivity -Activity Startup, Shutdown
-    Get only the startup and shutdown activity records on the system.
+        PS C:\> Get-SecurityActivity -Activity Startup, Shutdown
+        Get only the startup and shutdown activity records on the system.
 
     .EXAMPLE
-    PS C:\> Get-SecurityActivity -Recommended
-    Get all available security activity records on the system but show just the
-    recommended records and hide verbose records.
+        PS C:\> Get-SecurityActivity -Recommended
+        Get all available security activity records on the system but show just
+        the recommended records and hide verbose records.
 
     .EXAMPLE
-    PS C:\> Get-SecurityActivity -ComputerName 'COMPUTER' -Credential 'DOMAIN\User'
-    Get all security activity records on the remote system 'COMPUTER'.
+        PS C:\> Get-SecurityActivity -ComputerName 'COMPUTER' -Credential 'DOMAIN\User'
+        Get all security activity records on the remote system 'COMPUTER'.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Get-SecurityActivity
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSShouldProcess', '', Scope='Function', Target='Get-SecurityActivity')]

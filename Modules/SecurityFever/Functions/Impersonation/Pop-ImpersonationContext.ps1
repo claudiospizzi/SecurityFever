@@ -1,29 +1,28 @@
 <#
     .SYNOPSIS
-    Leave the current impersonation context.
+        Leave the current impersonation context.
 
     .DESCRIPTION
-    If the current session was impersonated with Push-ImpersonationContext, this
-    command will leave the impersonation context.
+        If the current session was impersonated with Push-ImpersonationContext,
+        this command will leave the impersonation context.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Pop-ImpersonationContext
-    Leave the current impersonation context.
+        PS C:\> Pop-ImpersonationContext
+        Leave the current impersonation context.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Pop-ImpersonationContext
 {
     [CmdletBinding()]

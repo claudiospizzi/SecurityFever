@@ -1,35 +1,33 @@
 <#
     .SYNOPSIS
-    List the current audit policy setting on the local system.
+        List the current audit policy setting on the local system.
 
     .DESCRIPTION
-    This command uses the auditpol.exe command to get the current audit policy
-    setting for the local system and parses the output into a custom object.
+        This command uses the auditpol.exe command to get the current audit
+        policy setting for the local system and parses the output into a custom
+        object.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    SecurityFever.AuditPolicy. Array of custom audit policy objects.
+        SecurityFever.AuditPolicy. Array of custom audit policy objects.
 
     .EXAMPLE
-    PS C:\> Get-SecurityAuditPolicy
-    Return all local security audit policies.
+        PS C:\> Get-SecurityAuditPolicy
+        Return all local security audit policies.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Get-SecurityAuditPolicy
 {
     [CmdletBinding()]
-    param
-    (
-    )
+    param ()
 
     # Because the auditpol.exe cmdlet need administration permission, verify if
     # the current session is startet as administrator.

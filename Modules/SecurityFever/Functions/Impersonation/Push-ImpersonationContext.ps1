@@ -1,32 +1,31 @@
 <#
     .SYNOPSIS
-    Create a new impersonation context by using the specified credentials. All
-    following commands will be executed as the specified user until the context
-    is closed.
+        Create a new impersonation context by using the specified credentials.
+        All following commands will be executed as the specified user until the
+        context is closed.
 
     .DESCRIPTION
-    Use the Win32 unmanaged API in the AdvApi32.dll to logon the user with the
-    specified credentials. With this logon token, the user can be impersonated
-    in the current session.
+        Use the Win32 unmanaged API in the AdvApi32.dll to logon the user with
+        the specified credentials. With this logon token, the user can be
+        impersonated in the current session.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Push-ImpersonationContext -Credential 'CONTOSO\Operator'
-    Create a new impersonation context for the Contoso Operator user.
+        PS C:\> Push-ImpersonationContext -Credential 'CONTOSO\Operator'
+        Create a new impersonation context for the Contoso Operator user.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Push-ImpersonationContext
 {
     [CmdletBinding()]

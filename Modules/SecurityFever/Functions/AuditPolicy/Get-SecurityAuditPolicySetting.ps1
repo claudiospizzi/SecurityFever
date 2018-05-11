@@ -1,30 +1,30 @@
 <#
     .SYNOPSIS
-    Get one audit policy setting on the local system.
+        Get one audit policy setting on the local system.
 
     .DESCRIPTION
-    This command uses the auditpol.exe command to get the current audit policy
-    setting for the local system and parses the output for the target setting.
+        This command uses the auditpol.exe command to get the current audit
+        policy setting for the local system and parses the output for the target
+        setting.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    System.Boolean. Return true if the audit policy is enabled, false if not.
+        System.Boolean. Return true if the audit policy is enabled, false if not.
 
     .EXAMPLE
-    PS C:\> Get-SecurityAuditPolicySetting -Category 'Object Access' -Subcategory 'File System' -Setting 'Success'
-    Returns the current setting for success audit on the file system object
-    access audit policy.
+        PS C:\> Get-SecurityAuditPolicySetting -Category 'Object Access' -Subcategory 'File System' -Setting 'Success'
+        Returns the current setting for success audit on the file system object
+        access audit policy.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Get-SecurityAuditPolicySetting
 {
     [CmdletBinding()]

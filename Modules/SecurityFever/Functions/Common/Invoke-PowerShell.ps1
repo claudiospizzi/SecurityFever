@@ -1,29 +1,29 @@
 <#
     .SYNOPSIS
-    Start a new PowerShell Console session.
+        Start a new PowerShell Console session.
 
     .DESCRIPTION
-    Start a new PowerShell Console session with alternative credentials. It uses
-    the Start-Process cmdlet and use the system drive as a working directory.
+        Start a new PowerShell Console session with alternative credentials. It
+        uses the Start-Process cmdlet and use the system drive as a working
+        directory.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    None.
+        None.
 
     .EXAMPLE
-    PS C:\> Invoke-PowerShell -Credential 'DOMAIN\user'
-    Start a new PowerShell Console session with alternative credentials.
+        PS C:\> Invoke-PowerShell -Credential 'DOMAIN\user'
+        Start a new PowerShell Console session with alternative credentials.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Invoke-PowerShell
 {
     [CmdletBinding()]

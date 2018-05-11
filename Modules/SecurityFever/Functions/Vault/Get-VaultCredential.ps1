@@ -1,31 +1,30 @@
 <#
     .SYNOPSIS
-    Get the PSCredential objects from the Windows Credential Manager vault.
+        Get the PSCredential objects from the Windows Credential Manager vault.
 
     .DESCRIPTION
-    This cmdlet uses the native unmanaged Win32 api to retrieve all entries from
-    the Windows Credential Manager vault. The entries are of type PSCredential.
-    To get the full credential entries with all properties like target name, use
-    the Get-VaultEntry cmdlet.
+        This cmdlet uses the native unmanaged Win32 api to retrieve all entries
+        from the Windows Credential Manager vault. The entries are of type
+        PSCredential. To get the full credential entries with all properties
+        like target name, use the Get-VaultEntry cmdlet.
 
     .INPUTS
-    None.
+        None.
 
     .OUTPUTS
-    System.Management.Automation.PSCredential.
+        System.Management.Automation.PSCredential.
 
     .EXAMPLE
-    PS C:\> Get-VaultCredential -TargetName 'MyUserCred'
-    Return the PSCredential objects with the target name 'MyUserCred'.
+        PS C:\> Get-VaultCredential -TargetName 'MyUserCred'
+        Return the PSCredential objects with the target name 'MyUserCred'.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi/SecurityFever
+        https://github.com/claudiospizzi/SecurityFever
 #>
-
 function Get-VaultCredential
 {
     [CmdletBinding()]
