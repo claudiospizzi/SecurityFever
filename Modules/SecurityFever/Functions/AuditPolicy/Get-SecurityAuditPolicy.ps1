@@ -53,7 +53,9 @@ function Get-SecurityAuditPolicy
         {
             $csvAuditSetting = $csvAuditSettings | Where-Object { $_.'Subcategory GUID' -eq $csvAuditCategory.GUID }
 
-            $auditPolicy = New-Object -TypeName PSObject -Property @{
+            # Return the result object
+            [PSCustomObject] @{
+                PSTypeName      = 'SecurityFever.AuditPolicy'
                 ComputerName    = $csvAuditSetting.'Machine Name'
                 Category        = $lastCategory
                 CategoryGuid    = $lastCategoryGuid
@@ -62,10 +64,6 @@ function Get-SecurityAuditPolicy
                 AuditSuccess    = $csvAuditSetting.'Inclusion Setting' -like '*Success*'
                 AuditFailure    = $csvAuditSetting.'Inclusion Setting' -like '*Failure*'
             }
-
-            $auditPolicy.PSTypeNames.Insert(0, 'SecurityFever.AuditPolicy')
-
-            Write-Output $auditPolicy
         }
     }
 }
