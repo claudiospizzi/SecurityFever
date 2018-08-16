@@ -69,6 +69,12 @@ function Push-ImpersonationContext
         throw "Failed to call LogonUser() throwing Win32 exception with error code: $errorCode"
     }
 
+    # Update the PSReadline history save style
+    if ($null -ne (Get-Module -Name 'PSReadline'))
+    {
+        Set-PSReadlineOption -HistorySaveStyle 'SaveNothing' -ErrorAction SilentlyContinue
+    }
+
     # Now, impersonate the new user account
     $newImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($tokenHandle)
     $Script:ImpersonationContext.Push($newImpersonationContext)

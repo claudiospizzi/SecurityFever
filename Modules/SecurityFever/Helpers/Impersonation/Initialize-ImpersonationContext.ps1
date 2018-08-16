@@ -63,4 +63,10 @@ function Initialize-ImpersonationContext
     {
         $Script:ImpersonationContext = New-Object -TypeName 'System.Collections.Generic.Stack[System.Security.Principal.WindowsImpersonationContext]'
     }
+
+    # Global variable to hold the PSReadline preference
+    if ($null -ne (Get-Module -Name 'PSReadline') -and $null -eq $Script:PSReadlineHistorySaveStyle)
+    {
+        $Script:PSReadlineHistorySaveStyle = Get-PSReadlineOption | Select-Object -ExpandProperty 'HistorySaveStyle'
+    }
 }

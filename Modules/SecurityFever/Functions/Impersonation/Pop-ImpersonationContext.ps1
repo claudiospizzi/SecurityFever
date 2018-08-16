@@ -37,5 +37,11 @@ function Pop-ImpersonationContext
 
         # Undo the impersonation
         $popImpersonationContext.Undo()
+
+        # Reset the PSReadline history save style
+        if ($null -ne (Get-Module -Name 'PSReadline') -and $Script:ImpersonationContext.Count -eq 0)
+        {
+            Set-PSReadlineOption -HistorySaveStyle $Script:PSReadlineHistorySaveStyle -ErrorAction SilentlyContinue
+        }
     }
 }
