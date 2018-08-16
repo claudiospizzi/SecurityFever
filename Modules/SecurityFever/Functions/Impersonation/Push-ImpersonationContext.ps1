@@ -70,7 +70,7 @@ function Push-ImpersonationContext
     }
 
     # Update the PSReadline history save style
-    if ($Script:ImpersonationContext.Count -eq 0 -and $null -ne (Get-Module -Name 'PSReadline'))
+    if ($null -ne (Get-Module -Name 'PSReadline') -and $Script:ImpersonationContext.Count -eq 0)
     {
         Set-PSReadlineOption -HistorySaveStyle 'SaveNothing' -ErrorAction SilentlyContinue
     }
