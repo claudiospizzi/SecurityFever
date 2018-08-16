@@ -70,10 +70,13 @@ function Push-ImpersonationContext
     }
 
     # Update the PSReadline history save style
-    if ($null -ne (Get-Module -Name 'PSReadline'))
+    if ($Script:ImpersonationContext.Count -eq 0 -and $null -ne (Get-Module -Name 'PSReadline'))
     {
         Set-PSReadlineOption -HistorySaveStyle 'SaveNothing' -ErrorAction SilentlyContinue
     }
+
+    # Go to the system root drive, to prevent access denied on user paths
+    Set-Location -Path "$Env:SystemRoot\"
 
     # Now, impersonate the new user account
     $newImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($tokenHandle)
