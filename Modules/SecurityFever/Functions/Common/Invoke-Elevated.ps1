@@ -73,8 +73,8 @@ function Invoke-Elevated
         $currentProcess = Get-Process -Id $PID
 
         $processStart = $currentProcess.StartInfo
-        $processStart.FileName         = $currentProcess.Path
-        $processStart.Verb             = 'RunAs'
+        $processStart.FileName = $currentProcess.Path
+        $processStart.Verb     = 'RunAs'
 
         $process = New-Object -TypeName System.Diagnostics.Process
         $process.StartInfo = $processStart
@@ -103,11 +103,18 @@ function Invoke-Elevated
             $ScriptBlock  | Export-Clixml -Path $scriptBlockFile
             $ArgumentList | Export-Clixml -Path $argumentListFile
 
+            # Get the current PowerShell drive. If this does not exist, it has
+            # to be created in the session. Switch to the system drive, to
+            # prevent errors for missing drives.
+            $drive = Get-Location | Select-Object -ExpandProperty 'Drive'
+            Push-Location -Path "$Env:SystemDrive\"
+
             # Create a command string which contains all command executed in the
             # elevated session. The wrapper of the script block is needed to
             # pass the parameters and return all outputs objects and errors.
             $commandString = ''
-            $commandString += 'Set-Location -Path "{0}";' -f $pwd.Path
+            $commandString += 'if ($null -eq (Get-PSDrive -Name "{0}" -ErrorAction SilentlyContinue)) {{ New-PSDrive -Name "{0}" -PSProvider "{1}" -Root "{2}" }};' -f $drive.Name, $drive.Provider.Name, $drive.Root
+            $commandString += 'Set-Location -Path "{0}:\{1}";' -f $drive.Name, $drive.CurrentLocation
             $commandString += '$scriptBlock  = [System.Management.Automation.ScriptBlock]::Create((Import-Clixml -Path "{0}"));' -f $scriptBlockFile
             $commandString += '$argumentList = [System.Object[]] (Import-Clixml -Path "{0}");' -f $argumentListFile
             $commandString += '$output = Invoke-Command -ScriptBlock $scriptBlock -ArgumentList $argumentList;'
@@ -151,6 +158,8 @@ function Invoke-Elevated
             {
                 $process.Dispose()
             }
+
+            Pop-Location
 
             Remove-Item -Path $scriptBlockFile   -Force -ErrorAction SilentlyContinue
             Remove-Item -Path $argumentListFile  -Force -ErrorAction SilentlyContinue
