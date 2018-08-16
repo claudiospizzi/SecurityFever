@@ -76,7 +76,7 @@ function Push-ImpersonationContext
     }
 
     # Go to the system root drive, to prevent access denied on user paths
-    Set-Location -Path "$Env:SystemRoot\"
+    Set-Location -Path "$Env:SystemDrive\"
 
     # Now, impersonate the new user account
     $newImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($tokenHandle)
