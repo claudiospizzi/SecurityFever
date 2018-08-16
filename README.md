@@ -35,98 +35,102 @@ account.
 
 ### Windows Credential Manager (Vault)
 
-* **Get-VaultEntry**  
+* **Get-VaultEntry**
   With this cmdlet, the entires form the Windows Credential Manager vault can be
   retrieved. The entries contain a PSCredential object and all additional
   metadata like target name, type and persistence location.
 
-* **Get-VaultCredential**  
+* **Get-VaultCredential**
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   PSCredential object without additional metadata. This is useful if just the
   simple PSCredential object is required.
 
-* **Get-VaultSecureString**  
+* **Get-VaultSecureString**
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   secure string object containing the password without additional metadata. This
   is useful if just the simple secure string object is required.
 
-* **New-VaultEntry**  
+* **New-VaultEntry**
   Create a new entry in the Windows Credential Manager vault. The credential
   type and persist location can be specified. By default, a generic entry with
   no special purpose is created on the local machine persist location. It will
   not override existing entries.
 
-* **Update-VaultEntry**  
+* **Update-VaultEntry**
   Update an existing entry in the Windows Credential Manager vault. The
   credential target name and type are required to identify the entry to update.
   The persist location and the credentials (or username/password) can be
   updated.
 
-* **Remove-VaultEntry**  
+* **Remove-VaultEntry**
   Remove an existing entry in the Windows Credential Manager vault. The cmdlet
   accepts pipeline input with credential entry objects.
 
 ### Audit Policy
 
-* **Get-SecurityAuditPolicy**  
+* **Get-SecurityAuditPolicy**
   List the current local security audit policy settings. It will execute the
   auditpol.exe command and parse the result into objects.
 
-* **Get-SecurityAuditPolicySetting**  
+* **Get-SecurityAuditPolicySetting**
   Return the value of one security audit policy setting. It will use the
-  Get-SecurityAuditPolicy cmdlet and just filter and expand the result. 
+  Get-SecurityAuditPolicy cmdlet and just filter and expand the result.
 
 ### Impersonation
 
-* **Get-ImpersonationContext**  
+* **Get-ImpersonationContext**
   Get the current impersonation context and the active windows identity.
 
-* **Push-ImpersonationContext**  
+* **Push-ImpersonationContext**
   Create a new impersonation context by using the specified credentials. All
   following commands will be executed as the specified user until the context
   is closed.
 
-* **Pop-ImpersonationContext**  
+* **Pop-ImpersonationContext**
   Leave the current impersonation context.
 
 ### Other
 
-* **Invoke-Elevated**  
+* **Invoke-Elevated**
   Invoke a script block or an executable in an elevated session. It will handle
   the parameter passing into the elevated session and return the result as
   object to the caller. Because it's running in a different elevated process,
   XML serialization is used to return the result. The cmdlet has the alias
   **sudo**, as used on *nix systems.
 
-* **Invoke-PowerShell**  
+* **Invoke-PowerShell**
   Start a new PowerShell Console session with alternative credentials. The
   cmdlet has the alias **posh**.
 
-* **Test-Credential**  
+* **Get-TimeBasedOneTimePassword**
+  Generate a Time-Base One-Time Password based on RFC 6238. The aliases Get-TOTP
+  or totp can also be used.
+
+* **Test-Credential**
   With this cmdlet, credential objects or username and password pairs can be
   tested, if they are valid. With the method parameter, it's possible to choose
   how the credentials are validated (start process, Active Directory). Be aware,
   multiple testing with wrong credentials can lock out the used account
-  depending on your security settings. 
+  depending on your security settings.
 
-* **Get-SecurityActivity**  
+* **Get-SecurityActivity**
   Get security and life-cycle related events on the target computer like start
   up / shutdown, user log on / log off, workstation locked /unlocked, session
   reconnected / disconnected and screen saver invoke / dismiss.
 
-* **Protect-String**  
+* **Protect-String**
   Convert a string into a secure string.
 
-* **Unprotect-SecureString**  
+* **Unprotect-SecureString**
   Convert a secure string into a string.
 
-* **Get-TrustedHost**  
+* **Get-TrustedHost**
   Get trusted host list entries.
 
-* **Add-TrustedHost**  
+* **Add-TrustedHost**
   Add an entry to the trusted host list.
 
-* **Remove-TrustedHost**  
+* **Remove-TrustedHost**
   Remove an entry from the trusted host list.
 
 
