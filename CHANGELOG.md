@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## Unreleased
+
+* Added: Function Use-VaultCredential added
+
+
 ## 2.2.1 - 2018-08-16
 
 * Fixed: Error during push and pop an impersonation context (#1)

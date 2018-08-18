@@ -66,6 +66,11 @@ account.
   Remove an existing entry in the Windows Credential Manager vault. The cmdlet
   accepts pipeline input with credential entry objects.
 
+* **Use-VaultCredential**
+  Get the PSCredential object from the Windows Credential Manager vault or query
+  the caller to enter the credentials. These credentials will be stored in the
+  vault.
+
 ### Audit Policy
 
 * **Get-SecurityAuditPolicy**
@@ -123,6 +128,8 @@ account.
 
 * **Unprotect-SecureString**
   Convert a secure string into a string.
+
+### Trusted Hosts List
 
 * **Get-TrustedHost**
   Get trusted host list entries.
