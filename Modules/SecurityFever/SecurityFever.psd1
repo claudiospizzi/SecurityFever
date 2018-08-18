@@ -3,7 +3,7 @@
     RootModule = 'SecurityFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '2.3.0'
+    ModuleVersion = '2.3.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
