@@ -76,6 +76,7 @@
         'New-VaultEntry'
         'Update-VaultEntry'
         'Remove-VaultEntry'
+        'Use-VaultCredential'
         'Get-SecurityActivity'
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
