@@ -359,6 +359,12 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         $moduleVersion = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
         $releaseNotes  = Get-ReleaseNote -Version $moduleVersion
 
+        # Add TLS 1.2 for GitHub
+        if (([Net.ServicePointManager]::SecurityProtocol -band [Net.SecurityProtocolType]::Tls12) -ne [Net.SecurityProtocolType]::Tls12)
+        {
+            [Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
+        }
+
         # Create GitHub release
         $releaseParams = @{
             Method  = 'Post'
