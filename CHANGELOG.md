@@ -6,7 +6,7 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## Unreleased
+## 2.3.0 - 2018-08-19
 
 * Added: Function Use-VaultCredential added
 
