@@ -59,7 +59,7 @@ function Use-VaultCredential
     elseif ($entries.Count -gt 1)
     {
         # Multiple entries found, throw an exception
-        throw 'Multiple entries found in the Credential Manager valut matching the parameters.'
+        throw 'Multiple entries found in the Credential Manager vault matching the parameters.'
     }
     else
     {
@@ -76,7 +76,7 @@ function Use-VaultCredential
         # If no credentials were specified, throw an exception
         if ($null -eq $credential)
         {
-            throw 'No entry found in the Credential Manager and no credentials entered-'
+            throw 'No entry found in the Credential Manager and no credentials entered.'
         }
 
         # Add the credentials to the Credential Manager vault
