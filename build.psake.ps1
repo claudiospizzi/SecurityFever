@@ -401,7 +401,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         throw 'GitHub key is null or empty!'
     }
 
-    Test-GitRepo
+    Test-GitRepo $ModuleNames[0]
 
     $plainGitHubToken = $GitHubToken | Unprotect-SecureString
 
@@ -463,7 +463,7 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         throw 'PowerShell Gallery key is null or empty!'
     }
 
-    Test-GitRepo
+    Test-GitRepo $ModuleNames[0]
 
     # Register the target PowerShell Gallery, if it does not exist
     if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
@@ -486,7 +486,7 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
 ## Helper functions
 
 # Check if the git repo is ready for a deployment
-function Test-GitRepo
+function Test-GitRepo($ModuleName)
 {
     $gitStatus = Get-GitStatus
     if ($gitStatus.Branch -ne 'master')
@@ -505,7 +505,7 @@ function Test-GitRepo
         throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!  (git push)"
     }
 
-    $version = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
+    $version = (Import-PowerShellDataFile -Path "$ReleasePath\$ModuleName\$ModuleName.psd1").ModuleVersion
 
     $localTag = (git describe --tags)
     if ($version -ne $localTag)
