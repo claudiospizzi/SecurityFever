@@ -502,7 +502,7 @@ function Test-GitRepo
 
     if ($gitStatus.AheadBy -ne 0)
     {
-        throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!"
+        throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!  (git push)"
     }
 
     $version = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
