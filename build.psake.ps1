@@ -401,7 +401,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         throw 'GitHub key is null or empty!'
     }
 
-    Test-GitRepo $ModuleNames[0]
+    Test-GitRepo @($ModuleNames)[0]
 
     $plainGitHubToken = $GitHubToken | Unprotect-SecureString
 
@@ -463,7 +463,7 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         throw 'PowerShell Gallery key is null or empty!'
     }
 
-    Test-GitRepo $ModuleNames[0]
+    Test-GitRepo @($ModuleNames)[0]
 
     # Register the target PowerShell Gallery, if it does not exist
     if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
@@ -514,7 +514,7 @@ function Test-GitRepo($ModuleName)
     }
 
     $remoteTag = (git ls-remote origin "refs/tags/$version")
-    if ($remoteTag -notlike "* refs/tags/$version")
+    if ($remoteTag -notlike "*refs/tags/$version")
     {
         throw "Git Exception: Local tag $localTag not found on origin remote!  (git push --tag)"
     }
