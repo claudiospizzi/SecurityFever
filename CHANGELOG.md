@@ -6,6 +6,11 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 2.4.0 - 2018-10-01
+
+* Added: Add Use-VaultSecureString function
+
+
 ## 2.3.1 - 2018-08-19
 
 * Fixed: Add Use-VaultCredential to module manifest
