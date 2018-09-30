@@ -1,14 +1,14 @@
 
 Properties {
 
-    $ModuleNames = 'SecurityFever'
+    $ModuleNames    = 'SecurityFever'
 
-    $SourceNames = 'SecurityFever'
+    $SourceNames    = 'SecurityFever'
 
     $GalleryEnabled = $true
-    $GalleryKey     = Get-VaultSecureString -TargetName 'PS-SecureString-GalleryKey'
+    $GalleryKey     = Use-VaultSecureString -TargetName 'PowerShell Gallery Key (claudiospizzi)'
 
     $GitHubEnabled  = $true
     $GitHubRepoName = 'claudiospizzi/SecurityFever'
-    $GitHubToken    = Get-VaultSecureString -TargetName 'PS-SecureString-GitHubToken'
+    $GitHubToken    = Use-VaultSecureString -TargetName 'GitHub Token (claudiospizzi)'
 }
