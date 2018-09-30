@@ -1,59 +1,87 @@
 <#
     .SYNOPSIS
-    PSake build script for PowerShell modules.
+        PowerShell module build script based on psake.
 
     .DESCRIPTION
-    This PSake build script supports building PowerShell manifest modules which
-    contain PowerShell script functions and optionally binary C# libraries.
+        This psake build script supports building PowerShell manifest modules
+        which contain PowerShell script functions and optionally binary .NET C#
+        libraries. The build script contains the following tasks.
 
-    The build script contains the following tasks:
-    - Init
-      Create folders, which are used by the build system: tst/ and bin/.
-    - Clean
-      Clean the content of build paths to ensure no side effects.
-    - Compile
-      If required, compile the Visual Studio Solutions. Ensure that the build
-      system copies the result into the target Module folder.
-    - Stage
-      Copy all module files to the build directory excluding the Functions and
-      Helpers, these files get merged in the .psm1 file.
-    - Merge
-      Copy the content of all .ps1 files within the Functions and Helpers
-      folders to the .psm1 file. This ensures a faster loading time for the
-      module, but still a nice development experience with one function per
-      file.
-    - Pester
-      Invoke all Pester tests within the module and ensure that all tests pass.
-    - ScriptAnalyzer
-      Invoke all Script Analyzer rules against the PowerShell script files and
-      ensure, that they do not break any rule.
-    - Gallery
-      This task will publish the module to a PowerShell Gallery. The task is not
-      part of the default tasks, it needs to be called manually if needed during
-      a deployment.
-    - GitHub
-      This task will publish the module to the GitHub Releases. The task is not
-      part of the default tasks, it needs to be called manually if needed during
-      a deployment.
+        - Task Verify
+          Before any build task runs, verify that the build scripts are current.
 
-    The tasks are grouped to the following task groups. The deploy task is not
-    part of the default tasks.
-    - Default
-      Tasks: Build, Test
-    - Build
-      Tasks: Init, Clean, Compile, Stage, Merge
-    - Test
-      Tasks: Pester, ScriptAnalyzer
-    - Deploy
-      Tasks: Gallery, GitHub
+        - Task Init
+          Create folders, which are used by the build system: /tst and /bin.
+
+        - Task Clean
+          Cleans the content of build paths to ensure no side effects of
+          previous build with the current build.
+
+        - Task Compile
+          If required, compile the Visual Studio solutions. Ensure that the
+          build system copies the result into the target module folder.
+
+        - Task Stage
+          Copy all module files to the build directory excluding the class,
+          function, helper and test files. These files get merged in the .psm1
+          file.
+
+        - Task Merge
+          Copy the content of all .ps1 files within the classes, functions and
+          helpers folders to the .psm1 file. This ensures a faster loading time
+          for the module, but still a nice development experience with one
+          function per file. This is optional and can be controlled by the
+          setting $ModuleMerge.
+
+        - Task Pester
+          Invoke all Pester tests within the module and ensure that all tests
+          pass before the build script continues.
+
+        - Task ScriptAnalyzer
+          Invoke all Script Analyzer rules against the PowerShell script files
+          and ensure, that they do not break any rule.
+
+        - Task Gallery
+          This task will publish the module to a PowerShell Gallery. The task is
+          not part of the default tasks, it needs to be called manually if
+          needed during a deployment.
+
+        - Task GitHub
+          This task will publish the module to the GitHub Releases. The task is
+          not part of the default tasks, it needs to be called manually if
+          needed during a deployment.
+
+        The tasks are grouped to the following task groups. The deploy task is
+        not part of the default tasks, this must be invoked manually.
+
+        - Group Default
+          Task to group the other groups Build and Test. This will be invoked by
+          default, if Invoke-psake is invoked.
+
+        - Group Build
+          The build task group will invoke the tasks Init, Clean, Compile, Stage
+          and Merge. The output is stored in /bin.
+
+        - Group Test
+          All tasks to verify the integrity of the module with the tasks Pester
+          and ScriptAnalyzer.
+
+        - Group Deploy
+          Tasks to deploy the module to the PowerShell Gallery and/or GitHub.
 
     .NOTES
-    Author     : Claudio Spizzi
-    License    : MIT License
+        Author     : Claudio Spizzi
+        License    : MIT License
 
     .LINK
-    https://github.com/claudiospizzi
+        https://github.com/claudiospizzi
 #>
+
+
+# Suppress some rules for this build file
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+param ()
 
 
 ## Configuration and Default task
@@ -61,31 +89,42 @@
 # Default build configuration
 Properties {
 
-    $ModulePath  = Join-Path -Path $PSScriptRoot -ChildPath 'Modules'
-    $ModuleNames = ''
+    # Option to disbale the build script verification
+    $VerifyBuildSystem   = $true
 
-    $SourcePath    = Join-Path -Path $PSScriptRoot -ChildPath 'Sources'
-    $SourceNames   = ''
-    $SourcePublish = ''
+    # Module configuration: Location and option to enable the merge
+    $ModulePath          = Join-Path -Path $PSScriptRoot -ChildPath 'Modules'
+    $ModuleNames         = ''
+    $ModuleMerge         = $false
 
-    $ReleasePath = Join-Path -Path $PSScriptRoot -ChildPath 'bin'
+    # Source configuration: Visual Studio projects to compile
+    $SourcePath          = Join-Path -Path $PSScriptRoot -ChildPath 'Sources'
+    $SourceNames         = ''
+    $SourcePublish       = ''
 
-    $PesterPath = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
-    $PesterFile = 'pester.xml'
+    # Path were the release files are stored
+    $ReleasePath         = Join-Path -Path $PSScriptRoot -ChildPath 'bin'
 
+    # Configure the Pester test execution
+    $PesterPath          = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
+    $PesterFile          = 'pester.xml'
+
+    # Configure the Script Analyzer rules
     $ScriptAnalyzerPath  = Join-Path -Path $PSScriptRoot -ChildPath 'tst'
     $ScriptAnalyzerFile  = 'scriptanalyzer.json'
     $ScriptAnalyzerRules = Get-ScriptAnalyzerRule
 
-    $GalleryEnabled = $false
-    $GalleryName    = 'PSGallery'
-    $GallerySource  = 'https://www.powershellgallery.com/api/v2/'
-    $GalleryPublish = 'https://www.powershellgallery.com/api/v2/package/'
-    $GalleryKey     = ''
+    # Define if the module is published to the PowerShell Gallery
+    $GalleryEnabled      = $false
+    $GalleryName         = 'PSGallery'
+    $GallerySource       = 'https://www.powershellgallery.com/api/v2/'
+    $GalleryPublish      = 'https://www.powershellgallery.com/api/v2/package/'
+    $GalleryKey          = ''
 
-    $GitHubEnabled  = $false
-    $GitHubRepoName = ''
-    $GitHubToken    = ''
+    # Define if the module is published to the GitHub Releases section
+    $GitHubEnabled       = $false
+    $GitHubRepoName      = ''
+    $GitHubToken         = ''
 }
 
 # Load project configuration
@@ -98,7 +137,33 @@ Task Default -depends Build, Test
 ## Build tasks
 
 # Overall build  task
-Task Build -depends Init, Clean, Compile, Stage, Merge
+Task Build -depends Verify, Init, Clean, Compile, Stage, Merge
+
+# Verify the build system
+Task Verify -requiredVariables VerifyBuildSystem {
+
+    if ($VerifyBuildSystem)
+    {
+        $files = 'build.psake.ps1'
+
+        foreach ($file in $files)
+        {
+            # Download reference file
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/claudiospizzi/PSModuleTemplate/master/Template/$file" -OutFile "$Env:Temp\$file"
+
+            # Get content (don't compare hashes, because of new line chars)
+            $expected = Get-Content -Path "$Env:Temp\$file"
+            $actual   = Get-Content -Path "$PSScriptRoot\$file"
+
+            # Compare objects
+            Assert -conditionToCheck ($null -ne (Compare-Object -ReferenceObject $expected -DifferenceObject $actual)) -failureMessage "The file '$file' is not current. Please update the file and restart the build."
+        }
+    }
+    else
+    {
+        Write-Warning 'Build system is not verified!'
+    }
+}
 
 # Create release and test folders
 Task Init -requiredVariables ReleasePath, PesterPath, ScriptAnalyzerPath {
@@ -179,13 +244,22 @@ Task Compile -depends Clean -requiredVariables SourcePath, SourcePublish, Source
 }
 
 # Copy all required module files to the release folder
-Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNames {
+Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNames, ModuleMerge {
 
     if ($null -ne $ModuleNames -and -not [string]::IsNullOrEmpty($ModuleNames))
     {
         foreach ($moduleName in $ModuleNames)
         {
-            foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude 'Functions', 'Helpers'))
+            if ($ModuleMerge)
+            {
+                $excludePath = 'Classes', 'Functions', 'Helpers', 'Tests'
+            }
+            else
+            {
+                $excludePath = 'Tests'
+            }
+
+            foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude $excludePath))
             {
                 Copy-Item -Path $item.FullName -Destination "$ReleasePath\$moduleName\$($item.Name)" -Recurse -Verbose:$VerbosePreference
             }
@@ -194,7 +268,7 @@ Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNa
 }
 
 # Merge the module by copying all helper and cmdlet functions to the psm1 file
-Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleNames {
+Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleNames, ModuleMerge {
 
     if ($null -ne $ModuleNames -and -not [string]::IsNullOrEmpty($ModuleNames))
     {
@@ -202,25 +276,34 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
         {
             try
             {
-                $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
-
-                # Load code for all function files
-                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                if ($ModuleMerge)
                 {
-                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
+                    $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
+    
+                    # Load code for all class files
+                    foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Classes" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                    {
+                        $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
+                    }
+
+                    # Load code for all function files
+                    foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Functions" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                    {
+                        $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
+                    }
+
+                    # Load code for all helpers files
+                    foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
+                    {
+                        $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
+                    }
+
+                    # Load code of the module file itself
+                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 30) -join "`r`n")
+
+                    # Concatenate whole code into the module file
+                    $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
                 }
-
-                # Load code for all helpers files
-                foreach ($function in (Get-ChildItem -Path "$ModulePath\$moduleName\Helpers" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
-                {
-                    $moduleContent.Add((Get-Content -Path $function.FullName -Raw))
-                }
-
-                # Load code of the module file itself
-                $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 15) -join "`r`n")
-
-                # Concatenate whole code into the module file
-                $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
 
                 # Compress
                 Compress-Archive -Path "$ReleasePath\$moduleName" -DestinationPath "$ReleasePath\$moduleName.zip" -Verbose:$VerbosePreference
@@ -295,7 +378,7 @@ Task ScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, Scr
 
         Show-ScriptAnalyzerResult -ModuleName $moduleName -Rule $ScriptAnalyzerRules -Result $analyzeResults
 
-        Assert -conditionToCheck ($analyzeResults.Count -eq 0) -failureMessage "One or more Script Analyzer tests failed, build cannot continue."
+        Assert -conditionToCheck ($analyzeResults.Where({$_.Severity -ne 0}).Count -eq 0) -failureMessage "One or more Script Analyzer tests failed, build cannot continue."
     }
 }
 
@@ -303,39 +386,7 @@ Task ScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, Scr
 ## Deploy tasks
 
 # Overall deploy task
-Task Deploy -depends Test, Gallery, GitHub
-
-# Deploy to the public PowerShell Gallery
-Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
-
-    if (!$GalleryEnabled)
-    {
-        return
-    }
-
-    if ([String]::IsNullOrEmpty($GalleryKey))
-    {
-        throw 'PowerShell Gallery key is null or empty!'
-    }
-
-    Test-GitRepo
-
-    # Register the target PowerShell Gallery, if it does not exist
-    if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
-    {
-        Register-PSRepository -Name $GalleryName -SourceLocation $GallerySource -PublishLocation $GalleryPublish
-    }
-
-    foreach ($moduleName in $ModuleNames)
-    {
-        $moduleVersion = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
-        $releaseNotes  = Get-ReleaseNote -Version $moduleVersion
-
-        $plainGalleryKey = $GalleryKey | Unprotect-SecureString
-
-        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $plainGalleryKey -ReleaseNotes $releaseNotes
-    }
-}
+Task Deploy -depends Test, GitHub, Gallery
 
 # Deploy a release to the GitHub repository
 Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRepoName, GitHubToken {
@@ -399,6 +450,38 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
     }
 }
 
+# Deploy to the public PowerShell Gallery
+Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, GalleryName, GallerySource, GalleryPublish, GalleryKey {
+
+    if (!$GalleryEnabled)
+    {
+        return
+    }
+
+    if ([String]::IsNullOrEmpty($GalleryKey))
+    {
+        throw 'PowerShell Gallery key is null or empty!'
+    }
+
+    Test-GitRepo
+
+    # Register the target PowerShell Gallery, if it does not exist
+    if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
+    {
+        Register-PSRepository -Name $GalleryName -SourceLocation $GallerySource -PublishLocation $GalleryPublish
+    }
+
+    foreach ($moduleName in $ModuleNames)
+    {
+        $moduleVersion = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
+        $releaseNotes  = Get-ReleaseNote -Version $moduleVersion
+
+        $plainGalleryKey = $GalleryKey | Unprotect-SecureString
+
+        Publish-Module -Path "$ReleasePath\$moduleName" -Repository $GalleryName -NuGetApiKey $plainGalleryKey -ReleaseNotes $releaseNotes
+    }
+}
+
 
 ## Helper functions
 
@@ -406,22 +489,34 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
 function Test-GitRepo
 {
     $gitStatus = Get-GitStatus
-
     if ($gitStatus.Branch -ne 'master')
     {
-        throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!"
+        throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!  (git checkout master)"
     }
 
     $mergeStatus = Get-GitMergeStatus -Branch 'master'
-
     if ($mergeStatus -notcontains 'dev')
     {
-        throw "Git Exception: dev branch is not merged into the master branch!"
+        throw "Git Exception: dev branch is not merged into the master branch!  (git merge dev)"
     }
 
     if ($gitStatus.AheadBy -ne 0)
     {
         throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!"
+    }
+
+    $version = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
+
+    $localTag = (git describe --tags)
+    if ($version -ne $localTag)
+    {
+        throw "Git Exception: Tag $localTag not matches module version $version!  (git tag $version)"
+    }
+
+    $remoteTag = (git ls-remote origin "refs/tags/$version")
+    if ($remoteTag -notlike "* refs/tags/$version")
+    {
+        throw "Git Exception: Local tag $localTag not found on origin remote!  (git push --tag)"
     }
 }
 
@@ -444,7 +539,7 @@ function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
     $colorMap = @{
         Error       = 'Red'
         Warning     = 'Yellow'
-        Information = 'Blue'
+        Information = 'Cyan'
     }
 
     Write-Host "`nModule $ModuleName" -ForegroundColor Green
@@ -470,7 +565,7 @@ function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
     }
 
     Write-Host "`nScript Analyzer completed"
-    Write-Host "Rules: $($Rule.Count) Failed: $($analyzeResults.Count)"
+    Write-Host "Rules: $($Rule.Count) Findings: $($analyzeResults.Count)"
 }
 
 # Extract the Release Notes from the CHANGELOG.md file
