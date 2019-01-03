@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: FortiNet client VPN cmdlets
+* Added: Windows VPN cmdlets
 
 
 ## 2.4.0 - 2018-10-01
