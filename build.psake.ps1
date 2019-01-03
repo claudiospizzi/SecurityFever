@@ -156,7 +156,7 @@ Task Verify -requiredVariables VerifyBuildSystem {
             $actual   = Get-Content -Path "$PSScriptRoot\$file"
 
             # Compare objects
-            Assert -conditionToCheck ($null -ne (Compare-Object -ReferenceObject $expected -DifferenceObject $actual)) -failureMessage "The file '$file' is not current. Please update the file and restart the build."
+            Assert -conditionToCheck ($null -eq (Compare-Object -ReferenceObject $expected -DifferenceObject $actual)) -failureMessage "The file '$file' is not current. Please update the file and restart the build."
         }
     }
     else
@@ -250,13 +250,14 @@ Task Stage -depends Compile -requiredVariables ReleasePath, ModulePath, ModuleNa
     {
         foreach ($moduleName in $ModuleNames)
         {
+            New-Item -Path "$ReleasePath\$moduleName" -ItemType 'Directory' | Out-Null
+
+            # If the module is merged, exclude the module definition file and
+            # all classes, functions and helpers.
+            $excludePath = @()
             if ($ModuleMerge)
             {
-                $excludePath = 'Classes', 'Functions', 'Helpers', 'Tests'
-            }
-            else
-            {
-                $excludePath = 'Tests'
+                $excludePath += "$moduleName.psd1", 'Classes', 'Functions', 'Helpers'
             }
 
             foreach ($item in (Get-ChildItem -Path "$ModulePath\$moduleName" -Exclude $excludePath))
@@ -278,8 +279,12 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
             {
                 if ($ModuleMerge)
                 {
-                    $moduleContent = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
-    
+                    $moduleContent    = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
+                    $moduleDefinition = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
+
+                    # Load code of the module header
+                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -First 12) -join "`r`n")
+
                     # Load code for all class files
                     foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Classes" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
                     {
@@ -299,10 +304,35 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
                     }
 
                     # Load code of the module file itself
-                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 30) -join "`r`n")
+                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 24) -join "`r`n")
 
                     # Concatenate whole code into the module file
                     $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
+
+                    # Load the current content of the mudile definition
+                    $moduleDefinitionProcess = $true
+                    foreach ($moduleDefinitionLine in (Get-Content -Path "$ModulePath\$moduleName\$moduleName.psd1"))
+                    {
+                        if ($moduleDefinitionLine -like '*ScriptsToProcess*')
+                        {
+                            $moduleDefinition.Add('    # ScriptsToProcess = @()')
+                            $moduleDefinitionProcess = $false
+                        }
+
+                        if ($moduleDefinitionProcess)
+                        {
+                            $moduleDefinition.Add($moduleDefinitionLine)
+                        }
+
+                        if ($moduleDefinitionLine -like '*)*')
+                        {
+                            $moduleDefinitionProcess = $true
+                        }
+                    }
+
+
+                    # Save the updated module definition
+                    $moduleDefinition | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psd1" -Encoding UTF8 -Verbose:$VerbosePreference
                 }
 
                 # Compress
@@ -401,7 +431,7 @@ Task GitHub -requiredVariables ReleasePath, ModuleNames, GitHubEnabled, GitHubRe
         throw 'GitHub key is null or empty!'
     }
 
-    Test-GitRepo
+    Test-GitRepo @($ModuleNames)[0]
 
     $plainGitHubToken = $GitHubToken | Unprotect-SecureString
 
@@ -463,7 +493,7 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
         throw 'PowerShell Gallery key is null or empty!'
     }
 
-    Test-GitRepo
+    Test-GitRepo @($ModuleNames)[0]
 
     # Register the target PowerShell Gallery, if it does not exist
     if ($null -eq (Get-PSRepository -Name $GalleryName -ErrorAction SilentlyContinue))
@@ -486,7 +516,7 @@ Task Gallery -requiredVariables ReleasePath, ModuleNames, GalleryEnabled, Galler
 ## Helper functions
 
 # Check if the git repo is ready for a deployment
-function Test-GitRepo
+function Test-GitRepo($ModuleName)
 {
     $gitStatus = Get-GitStatus
     if ($gitStatus.Branch -ne 'master')
@@ -505,7 +535,7 @@ function Test-GitRepo
         throw "Git Exception: master branch is ahead by $($gitStatus.AheadBy)!  (git push)"
     }
 
-    $version = (Import-PowerShellDataFile -Path "$ReleasePath\$moduleName\$moduleName.psd1").ModuleVersion
+    $version = (Import-PowerShellDataFile -Path "$ReleasePath\$ModuleName\$ModuleName.psd1").ModuleVersion
 
     $localTag = (git describe --tags)
     if ($version -ne $localTag)
@@ -514,7 +544,7 @@ function Test-GitRepo
     }
 
     $remoteTag = (git ls-remote origin "refs/tags/$version")
-    if ($remoteTag -notlike "* refs/tags/$version")
+    if ($remoteTag -notlike "*refs/tags/$version")
     {
         throw "Git Exception: Local tag $localTag not found on origin remote!  (git push --tag)"
     }
