@@ -16,7 +16,7 @@
             "echo": false,
             "reveal": "always",
             "focus": false,
-            "panel": "shared"
+            "panel": "new"
         }
     },
 

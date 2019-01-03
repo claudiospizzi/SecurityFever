@@ -5,6 +5,8 @@ os: WMF 5
 # Install required Pester and PSScriptAnalyzer modules
 install:
   - ps: Install-PackageProvider NuGet -Force | Out-Null
+  - ps: Install-Module posh-git -Force
+  - ps: Install-Module SecurityFever -Force
   - ps: Install-Module psake -Force
   - ps: Install-Module Pester -Force
   - ps: Install-Module PSScriptAnalyzer -Force
