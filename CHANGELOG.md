@@ -6,7 +6,7 @@ The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## Unreleased
+## 2.5.0 - 2019-01-04
 
 * Added: FortiNet client VPN cmdlets
 * Added: Windows VPN cmdlets
