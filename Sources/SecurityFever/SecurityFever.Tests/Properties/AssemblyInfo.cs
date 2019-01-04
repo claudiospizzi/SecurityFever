@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SecurityFever.Tests")]
-[assembly: AssemblyCopyright("Copyright (c) 2018 by Claudio Spizzi. Licensed under MIT license.")]
+[assembly: AssemblyCopyright("Copyright (c) 2019 by Claudio Spizzi. Licensed under MIT license.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

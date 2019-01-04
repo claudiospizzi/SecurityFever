@@ -18,7 +18,7 @@
     # CompanyName = ''
 
     # Copyright statement for this module
-    Copyright = 'Copyright (c) 2018 by Claudio Spizzi. Licensed under MIT license.'
+    Copyright = 'Copyright (c) 2019 by Claudio Spizzi. Licensed under MIT license.'
 
     # Description of the functionality provided by this module
     Description = 'PowerShell Module with custom functions and cmdlets related to Windows and application security.'
@@ -67,29 +67,42 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
+        # Audit Policy
+        'Get-SecurityAuditPolicy'
+        'Get-SecurityAuditPolicySetting'
+        # Common
+        'Get-TimeBasedOneTimePassword'
         'Invoke-Elevated'
         'Invoke-PowerShell'
         'Test-Credential'
-        'Get-VaultEntry'
-        'Get-VaultCredential'
-        'Get-VaultSecureString'
-        'New-VaultEntry'
-        'Update-VaultEntry'
-        'Remove-VaultEntry'
-        'Use-VaultCredential'
-        'Use-VaultSecureString'
-        'Get-SecurityActivity'
-        'Get-SecurityAuditPolicy'
-        'Get-SecurityAuditPolicySetting'
-        'Get-TrustedHost'
-        'Add-TrustedHost'
-        'Remove-TrustedHost'
-        'Get-ImpersonationContext'
-        'Push-ImpersonationContext'
-        'Pop-ImpersonationContext'
         'Protect-String'
         'Unprotect-SecureString'
-        'Get-TimeBasedOneTimePassword'
+        'Test-Credential'
+        # EventLog
+        'Get-SecurityActivity'
+        # FortiNetVPN
+        'Connect-FortiClientVPN'
+        'Disconnect-FortiClientVPN'
+        # Impersonation
+        'Get-ImpersonationContext'
+        'Pop-ImpersonationContext'
+        'Push-ImpersonationContext'
+        # TrustedHost
+        'Add-TrustedHost'
+        'Get-TrustedHost'
+        'Remove-TrustedHost'
+        # Vault
+        'Get-VaultCredential'
+        'Get-VaultEntry'
+        'Get-VaultSecureString'
+        'New-VaultEntry'
+        'Remove-VaultEntry'
+        'Update-VaultEntry'
+        'Use-VaultCredential'
+        'Use-VaultSecureString'
+        # WindowsVPN
+        'Connect-WindowsVPN'
+        'Disconnect-WindowsVPN'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
