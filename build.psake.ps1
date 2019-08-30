@@ -282,8 +282,11 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
                     $moduleContent    = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
                     $moduleDefinition = New-Object -TypeName 'System.Collections.Generic.List[System.String]'
 
-                    # Load code of the module header
-                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -First 12) -join "`r`n")
+                    # Load code of the module namespace loader
+                    if ((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" -Raw) -match '#region Namepsace Loader[\r\n](?<NamespaceLoader>[\S\s]*)[\r\n]#endregion Namepsace Loader')
+                    {
+                        $moduleContent.Add($matches['NamespaceLoader'])
+                    }
 
                     # Load code for all class files
                     foreach ($file in (Get-ChildItem -Path "$ModulePath\$moduleName\Classes" -Filter '*.ps1' -Recurse -File -ErrorAction 'SilentlyContinue'))
@@ -303,8 +306,11 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
                         $moduleContent.Add((Get-Content -Path $file.FullName -Raw))
                     }
 
-                    # Load code of the module file itself
-                    $moduleContent.Add((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" | Select-Object -Skip 24) -join "`r`n")
+                    # Load code of the module namespace loader
+                    if ((Get-Content -Path "$ModulePath\$moduleName\$moduleName.psm1" -Raw) -match '#region Module Configuration[\r\n](?<ModuleConfiguration>[\S\s]*)#endregion Module Configuration')
+                    {
+                        $moduleContent.Add($matches['ModuleConfiguration'])
+                    }
 
                     # Concatenate whole code into the module file
                     $moduleContent | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psm1" -Encoding UTF8 -Verbose:$VerbosePreference
@@ -329,7 +335,6 @@ Task Merge -depends Stage -requiredVariables ReleasePath, ModulePath, ModuleName
                             $moduleDefinitionProcess = $true
                         }
                     }
-
 
                     # Save the updated module definition
                     $moduleDefinition | Set-Content -Path "$ReleasePath\$moduleName\$moduleName.psd1" -Encoding UTF8 -Verbose:$VerbosePreference
@@ -403,7 +408,9 @@ Task ScriptAnalyzer -requiredVariables ReleasePath, ModulePath, ModuleNames, Scr
     {
         $moduleScriptAnalyzerFile = Join-Path -Path $ScriptAnalyzerPath -ChildPath "$moduleName-$ScriptAnalyzerFile"
 
+        # Invoke script analyzer on the module but exclude all examples
         $analyzeResults = Invoke-ScriptAnalyzer -Path "$ReleasePath\$moduleName" -IncludeRule $ScriptAnalyzerRules -Recurse
+        $analyzeResults = $analyzeResults | Where-Object { $_.ScriptPath -notlike "$releasePath\$moduleName\Examples\*" }
         $analyzeResults | ConvertTo-Json | Out-File -FilePath $moduleScriptAnalyzerFile -Encoding UTF8
 
         Show-ScriptAnalyzerResult -ModuleName $moduleName -Rule $ScriptAnalyzerRules -Result $analyzeResults
@@ -567,6 +574,7 @@ function Get-GitMergeStatus($Branch)
 function Show-ScriptAnalyzerResult($ModuleName, $Rule, $Result)
 {
     $colorMap = @{
+        ParseError  = 'DarkRed'
         Error       = 'Red'
         Warning     = 'Yellow'
         Information = 'Cyan'
