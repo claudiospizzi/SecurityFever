@@ -14,77 +14,63 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: FortiNet client VPN cmdlets
 * Added: Windows VPN cmdlets
 
-
 ## 2.4.0 - 2018-10-01
 
 * Added: Add Use-VaultSecureString function
-
 
 ## 2.3.1 - 2018-08-19
 
 * Fixed: Add Use-VaultCredential to module manifest
 
-
 ## 2.3.0 - 2018-08-19
 
 * Added: Function Use-VaultCredential added
-
 
 ## 2.2.1 - 2018-08-16
 
 * Fixed: Error during push and pop an impersonation context (#1)
 
-
 ## 2.2.0 - 2017-12-05
 
 * Added: Get-TimeBasedOneTimePassword function
-
 
 ## 2.1.2 - 2017-11-30
 
 * Fixed: Add missing function export in module definition file
 * Fixed: Prevent PSake deployment from wrong or unmerged branches
 
-
 ## 2.1.0 - 2017-11-21
 
 * Added: Add Protect-String and Unprotect-SecureString cmdlets
-
 
 ## 2.0.1 - 2017-11-21
 
 * Changed: Rename Get-VaultEntryCredential to Get-VaultCredential
 * Changed: Rename Get-VaultEntrySecureString to Get-VaultSecureString
 
-
 ## 2.0.0 - 2017-10-18
 
 * Added: Cmdlets to push and pop an impersonation context
 * Changed: Rename TrustedHosts commands to singular noun
 
-
 ## 1.3.0 - 2017-09-24
 
 * Added: WSMan TrustedHosts list manipulation commands
 
-
 ## 1.2.0 - 2017-07-20
 
 * Added: Invoke-PowerShell function with (alias: posh)
-
 
 ## 1.1.0 - 2016-12-05
 
 * Added: Cmdlets for the Windows Credential Manager Vault
 * Changed: Add verbose output to Test-Credential
 
-
 ## 1.0.2 - 2016-11-29
 
 * Fixed: Wrong output in quiet mode in Test-Credential
 * Fixed: Failing Active Directory verification method in Test-Credential
 * Fixed: Add unit tests in Test-Credential
-
 
 ## 1.0.1 - 2016-10-18
 
@@ -94,7 +80,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Changed: Add 'After' parameter to narrow down event span Get-SecurityActivity
 * Fixed: Fix issues with for inaccessible working directory in Test-Credential
 * Fixed: Suppression in script analyzer tests
-
 
 ## 1.0.0 - 2016-10-17
 
