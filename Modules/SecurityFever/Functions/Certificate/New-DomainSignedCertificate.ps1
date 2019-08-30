@@ -21,7 +21,7 @@
 #>
 function New-DomainSignedCertificate
 {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param
     (
         # Subject of the certificate, without the 'CN=' prefix. This subject is
@@ -101,24 +101,6 @@ function New-DomainSignedCertificate
         $certReqCmd  = Get-CommandPath -Name 'certreq.exe'
         $openSslCmd  = Get-CommandPath -Name 'openssl.exe' -WarningMessage 'Download OpenSSL for Windows from https://slproweb.com/products/Win32OpenSSL.html'
 
-        # Trim the path and cleanup existing files
-        $Path = $Path.TrimEnd('\')
-        foreach ($extension in 'cer', 'inf', 'key', 'pem', 'pfx', 'req', 'rsp')
-        {
-            $filePath ="$Path\$Subject.$extension"
-            if (Test-Path -Path $filePath)
-            {
-                if ($Force.IsPresent)
-                {
-                    Remove-Item -Path $filePath -Force -Confirm:$false
-                }
-                else
-                {
-                    throw "The file $filePath already exists!"
-                }
-            }
-        }
-
         # Append subject to the dns name or ip address
         if ($Subject -match '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$')
         {
@@ -171,134 +153,156 @@ function New-DomainSignedCertificate
         $policy += 'CertificateTemplate = {0}' -f $CertificateTemplate
 
 
-        # Step 1
-        # Store the policy file
-
-        Write-Verbose "Create policy file $Subject.inf"
-
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Create policy file $Subject.inf" -PercentComplete 14
-
-        Set-Content -Path "$Path\$Subject.inf" -Value $policy
-
-
-        # Step 2
-        # Create a certificate request and store the private key in the user session
-
-        Write-Verbose "Create request file $Subject.req"
-        Write-Verbose "  certreq.exe -new -q -f `"$Path\$Subject.inf`" `"$Path\$Subject.req`""
-
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Create request file $Subject.req" -PercentComplete 28
-
-        $result = (& $certReqCmd -new -q -f "`"$Path\$Subject.inf`"" "`"$Path\$Subject.req`"")
-
-        if ($Global:LASTEXITCODE -ne 0)
+        if ($PSCmdlet.ShouldProcess("CN=$Subject", 'Crate'))
         {
-            throw "Failed to create the certificate request!`n`n$result"
-        }
+            # Trim the path and cleanup existing files
+            $Path = $Path.TrimEnd('\')
+            foreach ($extension in 'cer', 'inf', 'key', 'pem', 'pfx', 'req', 'rsp')
+            {
+                $filePath ="$Path\$Subject.$extension"
+                if (Test-Path -Path $filePath)
+                {
+                    if ($Force.IsPresent)
+                    {
+                        Remove-Item -Path $filePath -Force -Confirm:$false
+                    }
+                    else
+                    {
+                        throw "The file $filePath already exists!"
+                    }
+                }
+            }
 
 
-        # Step 3
-        # Submit the certificate request to the CA
+            # Step 1
+            # Store the policy file
 
-        Write-Verbose "Sign request and export to $Subject.cer"
-        Write-Verbose "  certreq.exe -submit -q -f `"$Path\$Subject.req`" `"$Path\$Subject.cer`""
+            Write-Verbose "Create policy file $Subject.inf"
 
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Sign request and export to $Subject.cer" -PercentComplete 28
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Create policy file $Subject.inf" -PercentComplete 14
 
-        $result = (& $certReqCmd -submit -q -f "`"$Path\$Subject.req`"" "`"$Path\$Subject.cer`"")
-
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to submit the certificate request!`n`n$result"
-        }
+            Set-Content -Path "$Path\$Subject.inf" -Value $policy
 
 
-        # Step 4
-        # Accept the request and import it into the local cert store
+            # Step 2
+            # Create a certificate request and store the private key in the user session
 
-        Write-Verbose "Accept and import signed certificate $Subject.cer"
-        Write-Verbose "  certreq.exe -accept -q `"$Path\$Subject.cer`""
+            Write-Verbose "Create request file $Subject.req"
+            Write-Verbose "  certreq.exe -new -q -f `"$Path\$Subject.inf`" `"$Path\$Subject.req`""
 
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Accept and import signed certificate $Subject.cer" -PercentComplete 42
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Create request file $Subject.req" -PercentComplete 28
 
-        $result = (& $certReqCmd -accept -q "`"$Path\$Subject.cer`"")
+            $result = (& $certReqCmd -new -q -f "`"$Path\$Subject.inf`"" "`"$Path\$Subject.req`"")
 
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to accept the certificate request!`n`n$result"
-        }
-
-
-        # Step 5
-        # Export certificate as PFX file
-
-        Write-Verbose "Export the certificate as PFX to $Subject.pfx"
-
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as PFX to $Subject.pfx" -PercentComplete 56
-
-        # Extract thumbprint from the cer file
-        $thumbprint = Get-PfxCertificate -FilePath "$Path\$Subject.cer" | Select-Object -ExpandProperty 'Thumbprint'
-
-        # Export the pfx protected by a password
-        Get-Item -Path "Cert:\LocalMachine\My\$thumbprint" | Export-PfxCertificate -FilePath "$Path\$Subject.pfx" -Password $Password | Out-Null
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to create the certificate request!`n`n$result"
+            }
 
 
-        # Step 6
-        # Export certificate as PEM file
+            # Step 3
+            # Submit the certificate request to the CA
 
-        Write-Verbose "Export the certificate as PEM to $Subject.pem"
-        Write-Verbose "  openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -clcerts -nokeys -out `"$Path\$Subject.pem`""
-        Write-Verbose "  openssl.exe x509 -in `"$Path\$Subject.pem`" -out `"$Path\$Subject.pem`""
+            Write-Verbose "Sign request and export to $Subject.cer"
+            Write-Verbose "  certreq.exe -submit -q -f `"$Path\$Subject.req`" `"$Path\$Subject.cer`""
 
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as PEM to $Subject.pem" -PercentComplete 70
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Sign request and export to $Subject.cer" -PercentComplete 28
 
-        $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -clcerts -nokeys -out "`"$Path\$Subject.pem`"")
+            $result = (& $certReqCmd -submit -q -f "`"$Path\$Subject.req`"" "`"$Path\$Subject.cer`"")
 
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to convert the certificate from pfx to pem!"
-        }
-
-        $result = (& $openSslCmd x509 -in "`"$Path\$Subject.pem`"" -out "`"$Path\$Subject.pem`"")
-
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to convert the certificate from pfx to pem!"
-        }
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to submit the certificate request!`n`n$result"
+            }
 
 
-        # Step 7
-        # Export certificate as KEY file
+            # Step 4
+            # Accept the request and import it into the local cert store
 
-        Write-Verbose "Export the certificate as KEY to $Subject.key"
-        Write-Verbose "  openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -nocerts -out `"$Path\$Subject.key`" -nodes"
-        Write-Verbose "  openssl.exe rsa -in `"$Path\$Subject.key`" -out `"$Path\$Subject.key`""
+            Write-Verbose "Accept and import signed certificate $Subject.cer"
+            Write-Verbose "  certreq.exe -accept -q `"$Path\$Subject.cer`""
 
-        Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as KEY to $Subject.key" -PercentComplete 84
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Accept and import signed certificate $Subject.cer" -PercentComplete 42
 
-        $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -nocerts -out "`"$Path\$Subject.key`"" -nodes)
+            $result = (& $certReqCmd -accept -q "`"$Path\$Subject.cer`"")
 
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to convert the certificate from pfx to key!"
-        }
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to accept the certificate request!`n`n$result"
+            }
 
-        $ErrorActionPreference = 'SilentlyContinue'
-        $result = (& $openSslCmd rsa -in "`"$Path\$Subject.key`"" -out "`"$Path\$Subject.key`"" 2>&1)
-        $ErrorActionPreference = 'Stop'
 
-        if ($Global:LASTEXITCODE -ne 0)
-        {
-            throw "Failed to convert the certificate from pfx to key!"
-        }
+            # Step 5
+            # Export certificate as PFX file
 
-        if (-not $Keep.IsPresent)
-        {
-            Get-Item -Path "Cert:\LocalMachine\My\$thumbprint"
+            Write-Verbose "Export the certificate as PFX to $Subject.pfx"
 
-            Remove-Item -Path "$Path\$Subject.inf" -Force -Confirm:$false
-            Remove-Item -Path "$Path\$Subject.req" -Force -Confirm:$false
-            Remove-Item -Path "$Path\$Subject.rsp" -Force -Confirm:$false
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as PFX to $Subject.pfx" -PercentComplete 56
+
+            # Extract thumbprint from the cer file
+            $thumbprint = Get-PfxCertificate -FilePath "$Path\$Subject.cer" | Select-Object -ExpandProperty 'Thumbprint'
+
+            # Export the pfx protected by a password
+            Get-Item -Path "Cert:\LocalMachine\My\$thumbprint" | Export-PfxCertificate -FilePath "$Path\$Subject.pfx" -Password $Password | Out-Null
+
+
+            # Step 6
+            # Export certificate as PEM file
+
+            Write-Verbose "Export the certificate as PEM to $Subject.pem"
+            Write-Verbose "  openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -clcerts -nokeys -out `"$Path\$Subject.pem`""
+            Write-Verbose "  openssl.exe x509 -in `"$Path\$Subject.pem`" -out `"$Path\$Subject.pem`""
+
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as PEM to $Subject.pem" -PercentComplete 70
+
+            $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -clcerts -nokeys -out "`"$Path\$Subject.pem`"")
+
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to convert the certificate from pfx to pem!"
+            }
+
+            $result = (& $openSslCmd x509 -in "`"$Path\$Subject.pem`"" -out "`"$Path\$Subject.pem`"")
+
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to convert the certificate from pfx to pem!"
+            }
+
+
+            # Step 7
+            # Export certificate as KEY file
+
+            Write-Verbose "Export the certificate as KEY to $Subject.key"
+            Write-Verbose "  openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -nocerts -out `"$Path\$Subject.key`" -nodes"
+            Write-Verbose "  openssl.exe rsa -in `"$Path\$Subject.key`" -out `"$Path\$Subject.key`""
+
+            Write-Progress -Activity "Generate Certificate for CN=$Subject" -Status "Export the certificate as KEY to $Subject.key" -PercentComplete 84
+
+            $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -nocerts -out "`"$Path\$Subject.key`"" -nodes)
+
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to convert the certificate from pfx to key!"
+            }
+
+            $ErrorActionPreference = 'SilentlyContinue'
+            $result = (& $openSslCmd rsa -in "`"$Path\$Subject.key`"" -out "`"$Path\$Subject.key`"" 2>&1)
+            $ErrorActionPreference = 'Stop'
+
+            if ($Global:LASTEXITCODE -ne 0)
+            {
+                throw "Failed to convert the certificate from pfx to key!"
+            }
+
+            if (-not $Keep.IsPresent)
+            {
+                Get-Item -Path "Cert:\LocalMachine\My\$thumbprint"
+
+                Remove-Item -Path "$Path\$Subject.inf" -Force -Confirm:$false
+                Remove-Item -Path "$Path\$Subject.req" -Force -Confirm:$false
+                Remove-Item -Path "$Path\$Subject.rsp" -Force -Confirm:$false
+            }
         }
     }
     catch
