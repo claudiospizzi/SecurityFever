@@ -1,19 +1,14 @@
+# SecurityFever PowerShell Module
+
 [![PowerShell Gallery - SecurityFever](https://img.shields.io/badge/PowerShell_Gallery-SecurityFever-0072C6.svg)](https://www.powershellgallery.com/packages/SecurityFever)
 [![GitHub - Release](https://img.shields.io/github/release/claudiospizzi/SecurityFever.svg)](https://github.com/claudiospizzi/SecurityFever/releases)
 [![AppVeyor - master](https://img.shields.io/appveyor/ci/claudiospizzi/SecurityFever/master.svg)](https://ci.appveyor.com/project/claudiospizzi/SecurityFever/branch/master)
 [![AppVeyor - dev](https://img.shields.io/appveyor/ci/claudiospizzi/SecurityFever/dev.svg)](https://ci.appveyor.com/project/claudiospizzi/SecurityFever/branch/dev)
 
-
-# SecurityFever PowerShell Module
-
-PowerShell Module with custom functions and cmdlets related to Windows and
-application security.
-
-
 ## Introduction
 
-This is a personal PowerShell Module by Claudio Spizzi. It is used to unite all
-personal security related functions and cmdlets into one module.
+This is a PowerShell Module with functions and cmdlets related to Windows and
+application security. It unites multiple handy tools into one module.
 
 You can invoke PowerShell scripts or script blocks in an elevated context with
 **sudo** or test your credentials against the local system or an Active
@@ -50,13 +45,13 @@ account.
   secure string object containing the password without additional metadata. This
   is useful if just the simple secure string object is required.
 
-* **New-VaultEntry**
-  Create a new entry in the Windows Credential Manager vault. The credential
-  type and persist location can be specified. By default, a generic entry with
-  no special purpose is created on the local machine persist location. It will
-  not override existing entries.
+* **New-VaultEntry**  
+  Create a new entry in the Windows Credential Manager vault.
+  The credential type and persist location can be specified. By default, a
+  generic entry with no special purpose is created on the local machine persist
+  location. It will not override existing entries.
 
-* **Update-VaultEntry**
+* **Update-VaultEntry** 
   Update an existing entry in the Windows Credential Manager vault. The
   credential target name and type are required to identify the entry to update.
   The persist location and the credentials (or username/password) can be
