@@ -86,6 +86,9 @@ param ()
 
 ## Configuration and Default task
 
+# Load project configuration
+. $PSScriptRoot\build.settings.ps1
+
 # Default build configuration
 Properties {
 
@@ -126,9 +129,6 @@ Properties {
     $GitHubRepoName      = ''
     $GitHubToken         = ''
 }
-
-# Load project configuration
-. $PSScriptRoot\build.settings.ps1
 
 # Default task
 Task Default -depends Build, Test
