@@ -46,13 +46,13 @@ function New-DomainSignedCertificate
         $Subject,
 
         # Add dns names to the subject alternative name.
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $false)]
         [AllowEmptyCollection()]
         [System.String[]]
         $DnsName,
 
         # Add IP addresses to the subject alternative name.
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [AllowEmptyCollection()]
         [System.String[]]
         $IPAddress,
@@ -160,11 +160,17 @@ function New-DomainSignedCertificate
         $policy += '2.5.29.17 = "{text}"'
         foreach ($currentDnsName in $DnsName)
         {
-            $policy += '_continue_ = "DNS={0}&"' -f $currentDnsName
+            if (-not [System.String]::IsNullOrEmpty($currentDnsName))
+            {
+                $policy += '_continue_ = "DNS={0}&"' -f $currentDnsName
+            }
         }
         foreach ($currentIPAddress in $IPAddress)
         {
-            $policy += '_continue_ = "IPAddress={0}&"' -f $currentIPAddress
+            if (-not [System.String]::IsNullOrEmpty($currentIPAddress))
+            {
+                $policy += '_continue_ = "IPAddress={0}&"' -f $currentIPAddress
+            }
         }
         $policy += ''
         $policy += '[RequestAttributes]'
@@ -228,11 +234,11 @@ function New-DomainSignedCertificate
             # Submit the certificate request to the CA
 
             Write-Verbose "Sign request and export to $Subject.cer"
-            Write-Verbose "> certreq.exe -submit -q -f `"$Path\$Subject.req`" `"$Path\$Subject.cer`""
+            Write-Verbose "> certreq.exe -submit -f `"$Path\$Subject.req`" `"$Path\$Subject.cer`""
 
             Write-Progress -Activity $activity -Status "Sign request and export to $Subject.cer" -PercentComplete 28
 
-            $result = (& $certReqCmd -submit -q -f "`"$Path\$Subject.req`"" "`"$Path\$Subject.cer`"")
+            $result = (& $certReqCmd -submit -f "`"$Path\$Subject.req`"" "`"$Path\$Subject.cer`"")
 
             if ($Global:LASTEXITCODE -ne 0)
             {

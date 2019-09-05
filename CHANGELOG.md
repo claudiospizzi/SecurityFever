@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.6.2 - 2019-09-05
+
+* Fixed: Prevent empty SAN entries in New-DomainSignedCertificate
+
 ## 2.6.1 - 2019-09-05
 
 * Fixed: Use Base64 only optionally in New-DomainSignedCertificate
