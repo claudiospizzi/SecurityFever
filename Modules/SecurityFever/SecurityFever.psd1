@@ -3,7 +3,7 @@
     RootModule = 'SecurityFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '2.6.0'
+    ModuleVersion = '2.6.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -70,6 +70,8 @@
         # Audit Policy
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
+        # Certificate
+        'New-DomainSignedCertificate'
         # Common
         'Get-TimeBasedOneTimePassword'
         'Invoke-Elevated'

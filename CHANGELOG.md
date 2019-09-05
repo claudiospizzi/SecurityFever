@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.6.1 - 2019-09-05
+
+* Fixed: Use Base64 only optionally in New-DomainSignedCertificate
+* Fixed: Export New-DomainSignedCertificate in psd1
+
 ## 2.6.0 - 2019-08-31
 
 * Added: Add cmdlet New-DomainSignedCertificate
