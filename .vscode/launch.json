@@ -2,11 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "PowerShell Launch Debug File",
             "type": "PowerShell",
             "request": "launch",
-            "name": "PowerShell Launch Debug File",
-            "script": "${workspaceRoot}\\build.debug.ps1",
+            "script": "${workspaceRoot}\\debug.ps1",
             "args": [],
+            "cwd": "${workspaceRoot}",
+            "createTemporaryIntegratedConsole": true
+        },
+        {
+            "name": "PowerShell Interactive Session",
+            "type": "PowerShell",
+            "request": "launch",
             "cwd": "${workspaceRoot}",
             "createTemporaryIntegratedConsole": true
         }
