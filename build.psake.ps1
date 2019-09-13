@@ -87,7 +87,7 @@ param ()
 ## Configuration and Default task
 
 # Load project configuration
-. $PSScriptRoot\build.settings.ps1
+. "$PSScriptRoot\build.settings.ps1"
 
 # Default build configuration
 Properties {
@@ -529,12 +529,6 @@ function Test-GitRepo($ModuleName)
     if ($gitStatus.Branch -ne 'master')
     {
         throw "Git Exception: $($gitStatus.Branch) is checked out, switch to master branch!  (git checkout master)"
-    }
-
-    $mergeStatus = Get-GitMergeStatus -Branch 'master'
-    if ($mergeStatus -notcontains 'dev')
-    {
-        throw "Git Exception: dev branch is not merged into the master branch!  (git merge dev)"
     }
 
     if ($gitStatus.AheadBy -ne 0)
