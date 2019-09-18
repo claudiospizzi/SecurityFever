@@ -27,7 +27,7 @@
 function Get-SecurityAuditPolicy
 {
     [CmdletBinding()]
-    param ()
+    param ($Password)
 
     # Because the auditpol.exe cmdlet need administration permission, verify if
     # the current session is startet as administrator.
