@@ -1,36 +1,42 @@
 {
-    // Trim trailing whitespaces, but not for markdown
     "files.trimTrailingWhitespace": true,
     "[markdown]": {
         "files.trimTrailingWhitespace": false
     },
 
-    // Exclude files form the explorer tree
     "files.exclude": {
-        "bin/**": true,
-        "tst/**": true,
-        "Sources/*/.vs/**": true,
-        "Sources/*/packages/**": true,
-        "Sources/*/TestResults/**": true
+        "**/.git": true,
+        "**/.vs": true,
+        "**/obj": true,
+        "**/bin": true,
+        "**/out": true,
+        "**/packages": true,
+        "**/*.user": true
     },
+
     "search.exclude": {
-        "bin": true,
-        "tst": true
+        "**/.git": true,
+        "**/.vs": true,
+        "**/obj": true,
+        "**/bin": true,
+        "**/out": true,
+        "**/packages": true,
+        "**/*.user": true
     },
 
-    // PowerShell console behaviour
     "powershell.debugging.createTemporaryIntegratedConsole": true,
-    "powershell.integratedConsole.showOnStartup": true,
-    "powershell.integratedConsole.focusConsoleOnExecute": false,
 
-    // PowerShell code formatting
-    "powershell.codeFormatting.openBraceOnSameLine": false,
-    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.codeFormatting.alignPropertyValuePairs": true,
+    "powershell.codeFormatting.ignoreOneLineBlock": true,
     "powershell.codeFormatting.newLineAfterCloseBrace": true,
+    "powershell.codeFormatting.newLineAfterOpenBrace": true,
+    "powershell.codeFormatting.openBraceOnSameLine": false,
+    "powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationAfterEveryPipeline",
+    "powershell.codeFormatting.useCorrectCasing": true,
+    "powershell.codeFormatting.whitespaceAfterSeparator": true,
+    "powershell.codeFormatting.whitespaceAroundOperator": true,
+    "powershell.codeFormatting.WhitespaceAroundPipe": true,
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
-    "powershell.codeFormatting.whitespaceAroundOperator": true,
-    "powershell.codeFormatting.whitespaceAfterSeparator": true,
-    "powershell.codeFormatting.ignoreOneLineBlock": true,
-    "powershell.codeFormatting.alignPropertyValuePairs": true
+    "powershell.codeFormatting.WhitespaceInsideBrace": true
 }
