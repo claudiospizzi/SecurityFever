@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityFever.Library", "SecurityFever.Library.csproj", "{53AE0EFD-C118-4CE7-AEF0-99F2EBC051EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53AE0EFD-C118-4CE7-AEF0-99F2EBC051EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53AE0EFD-C118-4CE7-AEF0-99F2EBC051EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53AE0EFD-C118-4CE7-AEF0-99F2EBC051EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53AE0EFD-C118-4CE7-AEF0-99F2EBC051EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {17923F52-61DF-47C7-B5E3-283C313E555E}
+	EndGlobalSection
+EndGlobal
