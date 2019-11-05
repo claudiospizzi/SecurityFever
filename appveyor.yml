@@ -7,7 +7,8 @@ install:
   - ps: Install-PackageProvider NuGet -Force | Out-Null
   - ps: Install-Module posh-git -Force
   - ps: Install-Module SecurityFever -Force
-  - ps: Install-Module psake -Force
+  - ps: Install-Module InvokeBuild -Force
+  - ps: Install-Module InvokeBuildHelper -Force
   - ps: Install-Module Pester -Force
   - ps: Install-Module PSScriptAnalyzer -Force
 
@@ -21,9 +22,9 @@ platform: Any CPU
 # Execute psake build task
 build_script:
   - ps: >-
-      Invoke-psake build.psake.ps1 -taskList Build -notr
+      Invoke-Build -Task 'Build'
 
 # Execute psake test and analyze task
 test_script:
   - ps: >-
-      Invoke-psake build.psake.ps1 -taskList Pester, ScriptAnalyzer -notr
+      Invoke-Build -Task 'Test'
