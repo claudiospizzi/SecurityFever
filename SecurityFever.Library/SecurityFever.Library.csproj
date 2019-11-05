@@ -56,4 +56,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(ProjectDir)..\..\$(AssemblyName)\Assemblies\$(AssemblyName).dll" ContinueOnError="false" />
+  </Target>
 </Project>
