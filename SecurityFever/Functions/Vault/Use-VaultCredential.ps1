@@ -7,11 +7,13 @@
     .DESCRIPTION
         This cmdlet will load the target PSCredential object from the Windows
         Credential Manager vault by using Get-VaultCredential. If the vault
-        entry does not exist, it will query the credential from the interactive
+        entry does not exist,  and the current PowerShell session is in
+        interactive mode, it will query the credential from the interactive
         user by using Get-Credential. If this was successful, the credential
         will be stored in the Windows Credential Manager vault by using the
         New-VaultEntry command and then returned to the pipeline. Else an
-        exception will be thrown.
+        exception will be thrown. If the process is in non interactive mode and
+        the entry does not exist, nothing is returned.
 
     .INPUTS
         None.
@@ -48,6 +50,10 @@ function Use-VaultCredential
         $Username
     )
 
+    # Only run Read-Host if the PowerShell process is in interactive mode. If
+    # this is not the case, just return $null indicating
+    $isInteractive = [Environment]::UserInteractive -and [Environment]::GetCommandLineArgs().Where({ $_ -like '-NonI*' }).Count -eq 0
+
     # Get all entries matching the parameters.
     $entries = @(Get-VaultEntry @PSBoundParameters)
 
@@ -61,7 +67,7 @@ function Use-VaultCredential
         # Multiple entries found, throw an exception
         throw 'Multiple entries found in the Credential Manager vault matching the parameters.'
     }
-    else
+    elseif ($isInteractive)
     {
         # Get the credentials from the user
         if ($PSBoundParameters.ContainsKey('Username'))
