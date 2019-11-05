@@ -27,22 +27,21 @@ The **Impersonation** cmdlets allow you to impersonate another user in the
 current session. With this, you can execute certain commands as another user
 account.
 
-
 ## Features
 
 ### Windows Credential Manager (Vault)
 
-* **Get-VaultEntry**
+* **Get-VaultEntry**  
   With this cmdlet, the entires form the Windows Credential Manager vault can be
   retrieved. The entries contain a PSCredential object and all additional
   metadata like target name, type and persistence location.
 
-* **Get-VaultCredential**
+* **Get-VaultCredential**  
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   PSCredential object without additional metadata. This is useful if just the
   simple PSCredential object is required.
 
-* **Get-VaultSecureString**
+* **Get-VaultSecureString**  
   This cmdlet works similar like the Get-VaultEntry, but returns only a native
   secure string object containing the password without additional metadata. This
   is useful if just the simple secure string object is required.
@@ -53,96 +52,94 @@ account.
   generic entry with no special purpose is created on the local machine persist
   location. It will not override existing entries.
 
-* **Update-VaultEntry** 
+* **Update-VaultEntry**  
   Update an existing entry in the Windows Credential Manager vault. The
   credential target name and type are required to identify the entry to update.
   The persist location and the credentials (or username/password) can be
   updated.
 
-* **Remove-VaultEntry**
+* **Remove-VaultEntry**  
   Remove an existing entry in the Windows Credential Manager vault. The cmdlet
   accepts pipeline input with credential entry objects.
 
-* **Use-VaultCredential**
+* **Use-VaultCredential**  
   Get the PSCredential object from the Windows Credential Manager vault or query
   the caller to enter the credentials. These credentials will be stored in the
   vault.
 
 ### Audit Policy
 
-* **Get-SecurityAuditPolicy**
+* **Get-SecurityAuditPolicy**  
   List the current local security audit policy settings. It will execute the
   auditpol.exe command and parse the result into objects.
 
-* **Get-SecurityAuditPolicySetting**
+* **Get-SecurityAuditPolicySetting**  
   Return the value of one security audit policy setting. It will use the
   Get-SecurityAuditPolicy cmdlet and just filter and expand the result.
 
 ### Impersonation
 
-* **Get-ImpersonationContext**
+* **Get-ImpersonationContext**  
   Get the current impersonation context and the active windows identity.
 
-* **Push-ImpersonationContext**
+* **Push-ImpersonationContext**  
   Create a new impersonation context by using the specified credentials. All
   following commands will be executed as the specified user until the context
   is closed.
 
-* **Pop-ImpersonationContext**
+* **Pop-ImpersonationContext**  
   Leave the current impersonation context.
 
 ### Other
 
-* **Invoke-Elevated**
+* **Invoke-Elevated**  
   Invoke a script block or an executable in an elevated session. It will handle
   the parameter passing into the elevated session and return the result as
   object to the caller. Because it's running in a different elevated process,
   XML serialization is used to return the result. The cmdlet has the alias
   **sudo**, as used on *nix systems.
 
-* **Invoke-PowerShell**
+* **Invoke-PowerShell**  
   Start a new PowerShell Console session with alternative credentials. The
   cmdlet has the alias **posh**.
 
-* **Get-TimeBasedOneTimePassword**
+* **Get-TimeBasedOneTimePassword**  
   Generate a Time-Base One-Time Password based on RFC 6238. The aliases Get-TOTP
   or totp can also be used.
 
-* **Test-Credential**
+* **Test-Credential**  
   With this cmdlet, credential objects or username and password pairs can be
   tested, if they are valid. With the method parameter, it's possible to choose
   how the credentials are validated (start process, Active Directory). Be aware,
   multiple testing with wrong credentials can lock out the used account
   depending on your security settings.
 
-* **Get-SecurityActivity**
+* **Get-SecurityActivity**  
   Get security and life-cycle related events on the target computer like start
   up / shutdown, user log on / log off, workstation locked /unlocked, session
   reconnected / disconnected and screen saver invoke / dismiss.
 
-* **Protect-String**
+* **Protect-String**  
   Convert a string into a secure string.
 
-* **Unprotect-SecureString**
+* **Unprotect-SecureString**  
   Convert a secure string into a string.
 
 ### Trusted Hosts List
 
-* **Get-TrustedHost**
+* **Get-TrustedHost**  
   Get trusted host list entries.
 
-* **Add-TrustedHost**
+* **Add-TrustedHost**  
   Add an entry to the trusted host list.
 
-* **Remove-TrustedHost**
+* **Remove-TrustedHost**  
   Remove an entry from the trusted host list.
-
 
 ## Versions
 
 Please find all versions in the [GitHub Releases] section and the release notes
 in the [CHANGELOG.md] file.
-
 
 ## Installation
 
@@ -160,7 +157,6 @@ manually on your local system:
 1. Download the latest release from GitHub as a ZIP file: [GitHub Releases]
 2. Extract the module and install it: [Installing a PowerShell Module]
 
-
 ## Requirements
 
 The following minimum requirements are necessary to use this module, or in other
@@ -168,7 +164,6 @@ words are used to test this module:
 
 * Windows PowerShell 3.0
 * Windows Server 2008 R2 / Windows 7
-
 
 ## Contribute
 
@@ -178,8 +173,6 @@ Studio Code and ensure that the PowerShell extension is installed.
 
 * [Visual Studio Code] with the [PowerShell Extension]
 * [Pester], [PSScriptAnalyzer] and [psake] PowerShell Modules
-
-
 
 [PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
 [GitHub Releases]: https://github.com/claudiospizzi/SecurityFever/releases
