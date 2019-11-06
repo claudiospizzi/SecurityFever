@@ -36,6 +36,7 @@
 function Use-VaultCredential
 {
     [CmdletBinding()]
+    [Alias('cred')]
     [OutputType([System.Management.Automation.PSCredential])]
     param
     (

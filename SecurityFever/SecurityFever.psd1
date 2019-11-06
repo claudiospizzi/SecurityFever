@@ -117,6 +117,7 @@
     AliasesToExport = @(
         'sudo'
         'posh'
+        'cred'
         'Get-TOTP'
     )
 
