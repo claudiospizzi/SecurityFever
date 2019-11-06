@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Alias cred to the Use-VaultCredential
+* Changed: .NET Library structure and unit tests
 * Fixed: Prevent user interaction if not in interactive mode
 
 ## 2.6.2 - 2019-09-05
