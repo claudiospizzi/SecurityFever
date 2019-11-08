@@ -14,13 +14,13 @@
         System.Security.AccessControl.FileSystemAccessRule. Access control entries.
 
     .EXAMPLE
-        PS C:\> Get-CertificatePermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0
+        PS C:\> Get-CertificatePrivateKeyPermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0
         Get the certificate private key permissions.
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
-function Get-CertificatePermission
+function Get-CertificatePrivateKeyPermission
 {
     [CmdletBinding()]
     [OutputType([System.Security.AccessControl.FileSystemAccessRule])]

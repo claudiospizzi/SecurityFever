@@ -14,18 +14,18 @@
         None.
 
     .EXAMPLE
-        PS C:\> Add-CertificatePermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0 -Identity 'User' -Right 'Read'
+        PS C:\> Add-CertificatePrivateKeyPermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0 -Identity 'User' -Right 'Read'
         Set read permission on the specified certificate private key.
 
     .EXAMPLE
-        PS C:\> Add-CertificatePermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0 -Identity 'NT SERVICE\MSSQL$INST01'
+        PS C:\> Add-CertificatePrivateKeyPermission -Thumbprint '10E6862E31114CD86C5CD3E675ED45F4CA6DF8A0 -Identity 'NT SERVICE\MSSQL$INST01'
         Set full control permission on the specified certificate private key
         for the SQL service account.
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
-function Add-CertificatePrivateKeyPremission
+function Add-CertificatePrivateKeyPermission
 {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param

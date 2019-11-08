@@ -58,6 +58,11 @@ function New-DomainSignedCertificate
         [System.String[]]
         $IPAddress,
 
+        # Optional firendly name to set on the imported certificate.
+        [Parameter(Mandatory = $false)]
+        [System.String]
+        $FriendlyName,
+
         # Specify the key usage extensions.
         [Parameter(Mandatory = $false)]
         [ValidateSet('ServerAuthentication', 'ClientAuthentication')]
@@ -114,6 +119,12 @@ function New-DomainSignedCertificate
         if ($Base64.IsPresent)
         {
             $openSslCmd = Get-CommandPath -Name 'openssl.exe' -WarningMessage 'Download OpenSSL for Windows from https://slproweb.com/products/Win32OpenSSL.html'
+        }
+
+        # If the friendly name wasn't specified, use the subject
+        if (-not $PSBoundParameters.ContainsKey('FriendlyName'))
+        {
+            $FriendlyName = $Subject
         }
 
         # Append subject to the dns name or ip address
@@ -334,8 +345,10 @@ function New-DomainSignedCertificate
             }
 
 
-            # Finally, get the certificate object and return it to the pipeline
+            # Finally, update the friendly name, get the certificate object and
+            # return it to the pipeline
             $certificate = Get-Item -Path "Cert:\LocalMachine\My\$thumbprint"
+            $certificate.FriendlyName = $FriendlyName
             Write-Output $certificate
         }
     }
