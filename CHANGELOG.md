@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Added: Cmdlets to get and modify certificate private key permission
 * Changed: Return the certificate object in New-DomainSignedCertificate
 
 ## 2.7.0 - 2019-11-07

@@ -72,6 +72,8 @@
         'Get-SecurityAuditPolicySetting'
         # Certificate
         'New-DomainSignedCertificate'
+        'Add-CertificatePrivateKeyPermission'
+        'Get-CertificatePrivateKeyPermission'
         # Common
         'Get-TimeBasedOneTimePassword'
         'Invoke-Elevated'
