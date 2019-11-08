@@ -36,6 +36,7 @@
 function New-DomainSignedCertificate
 {
     [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([System.Security.Cryptography.X509Certificates.X509Certificate2])]
     param
     (
         # Subject of the certificate, without the 'CN=' prefix. This subject is
@@ -215,7 +216,7 @@ function New-DomainSignedCertificate
 
             # Step 2
             # Create a certificate request and store the private key in the
-            # current user session
+            # current user or computer session (if admin)
 
             Write-Verbose "Create request file $Subject.req"
             Write-Verbose "> certreq.exe -new -q -f `"$Path\$Subject.inf`" `"$Path\$Subject.req`""
@@ -331,6 +332,11 @@ function New-DomainSignedCertificate
                     throw "Failed to convert the certificate from pfx to key!"
                 }
             }
+
+
+            # Finally, get the certificate object and return it to the pipeline
+            $certificate = Get-Item -Path "Cert:\LocalMachine\My\$thumbprint"
+            Write-Output $certificate
         }
     }
     catch
