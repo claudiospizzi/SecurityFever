@@ -91,6 +91,10 @@
         'Get-ImpersonationContext'
         'Pop-ImpersonationContext'
         'Push-ImpersonationContext'
+        # System Audit
+        'Get-SystemAudit'
+        'Get-SystemAuditMsiInstaller'
+        'Get-SystemAuditPowerCycle'
         # TrustedHost
         'Add-TrustedHost'
         'Get-TrustedHost'

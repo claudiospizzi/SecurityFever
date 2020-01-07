@@ -1,0 +1,54 @@
+{
+    "Application": {
+        "11707": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Installation successfully"
+        },
+        "11708": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Installation failed"
+        },
+        "11724": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Removal successfully"
+        },
+        "11725": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Removal failed"
+        },
+        "11728": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Configuration successfully"
+        },
+        "11729": {
+            "ProviderName": "MsiInstaller",
+            "Action": "Configuration failed"
+        }
+    },
+    "System": {
+        "1": {
+            "ProviderName": "Microsoft-Windows-Power-Troubleshooter",
+            "Action": "Leaving Sleep"
+        },
+        "42": {
+            "ProviderName": "Microsoft-Windows-Kernel-Power",
+            "Action": "Entering Sleep"
+        },
+        "1074": {
+            "ProviderName": "User32",
+            "Action": "Request System {0}"
+        },
+        "6005": {
+            "ProviderName": "EventLog",
+            "Action": "System Startup"
+        },
+        "6006": {
+            "ProviderName": "EventLog",
+            "Action": "System Shutdown"
+        },
+        "6008": {
+            "ProviderName": "EventLog",
+            "Action": "Unexpected Shutdown"
+        }
+    }
+}
