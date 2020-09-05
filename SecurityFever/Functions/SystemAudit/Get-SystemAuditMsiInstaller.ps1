@@ -17,51 +17,51 @@ function Get-SystemAuditMsiInstaller
     [CmdletBinding()]
     param
     (
-        # Period of days to report for the audit events.
+        # Period of days to cover.
         [Parameter(Mandatory = $false)]
         [System.Int32]
-        $Period = 7,
+        $DayPeriod = 7,
 
-        # Switch to skip the tests
+        # Show extended events, not only the important ones.
         [Parameter(Mandatory = $false)]
         [Switch]
-        $SkipTest
+        $Extended,
+
+        # Hide the warning messages, don't test the prerequisites.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $HideWarning
     )
 
-    # Load configuration
+    Show-SystemAuditEventLogWarning -LogName 'Application' -DayPeriod $DayPeriod -HideWarning:$HideWarning.IsPresent
+
     $configEventLog = Get-Content -Path "$Script:ConfigurationPath\SystemAudit.EventLog.json" | ConvertFrom-Json
 
-    # Test if the event log period is valid, return the start date/time
-    $periodStart = Test-EventLogPeriod -LogName 'Application' -Period $Period -HideWarning:$SkipTest.IsPresent
-
     # Get all relevant event log records for the MSI Installer
-    $records = Get-WinEventAdvanced -LogName 'Application' -EventId 11707, 11708, 11724, 11725, 11728, 11729 -From $periodStart
+    $records = Get-WinEventAdvanced -LogName 'Application' -EventId 11707, 11708, 11724, 11725, 11728, 11729 -ProviderName 'MsiInstaller' -DayPeriod $DayPeriod
 
     foreach ($record in $records)
     {
         $recordId = $record.Id
 
-        if ($record.ProviderName -eq $configEventLog.Application.$recordId.ProviderName)
-        {
-            $event = [PSCustomObject] @{
-                PSTypeName = 'SecurityFever.SystemAuditEvent'
-                Timestamp  = $record.TimeCreated
-                Machine    = $record.MachineName
-                User       = Get-WinEventRecordUser -Record $record
-                Component  = 'MSI Installer'
-                Action     = $configEventLog.Application.$recordId.Action
-                Context    = ''
-                Detail     = ''
-                Source     = '/EventLog/Application/Record[@Id={0}]' -f $recordId
-            }
-
-            # Extract the product name from the event message, see this example:
-            # Product: My Product -- Installation completed successfully.
-            $event.Context = $record.Properties[0].Value
-            $event.Context = $event.Context.Substring($event.Context.IndexOf(': ') + 2)
-            $event.Context = $event.Context.Substring(0, $event.Context.LastIndexOf(' -- '))
-
-            Write-Output $event
+        $event = [PSCustomObject] @{
+            PSTypeName = 'SecurityFever.SystemAuditEvent'
+            Timestamp  = $record.TimeCreated
+            Machine    = $record.MachineName
+            User       = Get-WinEventRecordUser -Record $record
+            Component  = 'MSI Installer'
+            Action     = $configEventLog.Application.$recordId.Action
+            Context    = ''
+            Detail     = ''
+            Source     = '/EventLog/Application/Record[@Id={0}]' -f $recordId
         }
+
+        # Extract the product name from the event message, see this example:
+        # Product: My Product -- Installation completed successfully.
+        $event.Context = $record.Properties[0].Value
+        $event.Context = $event.Context.Substring($event.Context.IndexOf(': ') + 2)
+        $event.Context = $event.Context.Substring(0, $event.Context.LastIndexOf(' -- '))
+
+        Write-Output $event
     }
 }

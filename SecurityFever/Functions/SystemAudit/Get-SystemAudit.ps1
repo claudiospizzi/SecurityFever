@@ -7,17 +7,33 @@ function Get-SystemAudit
     [CmdletBinding()]
     param
     (
-        # Period of days to report for the audit events
+        # Period of days to cover.
         [Parameter(Mandatory = $false)]
         [System.Int32]
-        $Period = 7
+        $DayPeriod = 7,
+
+        # Show extended events, not only the important ones.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $Extended,
+
+        # Hide the warning messages, don't test the prerequisites.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $HideWarning
     )
 
     # Global tests
-    Test-EventLogPeriod -LogName 'Application' -Period $Period | Out-Null
-    Test-EventLogPeriod -LogName 'System' -Period $Period | Out-Null
+    Show-SystemAuditEventLogWarning -LogName 'Application' -DayPeriod $DayPeriod -HideWarning:$HideWarning.IsPresent
+    Show-SystemAuditEventLogWarning -LogName 'Security' -DayPeriod $DayPeriod -HideWarning:$HideWarning.IsPresent
+    Show-SystemAuditEventLogWarning -LogName 'System' -DayPeriod $DayPeriod -HideWarning:$HideWarning.IsPresent
+    Show-SystemAuditPolicyWarning -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Success' -HideWarning:$HideWarning.IsPresent
+    Show-SystemAuditPolicyWarning -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Failure' -HideWarning:$HideWarning.IsPresent
+    Show-SystemAuditPolicyWarning -Category 'Logon/Logoff' -Subcategory 'Logoff' -Setting 'Success' -HideWarning:$HideWarning.IsPresent
 
     # Get all audit events
-    Get-SystemAuditMsiInstaller -Period $Period -SkipTest
-    Get-SystemAuditPowerCycle -Period $Period -SkipTest
+    Get-SystemAuditMsiInstaller -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    Get-SystemAuditPowerCycle -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    Get-SystemAuditUserSession -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    Get-SystemAuditGroupPolicy -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
 }

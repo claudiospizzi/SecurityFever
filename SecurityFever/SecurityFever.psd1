@@ -47,6 +47,7 @@
     # Assemblies that must be loaded prior to importing this module
     RequiredAssemblies = @(
         'Assemblies\SecurityFever.dll'
+        'Assemblies\QRCoder.dll'
     )
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
@@ -54,12 +55,12 @@
 
     # Type files (.ps1xml) to be loaded when importing this module
     TypesToProcess = @(
-        'Resources\SecurityFever.Types.ps1xml'
+        'SecurityFever.Xml.Types.ps1xml'
     )
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess = @(
-        'Resources\SecurityFever.Formats.ps1xml'
+        'SecurityFever.Xml.Format.ps1xml'
     )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
@@ -76,6 +77,7 @@
         'Get-CertificatePrivateKeyPermission'
         # Common
         'Get-TimeBasedOneTimePassword'
+        'New-TimeBasedOneTimeSharedSecret'
         'Invoke-Elevated'
         'Invoke-PowerShell'
         'Test-Credential'
@@ -93,8 +95,11 @@
         'Push-ImpersonationContext'
         # System Audit
         'Get-SystemAudit'
+        'Get-SystemAuditGroupPolicy'
         'Get-SystemAuditMsiInstaller'
         'Get-SystemAuditPowerCycle'
+        'Get-SystemAuditUserSession'
+        'Get-SystemAuditWindowsService'
         # TrustedHost
         'Add-TrustedHost'
         'Get-TrustedHost'
@@ -125,6 +130,7 @@
         'posh'
         'cred'
         'Get-TOTP'
+        'New-TOTPSharedSecret'
     )
 
     # DSC resources to export from this module

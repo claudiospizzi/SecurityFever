@@ -1,6 +1,11 @@
-
+<#
+    .SYNOPSIS
+        Convert a Base32 (RFC 4648) based string to a byte array.
+#>
 function Convert-Base32ToByte
 {
+    [CmdletBinding()]
+    [OutputType([System.Byte])]
     param
     (
         [Parameter(Mandatory = $true)]

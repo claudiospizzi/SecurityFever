@@ -9,3 +9,6 @@
 # Visual Studio cache, packages
 .vs/
 **/packages/*
+
+# Temporary debug files
+.debug.*.ps1

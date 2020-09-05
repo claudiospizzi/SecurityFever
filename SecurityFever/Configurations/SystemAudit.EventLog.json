@@ -1,53 +1,148 @@
 {
     "Application": {
         "11707": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Installation successfully"
+            "Action": "Installation Successful"
         },
         "11708": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Installation failed"
+            "Action": "Installation Failed"
         },
         "11724": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Removal successfully"
+            "Action": "Removal Successful"
         },
         "11725": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Removal failed"
+            "Action": "Removal Failed"
         },
         "11728": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Configuration successfully"
+            "Action": "Configuration Successful"
         },
         "11729": {
-            "ProviderName": "MsiInstaller",
-            "Action": "Configuration failed"
+            "Action": "Configuration Failed"
+        }
+    },
+    "Security": {
+        "4624": {
+            "Action": "Account Logon Successful",
+            "Properties": [
+                "SubjectUserSid",
+                "SubjectUserName",
+                "SubjectDomainName",
+                "SubjectLogonId",
+                "TargetUserSid",
+                "TargetUserName",
+                "TargetDomainName",
+                "TargetLogonId",
+                "LogonType",
+                "LogonProcessName",
+                "AuthenticationPackageName",
+                "WorkstationName",
+                "LogonGuid",
+                "TransmittedServices",
+                "LmPackageName",
+                "KeyLength",
+                "ProcessId",
+                "ProcessName",
+                "IpAddress",
+                "IpPort",
+                "ImpersonationLevel"
+            ]
+        },
+        "4625": {
+            "Action": "Account Logon Failed",
+            "Properties": [
+                "SubjectUserSid",
+                "SubjectUserName",
+                "SubjectDomainName",
+                "SubjectLogonId",
+                "TargetUserSid",
+                "TargetUserName",
+                "TargetDomainName",
+                "Status",
+                "FailureReason",
+                "SubStatus",
+                "LogonType",
+                "LogonProcessName",
+                "AuthenticationPackageName",
+                "WorkstationName",
+                "TransmittedServices",
+                "LmPackageName",
+                "KeyLength",
+                "ProcessId",
+                "ProcessName",
+                "IpAddress",
+                "IpPort"
+            ]
+        },
+        "4634": {
+            "Action": "Account Logoff"
+        },
+        "4647": {
+            "Action": "User Initiated Logoff"
+        },
+        "LogonType": {
+            "2": "Interactive",
+            "3": "Network",
+            "4": "Batch",
+            "5": "Service",
+            "7": "Unlock",
+            "8": "NetworkCleartext",
+            "9": "NewCredentials",
+            "10": "RemoteInteractive",
+            "11": "CachedInteractive"
+        },
+        "FailureCode": {
+            "0xC0000064": "user name does not exist",
+            "0xC000006A": "user name is correct but the password is wrong",
+            "0xC0000234": "user is currently locked out",
+            "0xC0000072": "account is currently disabled",
+            "0xC000006F": "user tried to logon outside his day of week or time of day restrictions",
+            "0xC0000070": "workstation restriction, or Authentication Policy Silo violation (look for event ID 4820 on domain controller)",
+            "0xC0000193": "account expiration",
+            "0xC0000071": "expired password",
+            "0xC0000133": "clocks between DC and other computer too far out of sync",
+            "0xC0000224": "user is required to change password at next logon",
+            "0xC0000225": "evidently a bug in Windows and not a risk",
+            "0xc000015b": "The user has not been granted the requested logon type (aka logon right) at this machine"
         }
     },
     "System": {
         "1": {
-            "ProviderName": "Microsoft-Windows-Power-Troubleshooter",
             "Action": "Leaving Sleep"
         },
         "42": {
-            "ProviderName": "Microsoft-Windows-Kernel-Power",
             "Action": "Entering Sleep"
         },
         "1074": {
-            "ProviderName": "User32",
             "Action": "Request System {0}"
         },
+        "1502": {
+            "Action": "Computer Settings Changed",
+            "Properties": [
+                "SupportInfo1",
+                "SupportInfo2",
+                "ProcessingMode",
+                "ProcessingTimeInMilliseconds",
+                "DCName",
+                "NumberOfGroupPolicyObjects"
+            ]
+        },
+        "1503": {
+            "Action": "User Settings Changed",
+            "Properties": [
+                "SupportInfo1",
+                "SupportInfo2",
+                "ProcessingMode",
+                "ProcessingTimeInMilliseconds",
+                "DCName",
+                "NumberOfGroupPolicyObjects"
+            ]
+        },
         "6005": {
-            "ProviderName": "EventLog",
             "Action": "System Startup"
         },
         "6006": {
-            "ProviderName": "EventLog",
             "Action": "System Shutdown"
         },
         "6008": {
-            "ProviderName": "EventLog",
             "Action": "Unexpected Shutdown"
         }
     }
