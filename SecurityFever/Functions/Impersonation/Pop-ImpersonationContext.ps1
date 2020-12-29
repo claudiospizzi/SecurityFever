@@ -35,8 +35,8 @@ function Pop-ImpersonationContext
         # Get the latest impersonation context
         $popImpersonationContext = $Script:ImpersonationContext.Pop()
 
-        # Don't assume that the working path is still accessable
-        Set-Location $env:SystemDrive\
+        # Go to the system root drive, to prevent access denied on user paths
+        Set-Location -Path "$env:SystemDrive\"
         
         # Undo the impersonation
         $popImpersonationContext.Undo()
@@ -47,6 +47,7 @@ function Pop-ImpersonationContext
             Set-PSReadlineOption -HistorySaveStyle $Script:PSReadlineHistorySaveStyle -ErrorAction SilentlyContinue
         }
         
-        popd -StackName 'ImpersonateStack'
+        # Reset the working path
+        Pop-Location -StackName 'ImpersonateStack'
     }
 }
