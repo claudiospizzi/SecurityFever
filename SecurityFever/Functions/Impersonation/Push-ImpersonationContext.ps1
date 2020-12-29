@@ -77,7 +77,7 @@ function Push-ImpersonationContext
 
     # Go to the system root drive, to prevent access denied on user paths
     $OldPath = get-location
-    Push-Location -Path "$Env:SystemDrive\" #ToDo: code $script:directory_stack, don't rely on user to preserve the pushd stack
+    Push-Location -Path "$Env:SystemDrive\" -StackName 'ImpersonateStack'
 
     # Now, impersonate the new user account
     $newImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($tokenHandle)
@@ -89,7 +89,8 @@ function Push-ImpersonationContext
    try{
       $eap,$ErrorActionPreference = $ErrorActionPreference,'Stop';
       $null = ls $OldPath #throws UnauthorizedAccessException
-      popd;pushd
+      popd  -StackName 'ImpersonateStack'
+      pushd -StackName 'ImpersonateStack'
    }catch{}finally{
       $ErrorActionPreference=$eap
       rv eap
