@@ -46,5 +46,7 @@ function Pop-ImpersonationContext
         {
             Set-PSReadlineOption -HistorySaveStyle $Script:PSReadlineHistorySaveStyle -ErrorAction SilentlyContinue
         }
+        
+        popd;popd;
     }
 }
