@@ -90,8 +90,8 @@ function Push-ImpersonationContext
     {
         $eap,$ErrorActionPreference = $ErrorActionPreference,'Stop';
         Get-ChildItem -Path $OldPath | Out-Null #throws UnauthorizedAccessException
-        Push-Location -StackName 'ImpersonateStack'
         Pop-Location  -StackName 'ImpersonateStack'
+        Push-Location -StackName 'ImpersonateStack'
     }
     catch{}
     finally
