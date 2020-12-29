@@ -42,7 +42,7 @@ function Use-VaultSecureString
         # The vault secure string entry name.
         [Parameter(Mandatory = $true)]
         [System.String]
-        $TargetName
+        $TargetName,
         
         # Used to explicitly set NonInteractive mode
         [Parameter(Mandatory = $false)]
