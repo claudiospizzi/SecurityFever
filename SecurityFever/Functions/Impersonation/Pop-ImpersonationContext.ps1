@@ -35,6 +35,9 @@ function Pop-ImpersonationContext
         # Get the latest impersonation context
         $popImpersonationContext = $Script:ImpersonationContext.Pop()
 
+        # Don't assume that the working path is still accessable
+        Set-Location $env:SystemDrive\
+        
         # Undo the impersonation
         $popImpersonationContext.Undo()
 
