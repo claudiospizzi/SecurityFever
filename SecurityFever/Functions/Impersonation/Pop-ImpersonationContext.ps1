@@ -36,7 +36,7 @@ function Pop-ImpersonationContext
         $popImpersonationContext = $Script:ImpersonationContext.Pop()
 
         # Don't assume that the working path is still accessable
-        Push-Location $env:SystemDrive\
+        Set-Location $env:SystemDrive\
         
         # Undo the impersonation
         $popImpersonationContext.Undo()
@@ -47,6 +47,6 @@ function Pop-ImpersonationContext
             Set-PSReadlineOption -HistorySaveStyle $Script:PSReadlineHistorySaveStyle -ErrorAction SilentlyContinue
         }
         
-        popd;popd;
+        popd -StackName 'ImpersonateStack'
     }
 }
