@@ -10,7 +10,7 @@
         impersonated in the current session.
 
     .INPUTS
-        None.
+        ToDo
 
     .OUTPUTS
         None.
