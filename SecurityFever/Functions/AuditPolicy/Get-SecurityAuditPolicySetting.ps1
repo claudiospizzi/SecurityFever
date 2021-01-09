@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         This command uses the auditpol.exe command to get the current audit
-        policy setting for the local system and parses the output for the target
+        policy setting for the local system and parse the output for the target
         setting.
 
     .INPUTS

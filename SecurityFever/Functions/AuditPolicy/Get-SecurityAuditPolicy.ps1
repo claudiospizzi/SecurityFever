@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         This command uses the auditpol.exe command to get the current audit
-        policy setting for the local system and parses the output into a custom
+        policy setting for the local system and parse the output into a custom
         object.
 
     .INPUTS
@@ -29,14 +29,15 @@ function Get-SecurityAuditPolicy
     [CmdletBinding()]
     param ()
 
-    # Because the auditpol.exe cmdlet need administration permission, verify if
-    # the current session is startet as administrator.
+    # Because the auditpol.exe command needs administrative permission, verify
+    # if the current session is startet as administrator.
     if (-not (Test-AdministratorRole))
     {
-        throw 'Access denied. Please start this functions as an administrator.'
+        throw 'Access denied. Please run this command as administrator.'
     }
 
-    # Use the helper functions to execute the auditpol.exe queries.
+    # Use the helper functions to execute the auditpol.exe queries. The
+    # functions are used so that testing and mocking is possible.
     $csvAuditCategories = Invoke-AuditPolListSubcategoryAllCsv | ConvertFrom-Csv
     $csvAuditSettings   = Invoke-AuditPolGetCategoryAllCsv | ConvertFrom-Csv
 
