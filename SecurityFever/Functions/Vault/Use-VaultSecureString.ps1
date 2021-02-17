@@ -42,12 +42,17 @@ function Use-VaultSecureString
         # The vault secure string entry name.
         [Parameter(Mandatory = $true)]
         [System.String]
-        $TargetName
+        $TargetName,
+        
+        # Used to explicitly set NonInteractive mode
+        [Parameter(Mandatory = $false)]
+        [switch]
+        $NonInteractive
     )
 
     # Only run Read-Host if the PowerShell process is in interactive mode. If
     # this is not the case, just return $null indicating
-    $isInteractive = [Environment]::UserInteractive -and [Environment]::GetCommandLineArgs().Where({ $_ -like '-NonI*' }).Count -eq 0
+    $isInteractive = !$NonInteractive -and [Environment]::UserInteractive -and [Environment]::GetCommandLineArgs().Where({ $_ -like '-NonI*' }).Count -eq 0
 
     # Get all entries matching the parameters.
     $entries = @(Get-VaultEntry @PSBoundParameters)
