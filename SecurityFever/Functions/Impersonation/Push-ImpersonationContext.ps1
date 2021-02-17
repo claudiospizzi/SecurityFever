@@ -86,7 +86,7 @@ function Push-ImpersonationContext
     # Finally, close the handle to the token
     [Win32.Kernel32]::CloseHandle($tokenHandle) | Out-Null
     
-    if(Test-Path $OldPath -ErrorAction SilentlyContinue)
+    if(Test-Path $OldPath)
     {
         Pop-Location  -StackName 'ImpersonateStack'
         Push-Location -StackName 'ImpersonateStack'
