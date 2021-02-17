@@ -86,17 +86,9 @@ function Push-ImpersonationContext
     # Finally, close the handle to the token
     [Win32.Kernel32]::CloseHandle($tokenHandle) | Out-Null
     
-    try
+    if(Test-Path $OldPath -ErrorAction SilentlyContinue)
     {
-        $eap,$ErrorActionPreference = $ErrorActionPreference,'Stop';
-        Get-ChildItem -Path $OldPath | Out-Null #throws UnauthorizedAccessException
         Pop-Location  -StackName 'ImpersonateStack'
         Push-Location -StackName 'ImpersonateStack'
-    }
-    catch{}
-    finally
-    {
-        $ErrorActionPreference=$eap
-        Remove-Variable -Name 'eap'
     }
 }
