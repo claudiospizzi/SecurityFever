@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Added: Get file system audit events with Get-SecurityAuditFileSystem
 * Added: System audit functions
+* Added: New function to generate a cryptographically secure random password
 * Added: TOTP Generator
 
 ## 2.8.1 - 2019-11-08

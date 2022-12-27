@@ -41,5 +41,11 @@
     "powershell.codeFormatting.WhitespaceAroundPipe": true,
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
-    "powershell.codeFormatting.WhitespaceInsideBrace": true
+    "powershell.codeFormatting.WhitespaceInsideBrace": true,
+
+    "cSpell.words": [
+        "abcdefghijkmnopqrstuvwx",
+        "ABCDEFGHJKLMNPQRSTUVWX",
+        "TOTP"
+    ]
 }

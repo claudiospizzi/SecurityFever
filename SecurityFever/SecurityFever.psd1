@@ -84,6 +84,7 @@
         'Protect-String'
         'Unprotect-SecureString'
         'Test-Credential'
+        'New-Password'
         # EventLog
         'Get-SecurityActivity'
         # FortiNetVPN
@@ -126,6 +127,7 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
+        'pw'
         'sudo'
         'posh'
         'cred'
