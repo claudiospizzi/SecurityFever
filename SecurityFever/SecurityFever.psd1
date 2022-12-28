@@ -68,10 +68,13 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
+        # Audit
+        'Get-SecurityAuditFileSystem'
         # Audit Policy
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
         # Certificate
+        'Convert-Certificate'
         'New-DomainSignedCertificate'
         'Add-CertificatePrivateKeyPermission'
         'Get-CertificatePrivateKeyPermission'
