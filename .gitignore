@@ -1,5 +1,5 @@
 # Module assemblies
-**/Assemblies/*.dll
+**/Assemblies/SecurityFever.dll
 
 # Build output
 [Bb]in/
