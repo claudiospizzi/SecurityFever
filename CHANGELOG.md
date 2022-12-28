@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Added: Convert certificate command
 * Added: Get file system audit events with Get-SecurityAuditFileSystem
 * Added: System audit functions
 * Added: TOTP Generator
