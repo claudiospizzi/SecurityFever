@@ -11,15 +11,11 @@
         None.
 
     .OUTPUTS
-        SecurityFever.AuditPolicy. Array of custom audit policy objects.
+        SecurityFever.Audit.Policy. Array of custom audit policy objects.
 
     .EXAMPLE
         PS C:\> Get-SecurityAuditPolicy
         Return all local security audit policies.
-
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
@@ -31,10 +27,7 @@ function Get-SecurityAuditPolicy
 
     # Because the auditpol.exe command needs administrative permission, verify
     # if the current session is startet as administrator.
-    if (-not (Test-AdministratorRole))
-    {
-        throw 'Access denied. Please run this command as administrator.'
-    }
+    Test-AdministratorRole -Throw
 
     # Use the helper functions to execute the auditpol.exe queries. The
     # functions are used so that testing and mocking is possible.
@@ -56,7 +49,7 @@ function Get-SecurityAuditPolicy
 
             # Return the result object
             [PSCustomObject] @{
-                PSTypeName      = 'SecurityFever.AuditPolicy'
+                PSTypeName      = 'SecurityFever.Audit.Policy'
                 ComputerName    = $csvAuditSetting.'Machine Name'
                 Category        = $lastCategory
                 CategoryGuid    = $lastCategoryGuid
