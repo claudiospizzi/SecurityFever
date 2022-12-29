@@ -40,8 +40,8 @@ function Get-SystemAuditGroupPolicy
     {
         $recordId = $record.Id
 
-        $event = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAuditEvent'
+        $auditEvent = [PSCustomObject] @{
+            PSTypeName = 'SecurityFever.SystemAudit.Event'
             Timestamp  = $record.TimeCreated
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
@@ -56,8 +56,8 @@ function Get-SystemAuditGroupPolicy
         $recordProperties = Get-WinEventRecordProperty -Record $record -PropertyName $configEventLog.System.$recordId.Properties
 
         # Update the context
-        $event.Context = '{0} Settings Changed' -f $recordProperties.NumberOfGroupPolicyObjects
+        $auditEvent.Context = '{0} Settings Changed' -f $recordProperties.NumberOfGroupPolicyObjects
 
-        Write-Output $event
+        Write-Output $auditEvent
     }
 }

@@ -45,8 +45,8 @@ function Get-SystemAuditPowerCycle
     {
         $recordId = $record.Id
 
-        $event = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAuditEvent'
+        $auditEvent = [PSCustomObject] @{
+            PSTypeName = 'SecurityFever.SystemAudit.Event'
             Timestamp  = $record.TimeCreated
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
@@ -62,28 +62,28 @@ function Get-SystemAuditPowerCycle
         {
             switch ($record.Properties[12].Value)
             {
-                1 { $event.Detail = 'Reason: Power Button' }
-                3 { $event.Detail = 'Reason: S4 Doze to Hibernate' }
-                5 { $event.Detail = 'Reason: Device - ACPI Lid' }
+                1 { $auditEvent.Detail = 'Reason: Power Button' }
+                3 { $auditEvent.Detail = 'Reason: S4 Doze to Hibernate' }
+                5 { $auditEvent.Detail = 'Reason: Device - ACPI Lid' }
             }
         }
         if ($recordId -eq 42)
         {
             switch ($record.Properties[2].Value)
             {
-                0 { $event.Detail = 'Reason: Button or Lid' }
-                2 { $event.Detail = 'Reason: Battery' }
-                4 { $event.Detail = 'Reason: Application API' }
-                6 { $event.Detail = 'Reason: Hibernate from Sleep - Fixed Timeout' }
-                7 { $event.Detail = 'Reason: System Idle' }
+                0 { $auditEvent.Detail = 'Reason: Button or Lid' }
+                2 { $auditEvent.Detail = 'Reason: Battery' }
+                4 { $auditEvent.Detail = 'Reason: Application API' }
+                6 { $auditEvent.Detail = 'Reason: Hibernate from Sleep - Fixed Timeout' }
+                7 { $auditEvent.Detail = 'Reason: System Idle' }
             }
         }
 
         # Add additional info to the reboot or power off request
         if ($recordId -eq 1074)
         {
-            $event.Detail = 'Process: {0}' -f $record.Properties[0].Value.ToLower()
-            $event.Action = $event.Action -f [System.Globalization.CultureInfo]::InvariantCulture.TextInfo.ToTitleCase($Record.Properties[4].Value)
+            $auditEvent.Detail = 'Process: {0}' -f $record.Properties[0].Value.ToLower()
+            $auditEvent.Action = $auditEvent.Action -f [System.Globalization.CultureInfo]::InvariantCulture.TextInfo.ToTitleCase($Record.Properties[4].Value)
         }
 
         # Update the date for the unexpected reboot
@@ -95,8 +95,8 @@ function Get-SystemAuditPowerCycle
 
             try
             {
-                $event.Timestamp = [System.DateTime]::Parse($timestamp)
-                $event.Detail    = "Event Created: {0}" -f $record.TimeCreated
+                $auditEvent.Timestamp = [System.DateTime]::Parse($timestamp)
+                $auditEvent.Detail    = "Event Created: {0}" -f $record.TimeCreated
             }
             catch
             {
@@ -104,6 +104,6 @@ function Get-SystemAuditPowerCycle
             }
         }
 
-        Write-Output $event
+        Write-Output $auditEvent
     }
 }

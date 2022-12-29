@@ -51,8 +51,8 @@ function Get-SystemAuditUserSession
             continue
         }
 
-        $event = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAuditEvent'
+        $auditEvent = [PSCustomObject] @{
+            PSTypeName = 'SecurityFever.SystemAudit.Event'
             Timestamp  = $record.TimeCreated
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
@@ -70,7 +70,7 @@ function Get-SystemAuditUserSession
         if ($recordProperties.PSObject.Properties.Name -contains 'TargetUserName' -and
             $recordProperties.TargetUserName -ne '-')
         {
-            $event.User = ('{0}\{1}' -f $recordProperties.TargetDomainName, $recordProperties.TargetUserName).Trim('\-')
+            $auditEvent.User = ('{0}\{1}' -f $recordProperties.TargetDomainName, $recordProperties.TargetUserName).Trim('\-')
         }
 
         # Extract the logon type
@@ -81,7 +81,7 @@ function Get-SystemAuditUserSession
 
             if ($configEventLog.Security.LogonType.PSObject.Properties.Name -contains $logonType)
             {
-                $event.Context = $configEventLog.Security.LogonType.$logonType
+                $auditEvent.Context = $configEventLog.Security.LogonType.$logonType
             }
         }
 
@@ -89,7 +89,7 @@ function Get-SystemAuditUserSession
         if ($recordProperties.PSObject.Properties.Name -contains 'SubjectUserName' -and
             $recordProperties.SubjectUserName -ne '-')
         {
-            $event.Detail += 'Requester: {0}, ' -f ('{0}\{1}' -f $recordProperties.SubjectDomainName, $recordProperties.SubjectUserName).Trim('\-')
+            $auditEvent.Detail += 'Requester: {0}, ' -f ('{0}\{1}' -f $recordProperties.SubjectDomainName, $recordProperties.SubjectUserName).Trim('\-')
         }
 
         # Extract the failure code message
@@ -99,7 +99,7 @@ function Get-SystemAuditUserSession
 
             if ($configEventLog.Security.FailureCode.PSObject.Properties.Name -contains $failureCode)
             {
-                $event.Detail += 'Status: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
+                $auditEvent.Detail += 'Status: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
             }
         }
         if ($recordProperties.PSObject.Properties.Name -contains 'SubStatus')
@@ -108,43 +108,43 @@ function Get-SystemAuditUserSession
 
             if ($configEventLog.Security.FailureCode.PSObject.Properties.Name -contains $failureCode)
             {
-                $event.Detail += 'SubStatus: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
+                $auditEvent.Detail += 'SubStatus: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
             }
         }
 
         # Fix the detail string
-        $event.Detail += 'Auth: {0}, ' -f $recordProperties.AuthenticationPackageName
+        $auditEvent.Detail += 'Auth: {0}, ' -f $recordProperties.AuthenticationPackageName
 
         # Extract the source process
         if ($recordProperties.PSObject.Properties.Name -contains 'ProcessName' -and
             $recordProperties.ProcessName -ne '-')
         {
-            $event.Detail += 'Process: {0}, ' -f $recordProperties.ProcessName
+            $auditEvent.Detail += 'Process: {0}, ' -f $recordProperties.ProcessName
         }
 
         # Extract the source pc name
         if ($recordProperties.PSObject.Properties.Name -contains 'WorkstationName' -and
             $recordProperties.WorkstationName -ne '-')
         {
-            $event.Detail += 'Source PC: {0}, ' -f $recordProperties.WorkstationName
+            $auditEvent.Detail += 'Source PC: {0}, ' -f $recordProperties.WorkstationName
         }
 
         # Extract the source ip address
         if ($recordProperties.PSObject.Properties.Name -contains 'IpAddress' -and
             $recordProperties.IpAddress -ne '-')
         {
-            $event.Detail += 'Source IP: {0}:{1}, ' -f $recordProperties.IpAddress, $recordProperties.IpPort
+            $auditEvent.Detail += 'Source IP: {0}:{1}, ' -f $recordProperties.IpAddress, $recordProperties.IpPort
         }
 
         # Skip records if not extended (part 2)
-        if (-not $Extended.IsPresent -and $recordId -eq 4624 -and $event.Context -notin 'Interactive', 'RemoteInteractive')
+        if (-not $Extended.IsPresent -and $recordId -eq 4624 -and $auditEvent.Context -notin 'Interactive', 'RemoteInteractive')
         {
             continue
         }
 
         # Optimize object
-        $event.Detail = $event.Detail.TrimEnd(', ')
+        $auditEvent.Detail = $auditEvent.Detail.TrimEnd(', ')
 
-        Write-Output $event
+        Write-Output $auditEvent
     }
 }

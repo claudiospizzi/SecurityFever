@@ -44,8 +44,8 @@ function Get-SystemAuditMsiInstaller
     {
         $recordId = $record.Id
 
-        $event = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAuditEvent'
+        $auditEvent = [PSCustomObject] @{
+            PSTypeName = 'SecurityFever.SystemAudit.Event'
             Timestamp  = $record.TimeCreated
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
@@ -58,10 +58,10 @@ function Get-SystemAuditMsiInstaller
 
         # Extract the product name from the event message, see this example:
         # Product: My Product -- Installation completed successfully.
-        $event.Context = $record.Properties[0].Value
-        $event.Context = $event.Context.Substring($event.Context.IndexOf(': ') + 2)
-        $event.Context = $event.Context.Substring(0, $event.Context.LastIndexOf(' -- '))
+        $auditEvent.Context = $record.Properties[0].Value
+        $auditEvent.Context = $auditEvent.Context.Substring($auditEvent.Context.IndexOf(': ') + 2)
+        $auditEvent.Context = $auditEvent.Context.Substring(0, $auditEvent.Context.LastIndexOf(' -- '))
 
-        Write-Output $event
+        Write-Output $auditEvent
     }
 }

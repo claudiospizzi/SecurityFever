@@ -237,5 +237,69 @@
       </TableControl>
     </View>
 
+    <View>
+      <Name>SecurityFever.SystemAudit.Event</Name>
+      <ViewSelectedBy>
+        <TypeName>SecurityFever.SystemAudit.Event</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Timestamp</Label>
+            <Width>22</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Machine</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>User</Label>
+            <Width>30</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Component</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Action</Label>
+            <Width>24</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Context</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Detail</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Timestamp</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Machine</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>User</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Component</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Action</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Context</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Detail</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
   </ViewDefinitions>
 </Configuration>
