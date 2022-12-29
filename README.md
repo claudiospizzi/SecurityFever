@@ -172,7 +172,7 @@ For the best development experience, open this project as a folder in Visual
 Studio Code and ensure that the PowerShell extension is installed.
 
 * [Visual Studio Code] with the [PowerShell Extension]
-* [Pester], [PSScriptAnalyzer] and [psake] PowerShell Modules
+* [Pester], [PSScriptAnalyzer], [InvokeBuild] and [InvokeBuildHelper] modules
 
 [PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
 [GitHub Releases]: https://github.com/claudiospizzi/SecurityFever/releases
@@ -184,4 +184,5 @@ Studio Code and ensure that the PowerShell extension is installed.
 [PowerShell Extension]: https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell
 [Pester]: https://www.powershellgallery.com/packages/Pester
 [PSScriptAnalyzer]: https://www.powershellgallery.com/packages/PSScriptAnalyzer
-[psake]: https://www.powershellgallery.com/packages/psake
+[InvokeBuild]: https://www.powershellgallery.com/packages/InvokeBuild
+[InvokeBuildHelper]: https://www.powershellgallery.com/packages/InvokeBuildHelper

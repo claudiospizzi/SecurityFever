@@ -71,6 +71,7 @@
         # Audit Policy
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
+        'Get-SecurityAuditFileSystem'
         # Certificate
         'New-DomainSignedCertificate'
         'Add-CertificatePrivateKeyPermission'
