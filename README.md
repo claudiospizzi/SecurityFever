@@ -1,6 +1,7 @@
-[![PowerShell Gallery - SecurityFever](https://img.shields.io/badge/PowerShell_Gallery-SecurityFever-0072C6.svg)](https://www.powershellgallery.com/packages/SecurityFever)
-[![GitHub - Release](https://img.shields.io/github/release/claudiospizzi/SecurityFever.svg)](https://github.com/claudiospizzi/SecurityFever/releases)
-[![AppVeyor - master](https://img.shields.io/appveyor/ci/claudiospizzi/SecurityFever/master.svg)](https://ci.appveyor.com/project/claudiospizzi/SecurityFever/branch/master)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/SecurityFever?label=PowerShell%20Gallery&logo=PowerShell)](https://www.powershellgallery.com/packages/SecurityFever)
+[![Gallery Downloads](https://img.shields.io/powershellgallery/dt/SecurityFever?label=Downloads&logo=PowerShell)](https://www.powershellgallery.com/packages/SecurityFever)
+[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/PSSecurityFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/PSSecurityFever/releases)
+[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/PSSecurityFever/ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/PSSecurityFever/actions/workflows/ci.yml)
 
 # SecurityFever PowerShell Module
 
@@ -174,8 +175,8 @@ Studio Code and ensure that the PowerShell extension is installed.
 * [Visual Studio Code] with the [PowerShell Extension]
 * [Pester], [PSScriptAnalyzer], [InvokeBuild] and [InvokeBuildHelper] modules
 
-[PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
-[GitHub Releases]: https://github.com/claudiospizzi/SecurityFever/releases
+[PowerShell Gallery]: https://www.powershellgallery.com/packages/InvokeBuildHelper
+[GitHub Releases]: https://github.com/claudiospizzi/PSInvokeBuildHelper/releases
 [Installing a PowerShell Module]: https://msdn.microsoft.com/en-us/library/dd878350
 
 [CHANGELOG.md]: CHANGELOG.md
