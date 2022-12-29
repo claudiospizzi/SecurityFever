@@ -3,9 +3,53 @@
   <ViewDefinitions>
 
     <View>
-      <Name>SecurityFever.AuditPolicy</Name>
+      <Name>SecurityFever.Audit.FileSystemEvent</Name>
       <ViewSelectedBy>
-        <TypeName>SecurityFever.AuditPolicy</TypeName>
+        <TypeName>SecurityFever.Audit.FileSystemEvent</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Timestamp</Label>
+            <Width>22</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Subject</Label>
+            <Width>36</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Access</Label>
+            <Width>32</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Object</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Timestamp</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Subject</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Access</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Object</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+
+    <View>
+      <Name>SecurityFever.Audit.Policy</Name>
+      <ViewSelectedBy>
+        <TypeName>SecurityFever.Audit.Policy</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

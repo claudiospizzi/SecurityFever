@@ -18,10 +18,6 @@
         Returns the current setting for success audit on the file system object
         access audit policy.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

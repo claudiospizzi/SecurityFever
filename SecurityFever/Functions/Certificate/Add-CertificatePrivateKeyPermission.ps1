@@ -5,7 +5,7 @@
     .DESCRIPTION
         This command will resolve the certificate to it's corresponding private
         key file in C:\ProgramData\Microsoft\Crypto\RSA\MachineKeys and add a
-        new access entry for the specifiy identity.
+        new access entry for the specified identity.
 
     .INPUTS
         None.
