@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: TOTP Generator
 * Removed: Remove Windows VPN connect and disconnect functions (BREAKING)
 * Removed: Remove FortiNet VPN connect and disconnect functions (BREAKING)
+* Removed: Remove the Get-SecurityActivity command, replaced by the system audit commands (BREAKING)
 
 ## 2.8.1 - 2019-11-08
 

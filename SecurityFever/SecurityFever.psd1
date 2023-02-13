@@ -89,11 +89,6 @@
         'Unprotect-SecureString'
         'Test-Credential'
         'New-Password'
-        # EventLog
-        'Get-SecurityActivity'
-        # FortiNetVPN
-        'Connect-FortiClientVPN'
-        'Disconnect-FortiClientVPN'
         # Impersonation
         'Get-ImpersonationContext'
         'Pop-ImpersonationContext'
@@ -118,9 +113,6 @@
         'Update-VaultEntry'
         'Use-VaultCredential'
         'Use-VaultSecureString'
-        # WindowsVPN
-        'Connect-WindowsVPN'
-        'Disconnect-WindowsVPN'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
