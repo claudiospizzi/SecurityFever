@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: System audit functions
 * Added: New function to generate a cryptographically secure random password
 * Added: TOTP Generator
+* Removed: Remove Windows VPN connect and disconnect functions (BREAKING)
+* Removed: Remove FortiNet VPN connect and disconnect functions (BREAKING)
 
 ## 2.8.1 - 2019-11-08
 
