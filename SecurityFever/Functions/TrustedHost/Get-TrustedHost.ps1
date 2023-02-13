@@ -16,10 +16,6 @@
         PS C:\> Get-TrustedHosts
         Get trusted host list entries.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
@@ -27,6 +23,13 @@ function Get-TrustedHost
 {
     [CmdletBinding()]
     param ()
+
+    # Check the WinRM service
+    $serviceWinRM = Get-Service -Name 'WinRM'
+    if ($serviceWinRM.StartType -ne 'Automatic' -or $serviceWinRM.Status -ne 'Running')
+    {
+        throw 'The WinRM service is not running.'
+    }
 
     # Get the WSMan trusted hosts item, ensure its a string
     $trustedHosts = [String] (Get-Item -Path 'WSMan:\localhost\Client\TrustedHosts').Value

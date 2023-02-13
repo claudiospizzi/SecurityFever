@@ -21,10 +21,6 @@
         PS C:\> '10.0.0.1', '10.0.0.2', '10.0.0.3' | Remove-TrustedHosts
         Remove the list of IP addresses from the trusted host list.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
@@ -40,6 +36,13 @@ function Remove-TrustedHost
 
     begin
     {
+        # Check the WinRM service
+        $serviceWinRM = Get-Service -Name 'WinRM'
+        if ($serviceWinRM.StartType -ne 'Automatic' -or $serviceWinRM.Status -ne 'Running')
+        {
+            throw 'The WinRM service is not running.'
+        }
+
         # The trusted hosts list can only be changed as an administrator.
         if (-not (Test-AdministratorRole))
         {
