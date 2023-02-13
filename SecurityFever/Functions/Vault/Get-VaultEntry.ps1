@@ -23,10 +23,6 @@
         PS C:\> Get-VaultEntry -TargetName 'MyUserCred'
         Return the credential entry with the target name 'MyUserCred'.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

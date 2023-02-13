@@ -18,10 +18,6 @@
         PS C:\> Get-VaultCredential -TargetName 'MyUserCred'
         Return the PSCredential objects with the target name 'MyUserCred'.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

@@ -19,10 +19,6 @@
     .EXAMPLE
         PS C:\> Update-VaultEntry -TargetName 'MyUserCred' -Type 'DomainPassword' -NewCredential $cred
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

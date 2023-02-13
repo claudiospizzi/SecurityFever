@@ -21,10 +21,6 @@
         Remove the Credential Manager vault entry with the specified target name
         and type.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

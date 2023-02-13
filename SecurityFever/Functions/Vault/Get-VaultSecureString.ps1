@@ -18,10 +18,6 @@
         PS C:\> Get-VaultSecureString -TargetName 'MySecString'
         Return the secure string objects with the target name 'MySecString'.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

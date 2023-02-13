@@ -78,10 +78,6 @@
         and persist options. Check the description for detailed information
         about the types and persist locations.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

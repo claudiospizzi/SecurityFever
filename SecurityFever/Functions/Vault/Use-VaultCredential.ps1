@@ -26,10 +26,6 @@
         Return the PSCredential objects with the target name 'MyUserCred' from
         the vault or if it does not exist, query the user.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
