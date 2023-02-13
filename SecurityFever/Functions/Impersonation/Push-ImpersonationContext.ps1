@@ -19,10 +19,6 @@
         PS C:\> Push-ImpersonationContext -Credential 'CONTOSO\Operator'
         Create a new impersonation context for the Contoso Operator user.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

@@ -17,10 +17,6 @@
         PS C:\> Get-ImpersonationContext
         Return the current impersonation context.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>
