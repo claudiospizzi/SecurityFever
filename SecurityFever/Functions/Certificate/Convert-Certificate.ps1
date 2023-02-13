@@ -9,10 +9,10 @@
         The following overview should give a short introduction about
         certificates and their file formats:
         - X.509/DER (.cer)
-          Contains the public part of a single certificate in the binary DER
-          format. Used primary on Windows systems.
+          Contains the public part of a single X.509 certificate in the binary
+          DER format. Used primary on Windows systems.
         - X.509/PEM (.pem)
-          Contains the public part of a single certificate in the Base64
+          Contains the public part of a single X.509 certificate in the Base64
           encoded PEM format.
 
         Input certificate formats supported by this command:
@@ -105,7 +105,7 @@ function Convert-Certificate
     {
         'X.509/DER'
         {
-
+            throw 'Converting a certificate to X.509/DER is not supported yet.'
         }
 
         'X.509/PEM'

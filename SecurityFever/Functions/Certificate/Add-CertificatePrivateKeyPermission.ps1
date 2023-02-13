@@ -61,9 +61,7 @@ function Add-CertificatePrivateKeyPermission
         # Find the certificate, if the thumbprint was specified
         if ($PSCmdlet.ParameterSetName -eq 'Thumbprint')
         {
-            $Certificate = Get-ChildItem -Path 'Cert:\' -Recurse |
-                               Where-Object { $_.Thumbprint -eq $Thumbprint } |
-                                   Select-Object -First 1
+            $Certificate = Get-ChildItem -Path 'Cert:\' -Recurse | Where-Object { $_.Thumbprint -eq $Thumbprint } | Select-Object -First 1
 
             if ($null -eq $Certificate)
             {
