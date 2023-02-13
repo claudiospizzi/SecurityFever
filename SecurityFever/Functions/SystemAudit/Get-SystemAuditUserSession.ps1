@@ -9,6 +9,19 @@
         - 4625: An account failed to log on
         - 4634: An account was logged off
         - 4647: User initiated logoff
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        SecurityFever.SystemAudit.Event.
+
+    .EXAMPLE
+        PS C:\> Get-SystemAuditUserSession
+        Get the local user session system audit events.
+
+    .LINK
+        https://github.com/claudiospizzi/SecurityFever
 #>
 function Get-SystemAuditUserSession
 {
@@ -30,6 +43,8 @@ function Get-SystemAuditUserSession
         [Switch]
         $HideWarning
     )
+
+    Test-AdministratorRole -Throw
 
     Show-SystemAuditEventLogWarning -LogName 'Security' -DayPeriod $DayPeriod -HideWarning:$HideWarning.IsPresent
     Show-SystemAuditPolicyWarning -Category 'Logon/Logoff' -Subcategory 'Logon' -Setting 'Success' -HideWarning:$HideWarning.IsPresent
@@ -57,14 +72,14 @@ function Get-SystemAuditUserSession
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
             Component  = 'User Session'
-            Action     = $configEventLog.Security.$recordId.Action
+            Action     = $configEventLog.Events.Security.$recordId.Action
             Context    = ''
             Detail     = ''
             Source     = '/EventLog/Security/Record[@Id={0}]' -f $recordId
         }
 
         # Get record properties
-        $recordProperties = Get-WinEventRecordProperty -Record $record -PropertyName $configEventLog.Security.$recordId.Properties
+        $recordProperties = Get-WinEventRecordProperty -Record $record -PropertyName $configEventLog.Events.Security.$recordId.Properties
 
         # Extract the subject to logon
         if ($recordProperties.PSObject.Properties.Name -contains 'TargetUserName' -and
@@ -79,9 +94,9 @@ function Get-SystemAuditUserSession
         {
             $logonType = $recordProperties.LogonType
 
-            if ($configEventLog.Security.LogonType.PSObject.Properties.Name -contains $logonType)
+            if ($configEventLog.Enumerations.LogonType.PSObject.Properties.Name -contains $logonType)
             {
-                $auditEvent.Context = $configEventLog.Security.LogonType.$logonType
+                $auditEvent.Context = $configEventLog.Enumerations.LogonType.$logonType
             }
         }
 
@@ -97,18 +112,18 @@ function Get-SystemAuditUserSession
         {
             $failureCode = '0x{0:X8}' -f $recordProperties.Status
 
-            if ($configEventLog.Security.FailureCode.PSObject.Properties.Name -contains $failureCode)
+            if ($configEventLog.Enumerations.FailureCode.PSObject.Properties.Name -contains $failureCode)
             {
-                $auditEvent.Detail += 'Status: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
+                $auditEvent.Detail += 'Status: {0}, ' -f $configEventLog.Enumerations.FailureCode.$failureCode
             }
         }
         if ($recordProperties.PSObject.Properties.Name -contains 'SubStatus')
         {
             $failureCode = '0x{0:X8}' -f $recordProperties.SubStatus
 
-            if ($configEventLog.Security.FailureCode.PSObject.Properties.Name -contains $failureCode)
+            if ($configEventLog.Enumerations.FailureCode.PSObject.Properties.Name -contains $failureCode)
             {
-                $auditEvent.Detail += 'SubStatus: {0}, ' -f $configEventLog.Security.FailureCode.$failureCode
+                $auditEvent.Detail += 'SubStatus: {0}, ' -f $configEventLog.Enumerations.FailureCode.$failureCode
             }
         }
 

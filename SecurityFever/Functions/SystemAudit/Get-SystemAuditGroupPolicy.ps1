@@ -7,6 +7,19 @@
         Security event log:
         - 1502: Computer Group Policy Changed
         - 1503: User Group Policy Changed
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        SecurityFever.SystemAudit.Event.
+
+    .EXAMPLE
+        PS C:\> Get-SystemAuditGroupPolicy
+        Get the local Group Policy system audit events.
+
+    .LINK
+        https://github.com/claudiospizzi/SecurityFever
 #>
 function Get-SystemAuditGroupPolicy
 {
@@ -46,14 +59,14 @@ function Get-SystemAuditGroupPolicy
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
             Component  = 'Group Policy'
-            Action     = $configEventLog.System.$recordId.Action
+            Action     = $configEventLog.Events.System.$recordId.Action
             Context    = ''
             Detail     = ''
             Source     = '/EventLog/Security/System[@Id={0}]' -f $recordId
         }
 
         # Get record properties
-        $recordProperties = Get-WinEventRecordProperty -Record $record -PropertyName $configEventLog.System.$recordId.Properties
+        $recordProperties = Get-WinEventRecordProperty -Record $record -PropertyName $configEventLog.Events.System.$recordId.Properties
 
         # Update the context
         $auditEvent.Context = '{0} Settings Changed' -f $recordProperties.NumberOfGroupPolicyObjects

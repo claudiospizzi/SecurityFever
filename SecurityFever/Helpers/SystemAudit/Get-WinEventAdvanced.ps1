@@ -28,7 +28,6 @@ function Get-WinEventAdvanced
         $DayPeriod
     )
 
-
     # Convert the provider name array to the required filter query
     $filterProviderName = 'Provider[{0}]' -f [System.String]::Join(' or ', $ProviderName.ForEach({ "@Name='$_'" }))
 
@@ -40,5 +39,16 @@ function Get-WinEventAdvanced
 
     # Invoke the query with the filter
     $filterXml = '<QueryList><Query Id="0" Path="{0}"><Select Path="{0}">*[System[{1} and {2} and {3}]]</Select></Query></QueryList>' -f $LogName, $filterProviderName, $filterEventId, $filterTimeCreated
-    Get-WinEvent -FilterXml $filterXml
+
+    try
+    {
+        Get-WinEvent -FilterXml $filterXml -ErrorAction 'Stop'
+    }
+    catch
+    {
+        if ($_.Exception.Message -ne 'No events were found that match the specified selection criteria.')
+        {
+            throw $_
+        }
+    }
 }

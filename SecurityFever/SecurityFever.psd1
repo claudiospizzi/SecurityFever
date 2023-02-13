@@ -68,12 +68,9 @@
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(
-        # Audit
-        'Get-SecurityAuditFileSystem'
         # Audit Policy
         'Get-SecurityAuditPolicy'
         'Get-SecurityAuditPolicySetting'
-        'Get-SecurityAuditFileSystem'
         # Certificate
         'Convert-Certificate'
         'New-DomainSignedCertificate'
@@ -95,6 +92,7 @@
         'Push-ImpersonationContext'
         # System Audit
         'Get-SystemAudit'
+        'Get-SystemAuditFileSystem'
         'Get-SystemAuditGroupPolicy'
         'Get-SystemAuditMsiInstaller'
         'Get-SystemAuditPowerCycle'

@@ -11,6 +11,19 @@
         - 6005: System Startup
         - 6006: System Shutdown
         - 6008: Unexpected Shutdown
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        SecurityFever.SystemAudit.Event.
+
+    .EXAMPLE
+        PS C:\> Get-SystemAuditPowerCycle
+        Get the local power cycle system audit events.
+
+    .LINK
+        https://github.com/claudiospizzi/SecurityFever
 #>
 function Get-SystemAuditPowerCycle
 {
@@ -51,7 +64,7 @@ function Get-SystemAuditPowerCycle
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
             Component  = 'System Power'
-            Action     = $configEventLog.System.$recordId.Action
+            Action     = $configEventLog.Events.System.$recordId.Action
             Context    = ''
             Detail     = ''
             Source     = '/EventLog/System/Record[@Id={0}]' -f $recordId

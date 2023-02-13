@@ -11,6 +11,19 @@
         - 11725: Removal failed
         - 11728: Configuration completed successfully
         - 11729: Configuration failed
+
+    .INPUTS
+        None.
+
+    .OUTPUTS
+        SecurityFever.SystemAudit.Event.
+
+    .EXAMPLE
+        PS C:\> Get-SystemAuditMsiInstaller
+        Get the local MSI installer system audit events.
+
+    .LINK
+        https://github.com/claudiospizzi/SecurityFever
 #>
 function Get-SystemAuditMsiInstaller
 {
@@ -50,7 +63,7 @@ function Get-SystemAuditMsiInstaller
             Machine    = $record.MachineName
             User       = Get-WinEventRecordUser -Record $record
             Component  = 'MSI Installer'
-            Action     = $configEventLog.Application.$recordId.Action
+            Action     = $configEventLog.Events.Application.$recordId.Action
             Context    = ''
             Detail     = ''
             Source     = '/EventLog/Application/Record[@Id={0}]' -f $recordId
