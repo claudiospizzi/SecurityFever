@@ -28,6 +28,7 @@
 function Get-SystemAuditMsiInstaller
 {
     [CmdletBinding()]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     param
     (
         # Period of days to cover.

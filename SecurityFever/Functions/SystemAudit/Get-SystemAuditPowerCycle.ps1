@@ -28,6 +28,7 @@
 function Get-SystemAuditPowerCycle
 {
     [CmdletBinding()]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     param
     (
         # Period of days to cover.

@@ -68,6 +68,72 @@ account.
   the caller to enter the credentials. These credentials will be stored in the
   vault.
 
+* **Use-VaultCredential**  
+  The cmdlet works similar like the Use-VaultCredential, but returns only a
+  native secure string object containing the password without additional
+  metadata. This is useful if just the simple secure string object is required.
+
+### Certificate
+
+* **Convert-Certificate**  
+  Command to convert certificate files between various formats. This is useful
+  to replace openssl and have a PowerShell nativ method.
+
+* **New-DomainSignedCertificate**  
+  Command to create a new certificate signed by the domain CA. It's able to
+  create subject, dns name, ip addresses and a friendly name for the
+  certificate. The output can be Windows (DER) or Linux (PEM) compatible.
+
+* **Get-CertificatePrivateKeyPermission**  
+  Return all permissions entries of a certificate private key.
+
+* **Add-CertificatePrivateKeyPermission**  
+  Add a permission entry on the certificate private key.
+
+### Credential
+
+* **New-Password**  
+  Generate a new random and secure password.
+
+* **Test-Credential**  
+  With this cmdlet, credential objects or username and password pairs can be
+  tested, if they are valid. With the method parameter, it's possible to choose
+  how the credentials are validated (start process, Active Directory). Be aware,
+  multiple testing with wrong credentials can lock out the used account
+  depending on your security settings.
+
+### Secure String
+
+* **Protect-String**  
+  Convert a string into a secure string.
+
+* **Unprotect-SecureString**  
+  Convert a secure string into a string.
+
+### System Audit
+
+* **Get-SystemAudit**  
+  Get all audit changes on the target system. This will combine the result of
+  the commands below.
+
+* **Get-SystemAuditFileSystem**  
+  Get file system related audit changes on the target system.
+
+* **Get-SystemAuditGroupPolicy**  
+  Get group policy related audit changes on the target system.
+
+* **Get-SystemAuditMsiInstaller**  
+  Get MSI installer related audit changes on the target system.
+
+* **Get-SystemAuditPowerCycle**  
+  Get power cycle related audit changes on the target system.
+
+* **Get-SystemAuditUserSession**  
+  Get user session related audit changes on the target system.
+
+* **Get-SystemAuditWindowsService**  
+  Get Windows service related audit changes on the target system.
+
 ### Audit Policy
 
 * **Get-SecurityAuditPolicy**  
@@ -91,41 +157,6 @@ account.
 * **Pop-ImpersonationContext**  
   Leave the current impersonation context.
 
-### Other
-
-* **Invoke-Elevated**  
-  Invoke a script block or an executable in an elevated session. It will handle
-  the parameter passing into the elevated session and return the result as
-  object to the caller. Because it's running in a different elevated process,
-  XML serialization is used to return the result. The cmdlet has the alias
-  **sudo**, as used on *nix systems.
-
-* **Invoke-PowerShell**  
-  Start a new PowerShell Console session with alternative credentials. The
-  cmdlet has the alias **posh**.
-
-* **Get-TimeBasedOneTimePassword**  
-  Generate a Time-Base One-Time Password based on RFC 6238. The aliases Get-TOTP
-  or totp can also be used.
-
-* **Test-Credential**  
-  With this cmdlet, credential objects or username and password pairs can be
-  tested, if they are valid. With the method parameter, it's possible to choose
-  how the credentials are validated (start process, Active Directory). Be aware,
-  multiple testing with wrong credentials can lock out the used account
-  depending on your security settings.
-
-* **Get-SecurityActivity**  
-  Get security and life-cycle related events on the target computer like start
-  up / shutdown, user log on / log off, workstation locked /unlocked, session
-  reconnected / disconnected and screen saver invoke / dismiss.
-
-* **Protect-String**  
-  Convert a string into a secure string.
-
-* **Unprotect-SecureString**  
-  Convert a secure string into a string.
-
 ### Trusted Hosts List
 
 * **Get-TrustedHost**  
@@ -136,6 +167,27 @@ account.
 
 * **Remove-TrustedHost**  
   Remove an entry from the trusted host list.
+
+### Other / Common
+
+* **Get-TimeBasedOneTimePassword**  
+  Generate a Time-Base One-Time Password based on RFC 6238. The aliases Get-TOTP
+  or totp can also be used.
+
+* **New-TimeBasedOneTimeSharedSecret**  
+  Generate a shared secret for the Time-Base One-Time algorithm RFC 6238.
+
+* **Invoke-Elevated**  
+  Invoke a script block or an executable in an elevated session. It will handle
+  the parameter passing into the elevated session and return the result as
+  object to the caller. Because it's running in a different elevated process,
+  XML serialization is used to return the result. The cmdlet has the alias
+  **sudo**, as used on *nix systems.
+
+* **Start-Monitor**  
+   Start a PowerShell monitoring based on a script block. The script block will
+   evaluate on a schedule like every second and throw an alert if the condition
+   is not met. It can play a beep sound.
 
 ## Versions
 

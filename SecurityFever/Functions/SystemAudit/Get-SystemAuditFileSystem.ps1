@@ -22,7 +22,7 @@
 function Get-SystemAuditFileSystem
 {
     [CmdletBinding()]
-    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '', Scope='Function', Target='Extended')]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     param
     (
         # Period of days to cover.
