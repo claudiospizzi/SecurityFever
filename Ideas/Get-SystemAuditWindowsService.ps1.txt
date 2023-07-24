@@ -18,9 +18,3 @@ StartType Automatisch starten
 AccountName NT AUTHORITY\LocalService
 
 #>
-
-
-
-
-
-
