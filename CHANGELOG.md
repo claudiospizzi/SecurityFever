@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-* Added: Convert certificate command
+* Added: Convert certificate command for X.509/DER and X.509/PEM formats
 * Added: New function to generate a cryptographically secure random password
 * Added: New function to generate a new time-based one-time password (TOTP)
 * Added: System audit commands for the file system, Windows service, user sessions, etc.

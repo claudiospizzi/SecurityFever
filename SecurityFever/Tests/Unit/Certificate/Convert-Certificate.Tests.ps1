@@ -7,139 +7,101 @@ Import-Module -Name "$modulePath\$moduleName" -Force
 
 Describe 'Convert-Certificate' {
 
-    $testInPath  = Resolve-Path -Path "$PSScriptRoot\TestData" | Select-Object -ExpandProperty 'Path'
-    # $testOutPath = Resolve-Path -Path 'TestDrive:' | Select-Object -ExpandProperty 'ProviderPath'
-    $testOutPath = 'C:\Temp'
+    $testDataPath = Resolve-Path -Path "$PSScriptRoot\TestData" | Select-Object -ExpandProperty 'Path'
+    $testTempPath = Resolve-Path -Path 'TestDrive:' | Select-Object -ExpandProperty 'ProviderPath'
+
+    $testCases = @(
+        @{
+            InFile  = 'ca.pem'
+            InType  = 'X.509/PEM'
+            OutFile = 'ca.pem'
+            OutType = 'X.509/PEM'
+        }
+        @{
+            InFile  = 'ca.pem'
+            InType  = 'X.509/PEM'
+            OutFile = 'ca.cer'
+            OutType = 'X.509/DER'
+        }
+        @{
+            InFile  = 'ca.cer'
+            InType  = 'X.509/DER'
+            OutFile = 'ca.pem'
+            OutType = 'X.509/PEM'
+        }
+        @{
+            InFile  = 'ca.cer'
+            InType  = 'X.509/DER'
+            OutFile = 'ca.cer'
+            OutType = 'X.509/DER'
+        }
+        @{
+            InFile  = 'cert.pem'
+            InType  = 'X.509/PEM'
+            OutFile = 'cert.pem'
+            OutType = 'X.509/PEM'
+        }
+        @{
+            InFile  = 'cert.pem'
+            InType  = 'X.509/PEM'
+            OutFile = 'cert.cer'
+            OutType = 'X.509/DER'
+        }
+        @{
+            InFile  = 'cert.cer'
+            InType  = 'X.509/DER'
+            OutFile = 'cert.pem'
+            OutType = 'X.509/PEM'
+        }
+        @{
+            InFile  = 'cert.cer'
+            InType  = 'X.509/DER'
+            OutFile = 'cert.cer'
+            OutType = 'X.509/DER'
+        }
+    )
+
+    function Get-CertificateFile
+    {
+        param
+        (
+            [Parameter(Mandatory = $true)]
+            [System.String]
+            $Path,
+
+            [Parameter(Mandatory = $true)]
+            [System.String]
+            $Type
+        )
+
+        switch ($Type)
+        {
+            'X.509/DER' {
+                $hashObject = Get-FileHash -Path $Path -Algorithm 'SHA1'
+                return $hashObject.Hash
+            }
+            'X.509/PEM' {
+                $content = Get-Content -Path $Path -Raw
+                return $content
+            }
+        }
+    }
 
     BeforeEach {
-        Write-Host '> BeforeEach'
+        Get-ChildItem -Path $testTempPath -Include '*.cer', '*.pem', '*.pfx', '*.p7b' -Recurse | Remove-Item -Force
     }
 
-    It 'Should convert X.509/PEM to X.509/PEM' {
+    It 'Should convert <InFile> (<InType>) to <OutFile> (<OutType>)' -TestCases $testCases {
+
+        param ($InFile, $InType, $OutFile, $OutType)
+
+        # Arrange
+        $expected = Get-CertificateFile -Path "$testDataPath\$OutFile" -Type $OutType
 
         # Act
-        Convert-Certificate -InPath "$testInPath\ca.pem" -OutPath "$testOutPath\ca.pem" -OutType 'X.509/PEM'
+        Convert-Certificate -InPath "$testDataPath\$InFile" -OutPath "$testTempPath\$OutFile" -OutType $OutType
 
         # Assert
-        $expectedContent = [System.IO.File]::ReadAllBytes("$testInPath\ca.pem")
-        $actualContent   = [System.IO.File]::ReadAllBytes("$testOutPath\ca.pem")
-
-        $actualContent | Should -Be $expectedContent
+        Get-CertificateFile -Path "$testTempPath\$OutFile" -Type $OutType | Should -Be $expected
     }
-
-    # $inTestData = @{
-    #     'X.509/DER' = @{
-    #         InPath = "$PSScriptRoot\TestData\ca.cer"
-    #     }
-    #     'X.509/PEM' = @{
-    #         InPath = "$PSScriptRoot\TestData\ca.pem"
-    #     }
-    # }
-
-    # $outTestData = @{
-    #     'X.509/DER' = @{
-    #         OutPath = "$PSScriptRoot\TestData\ca.cer"
-    #     }
-    #     'X.509/PEM' = @{
-    #         OutPath = "$PSScriptRoot\TestData\ca.pem"
-    #     }
-    # }
-
-    # $content = @{
-    #     'X.509/DER' = Get-Content "$PSScriptRoot\TestData\ca.cer" -Raw
-    #     'X.509/PEM' = Get-Content "$PSScriptRoot\TestData\ca.cer" -Raw
-    # }
-
-    # Context 'Input: X.509/DER' {
-
-    #     $inSplat = $inTestData['X.509/DER']
-
-    #     Context 'Output: X.509/PEM' {
-
-    #         $outSplat = $outTestData['X.509/PEM']
-
-    #         It 'should convert the root certificate' {
-
-    #             # Act
-    #             $actual = Convert-Certificate @inSplat @outSplat
-
-    #             # Assert
-
-
-    #         }
-    #     }
-
-        # # Optional password to read the input file.
-        # [Parameter(Mandatory = $false)]
-        # [System.Security.SecureString]
-        # $InPassword,
-
-        # # Path to the output certificate file.
-        # [Parameter(Mandatory = $true, Position = 1)]
-        # [Alias('Out', 'OutFile')]
-        # [System.String]
-        # $OutPath,
-
-        # # Optional password to write the output file.
-        # [Parameter(Mandatory = $false)]
-        # [System.Security.SecureString]
-        # $OutPassword,
-
-        # # Type of the output certificate file.
-        # [Parameter(Mandatory = $true, Position = 2)]
-        # [ValidateSet('X.509/DER', 'X.509/PEM')]
-        # [System.String]
-        # $OutType
-
-    # }
-
-    Context 'Input: X.509/PEM' {
-
-    }
-
-    #     Mock 'Test-AdministratorRole' -ModuleName $moduleName { $false }
-
-    #     It 'should throw an exception' {
-
-    #         # Arrange, Act, Assert
-    #         { Add-TrustedHost -ComputerName $Env:COMPUTERNAME } | Should Throw
-    #     }
-    # }
-
-    # Context 'Is Administrator' {
-
-    #     Mock 'Test-AdministratorRole' -ModuleName $moduleName { $true }
-
-    #     Mock 'Get-Item' -ModuleName $ModuleName {
-    #         [PSCustomObject] @{ Value = '10.0.0.1' }
-    #     }
-
-    #     Mock 'Set-Item' -ModuleName $ModuleName -Verifiable -ParameterFilter {
-    #         $Path -eq 'WSMan:\localhost\Client\TrustedHosts' -and $Value -eq '10.0.0.1,SERVER,*.contoso.com'
-    #     } { }
-
-    #     It 'should add two entries via parameter' {
-
-    #         # Arrange
-    #         $list = 'SERVER', '*.contoso.com'
-
-    #         # Act
-    #         Add-TrustedHost -ComputerName $list
-
-    #         # Assert
-    #         Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
-    #     }
-
-    #     It 'should add two entries via pipeline' {
-
-    #         # Arrange
-    #         $list = 'SERVER', '*.contoso.com'
-
-    #         # Act
-    #         $list | Add-TrustedHost
-
-    #         # Assert
-    #         Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 2 -Exactly
-    #     }
-    # }
 }

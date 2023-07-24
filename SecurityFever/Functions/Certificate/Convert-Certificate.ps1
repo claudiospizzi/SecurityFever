@@ -13,31 +13,27 @@
           DER format. Used primary on Windows systems.
         - X.509/PEM (.pem)
           Contains the public part of a single X.509 certificate in the Base64
-          encoded PEM format.
+          encoded PEM format. Used primary on Linux systems.
 
         Input certificate formats supported by this command:
         - X.509/DER
         - X.509/PEM
 
         Output certificate formats supported by this command:
-        - ...
+        - X.509/DER
+        - X.509/PEM
 
+        IDeas but not yet implemented certificate formats:
         - .PKCS#7 (.p7b)
         - .pfx Files
-        # PKCS#1 private key
-        # PKCS#8 private key
-        # PKCS#7 (multiple cert)
-        # PKCS12 publich + private key (.p12/.pfx)
-
-    .INPUTS
-        .
-
-    .OUTPUTS
-        .
+        - PKCS#1 private key
+        - PKCS#8 private key
+        - PKCS#7 (multiple cert)
+        - PKCS12 public + private key (.p12/.pfx)
 
     .EXAMPLE
-        PS C:\> Convert-Certificate
-        .
+        PS C:\> Convert-Certificate -InPath 'cert.cer' -OutPath 'cert.pem' -OutType 'X.509/PEM'
+        Convert a X.509/DER certificate file to a X.509/PEM certificate file.
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
@@ -92,20 +88,27 @@ function Convert-Certificate
     {
         $straight = [System.Convert]::ToBase64String($Byte)
 
+        # Convert the string to base64 junks with a maximum length of 64
+        # characters per line.
         $formatted = [System.Text.StringBuilder]::new()
         for ($i = 0; $i -lt $straight.Length; $i += 64)
         {
             $formatted.AppendLine($straight.Substring($i, [System.Math]::Min(64, $straight.Length - $i))) | Out-Null
         }
 
-        return $formatted.ToString()
+        # Remove the new lines for the last empty line and store it as a simple
+        # string with newlines, no string array.
+        $formattedString = $formatted.ToString().TrimEnd("`n`r")
+
+        return $formattedString
     }
 
     switch ($OutType)
     {
         'X.509/DER'
         {
-            throw 'Converting a certificate to X.509/DER is not supported yet.'
+            $certificateBytes  = $certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+            [System.IO.File]::WriteAllBytes($OutPath, $certificateBytes)
         }
 
         'X.509/PEM'
@@ -116,9 +119,9 @@ function Convert-Certificate
             $outStringBuilder = [System.Text.StringBuilder]::new()
             $outStringBuilder.AppendLine("-----BEGIN CERTIFICATE-----") | Out-Null
             $outStringBuilder.AppendLine($certificateBase64) | Out-Null
-            $outStringBuilder.AppendLine("-----END CERTIFICATE-----") | Out-Null
+            $outStringBuilder.Append("-----END CERTIFICATE-----") | Out-Null
 
-            Set-Content -Path $OutPath -Value $outStringBuilder #-Encoding 'UTF8'
+            Set-Content -Path $OutPath -Value $outStringBuilder.ToString() #-Encoding 'UTF8'
         }
     }
 }
