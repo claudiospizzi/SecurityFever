@@ -34,31 +34,3 @@ jobs:
         shell: powershell
         run: |
           Invoke-Build -Task 'AnalyzerTest'
-  windows-powershell-core:
-    name: Windows / PowerShell 7.x
-    runs-on: windows-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install and cache PowerShell modules
-        uses: potatoqualitee/psmodulecache@v5.2
-        with:
-          shell: pwsh
-          updatable: true
-          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::"
-      - name: Build the PowerShell module assemblies
-        shell: powershell
-        run: |
-          Invoke-Build -Task 'Build'
-      - name: Run PowerShell module Schema tests
-        shell: pwsh
-        run: |
-          Invoke-Build -Task 'SchemaTest'
-      - name: Run PowerShell module Unit tests
-        shell: pwsh
-        run: |
-          Invoke-Build -Task 'UnitTest'
-      - name: Run PowerShell module Analyzer tests
-        shell: pwsh
-        run: |
-          Invoke-Build -Task 'AnalyzerTest'

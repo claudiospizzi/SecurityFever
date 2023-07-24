@@ -93,7 +93,7 @@ Describe 'Convert-Certificate' {
 
     It 'Should convert <InFile> (<InType>) to <OutFile> (<OutType>)' -TestCases $testCases {
 
-        param ($InFile, $InType, $OutFile, $OutType)
+        param ($InFile, $OutFile, $OutType)
 
         # Arrange
         $expected = Get-CertificateFile -Path "$testDataPath\$OutFile" -Type $OutType
