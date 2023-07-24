@@ -5,6 +5,7 @@
 function Test-AdministratorRole
 {
     [CmdletBinding()]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '')]
     param
     (
         # If enabled, the function with throw if the user is not admin

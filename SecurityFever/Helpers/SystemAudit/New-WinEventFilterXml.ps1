@@ -3,7 +3,7 @@
         Create a XML filter to be used with the Get-WinEvent command.
 
     .DESCRIPTION
-        The filter will be created by the provided paramters. Only parameter
+        The filter will be created by the provided parameers. Only parameter
         specified are included in the filter.
 
     .OUTPUTS
@@ -15,7 +15,7 @@
 
     .EXAMPLE
         PS C:\> New-WinEventFilterXml -LogName 'Application' -Provider 'MsiInstaller' -Level 'Critical', 'Error', 'Warning' -EventId 11707, 11708, 11724, 11725, 11728, 11729 -NotBefore (Get-Date).AddDays(-7)
-        Filter for all MSI events idicating a problem in the last 7 days.
+        Filter for all MSI events indicating a problem in the last 7 days.
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
@@ -23,6 +23,7 @@
 function New-WinEventFilterXml
 {
     [CmdletBinding()]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param
     (
         # Event log name.

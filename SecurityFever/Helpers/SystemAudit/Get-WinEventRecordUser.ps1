@@ -5,6 +5,7 @@
 function Get-WinEventRecordUser
 {
     [CmdletBinding()]
+    [OutputType([System.String])]
     param
     (
         # Event log record object.

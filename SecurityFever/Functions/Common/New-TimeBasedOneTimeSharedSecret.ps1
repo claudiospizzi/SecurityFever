@@ -29,6 +29,7 @@ function New-TimeBasedOneTimeSharedSecret
 {
     [CmdletBinding()]
     [Alias('New-TOTPSharedSecret')]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param
     (
         [Parameter(Mandatory = $true)]

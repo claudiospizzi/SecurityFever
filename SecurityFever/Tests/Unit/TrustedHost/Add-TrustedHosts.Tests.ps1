@@ -9,7 +9,9 @@ Describe 'Add-TrustedHost' {
 
     Context 'Not Administrator' {
 
-        Mock 'Test-AdministratorRole' -ModuleName $moduleName { $false }
+        Mock 'Test-AdministratorRole' -ModuleName $moduleName {
+            throw 'Access denied. Please start this functions as an administrator.'
+        }
 
         It 'should throw an exception' {
 
@@ -20,7 +22,9 @@ Describe 'Add-TrustedHost' {
 
     Context 'Is Administrator' {
 
-        Mock 'Test-AdministratorRole' -ModuleName $moduleName { $true }
+        Mock 'Test-AdministratorRole' -ModuleName $moduleName {
+            # Return nothing, so the function will continue
+        }
 
         Mock 'Get-Item' -ModuleName $ModuleName {
             [PSCustomObject] @{ Value = '10.0.0.1' }

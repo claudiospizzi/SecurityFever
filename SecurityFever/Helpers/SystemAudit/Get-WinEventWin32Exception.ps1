@@ -5,6 +5,7 @@
 function Get-WinEventWin32Exception
 {
     [CmdletBinding()]
+    [OutputType([System.String])]
     param
     (
         # The error code.

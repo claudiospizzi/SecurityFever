@@ -44,10 +44,7 @@ function Remove-TrustedHost
         }
 
         # The trusted hosts list can only be changed as an administrator.
-        if (-not (Test-AdministratorRole))
-        {
-            throw 'Access denied. Please start this functions as an administrator.'
-        }
+        Test-AdministratorRole -Throw
 
         # Get the WSMan trusted hosts item, ensure its a string
         $trustedHosts = [String] (Get-Item -Path 'WSMan:\localhost\Client\TrustedHosts').Value
