@@ -18,6 +18,10 @@ jobs:
           shell: powershell
           updatable: true
           modules-to-cache: "InvokeBuild::, InvokeBuildHelper::"
+      - name: Build the PowerShell module assemblies
+        shell: powershell
+        run: |
+          Invoke-Build -Task 'Build'
       - name: Run PowerShell module Schema tests
         shell: powershell
         run: |
@@ -42,30 +46,10 @@ jobs:
           shell: pwsh
           updatable: true
           modules-to-cache: "InvokeBuild::, InvokeBuildHelper::"
-      - name: Run PowerShell module Schema tests
-        shell: pwsh
+      - name: Build the PowerShell module assemblies
+        shell: powershell
         run: |
-          Invoke-Build -Task 'SchemaTest'
-      - name: Run PowerShell module Unit tests
-        shell: pwsh
-        run: |
-          Invoke-Build -Task 'UnitTest'
-      - name: Run PowerShell module Analyzer tests
-        shell: pwsh
-        run: |
-          Invoke-Build -Task 'AnalyzerTest'
-  linux-powershell-core:
-    name: Linux / PowerShell 7.x
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install and cache PowerShell modules
-        uses: potatoqualitee/psmodulecache@v5.2
-        with:
-          shell: pwsh
-          updatable: true
-          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::"
+          Invoke-Build -Task 'Build'
       - name: Run PowerShell module Schema tests
         shell: pwsh
         run: |
