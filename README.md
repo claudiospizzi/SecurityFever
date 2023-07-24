@@ -1,7 +1,7 @@
 [![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/SecurityFever?label=PowerShell%20Gallery&logo=PowerShell)](https://www.powershellgallery.com/packages/SecurityFever)
 [![Gallery Downloads](https://img.shields.io/powershellgallery/dt/SecurityFever?label=Downloads&logo=PowerShell)](https://www.powershellgallery.com/packages/SecurityFever)
-[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/PSSecurityFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/PSSecurityFever/releases)
-[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/PSSecurityFever/ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/PSSecurityFever/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/claudiospizzi/SecurityFever?label=Release&logo=GitHub&sort=semver)](https://github.com/claudiospizzi/SecurityFever/releases)
+[![GitHub CI Build](https://img.shields.io/github/actions/workflow/status/claudiospizzi/SecurityFever/ci.yml?label=CI%20Build&logo=GitHub)](https://github.com/claudiospizzi/SecurityFever/actions/workflows/ci.yml)
 
 # SecurityFever PowerShell Module
 
