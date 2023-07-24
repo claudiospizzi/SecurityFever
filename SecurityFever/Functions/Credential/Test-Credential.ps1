@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Test the provided credentials with the choosen test method against the
+        Test the provided credentials with the chosen test method against the
         local system or Active Directory.
 
     .DESCRIPTION
@@ -36,10 +36,6 @@
         immediately with Test-Credential against the local system. If the
         credentials are valid, they are returned and stored in $cred. If not, an
         terminating exception is thrown.
-
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
@@ -99,7 +95,7 @@ function Test-Credential
             {
                 # Create a new local process with the given credentials. This
                 # does not validate the credentials against an external target
-                # system, but tests if they are valid locally. Of courese, it's
+                # system, but tests if they are valid locally. Of course, it's
                 # possible to validate domain credentials too.
                 $startInfo = New-Object -TypeName System.Diagnostics.ProcessStartInfo
                 $startInfo.FileName         = 'cmd.exe'
@@ -161,7 +157,7 @@ function Test-Credential
             }
         }
 
-        # Check the exception variable if an exception occured and return a
+        # Check the exception variable if an exception occurred and return a
         # boolean or the credentials. In case of an exception, throw a custom
         # exception.
         if ($Quiet.IsPresent)

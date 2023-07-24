@@ -5,10 +5,12 @@
     .DESCRIPTION
         Invoke all system audit commands in the SecurityFever module and get a
         summarized view of all audit events.
-        - Group Policy
+        - File System
         - MSI Installer
         - Power Cycle
         - User Session
+        - Group Policy
+        - Windows Service
 
     .INPUTS
         None.

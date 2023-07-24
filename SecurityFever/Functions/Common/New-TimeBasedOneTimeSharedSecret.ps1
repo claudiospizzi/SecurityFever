@@ -19,11 +19,8 @@
         the shared secret.
 
     .EXAMPLE
-        PS C:\> .
-
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
+        PS C:\> New-TimeBasedOneTimeSharedSecret -Account 'User1'
+        Create a new TOTP shared secret for the user User1.
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever

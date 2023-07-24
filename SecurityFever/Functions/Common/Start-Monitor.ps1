@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         The script block will be invoked for every interval and is checked for
-        the boolean return value. If the value is $true, everythink is okay. If
+        the boolean return value. If the value is $true, everything is okay. If
         the value is $false, an error is shown. If the state changes, a desktop
         toast notification is displayed.
 

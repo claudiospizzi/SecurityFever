@@ -3,7 +3,7 @@
         Get all audit events of the Windows services.
 
     .DESCRIPTION
-        This function will show all Windows service  audit changes on the target
+        This function will show all Windows service audit changes on the target
         system by parsing the following Application events:
         - 7000: Service Start Failed
         - 7001: Service Dependency Start Failed

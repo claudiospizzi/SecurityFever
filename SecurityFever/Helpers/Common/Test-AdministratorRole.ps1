@@ -1,13 +1,15 @@
-
+<#
+    .SYNOPSIS
+        Test if the user is an administrator.
+#>
 function Test-AdministratorRole
 {
-    [CmdletBinding(DefaultParameterSetName = 'Quiet')]
-    [OutputType([System.Boolean])]
+    [CmdletBinding()]
     param
     (
         # If enabled, the function with throw if the user is not admin
-        [Parameter(Mandatory = $true, ParameterSetName = 'Thorw')]
-        [switch]
+        [Parameter(Mandatory = $false)]
+        [Switch]
         $Throw,
 
         # Message to throw if the user is not admin

@@ -5,11 +5,11 @@
     .DESCRIPTION
         Use the tools certreq.exe and optionally openssl.exe to request a domain
         signed certificate. The certificate is always a SAN certificate where
-        wildcard entries and e.g. IP adresses are allowed. The subject is
+        wildcard entries and e.g. IP adressess are allowed. The subject is
         inserted at the first position of the SAN list.
         The certificate will be exported in Windows compatible binary formats as
         X.509 DER (.cer) and PKCS #12 (.pfx). If the flag -Base64 is specified,
-        the certifcate is converted into Linux/Unix compatible Base64 PEM format
+        the certificate is converted into Linux/Unix compatible Base64 PEM format
         as X.509 PEM (.pem) and RSA (.key).
 
     .EXAMPLE
@@ -25,10 +25,6 @@
         PS C:\> New-DomainSignedCertificate -Subject 'contoso.com' -DnsName 'contoso.com', '*.contoso.com' -Base64
         Create a new wildcard SAN certificate for contoso and include Linux/Unix
         formatted certificate and key files.
-
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever
@@ -58,7 +54,7 @@ function New-DomainSignedCertificate
         [System.String[]]
         $IPAddress,
 
-        # Optional firendly name to set on the imported certificate.
+        # Optional friendly name to set on the imported certificate.
         [Parameter(Mandatory = $false)]
         [System.String]
         $FriendlyName,
@@ -108,7 +104,7 @@ function New-DomainSignedCertificate
         Write-Progress -Activity $activity -Status 'Setup' -PercentComplete 0
 
         # Check if the current user is admin. This is required to request the
-        # certifcate and create the private key.
+        # certificate and create the private key.
         if (-not (Test-AdministratorRole))
         {
             throw 'Access denied. Restart this command as administrator.'

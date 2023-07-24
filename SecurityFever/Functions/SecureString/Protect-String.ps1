@@ -14,16 +14,12 @@
         System.Security.SecureString. The protected string.
 
     .EXAMPLE
-        PS C:\> Protect-String -String 'Passw0rd'
+        PS C:\> Protect-String -String 'MySecret'
         Protect the password a secure string.
 
     .EXAMPLE
         PS C:\> 'Text A', 'Text B' | Protect-String
         Protect both strings as a secure string.
-
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
 
     .LINK
         https://github.com/claudiospizzi/SecurityFever

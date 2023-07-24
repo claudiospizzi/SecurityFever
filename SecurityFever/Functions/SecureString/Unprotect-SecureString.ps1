@@ -17,10 +17,6 @@
         PS C:\> Unprotect-SecureString -SecureString $password
         Get the plain text password.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
 #>

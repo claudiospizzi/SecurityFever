@@ -17,10 +17,6 @@
         PS C:\> Get-TimeBasedOneTimePassword -SharedSecret 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         Get the Time-Based One-Time Password at the moment.
 
-    .NOTES
-        Author     : Claudio Spizzi
-        License    : MIT License
-
     .LINK
         https://github.com/claudiospizzi/SecurityFever
         https://tools.ietf.org/html/rfc6238
