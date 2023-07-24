@@ -1,9 +1,9 @@
-@{
+﻿@{
     # Script module or binary module file associated with this manifest.
     RootModule = 'SecurityFever.psm1'
 
     # Version number of this module.
-    ModuleVersion = '2.8.1'
+    ModuleVersion = '3.0.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()

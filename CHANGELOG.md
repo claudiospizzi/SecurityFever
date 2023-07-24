@@ -1,11 +1,11 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 3.0.0 - 2023-07-25
 
 * Added: Convert certificate command for X.509/DER and X.509/PEM formats
 * Added: New function to generate a cryptographically secure random password
