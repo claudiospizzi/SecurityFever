@@ -18,6 +18,7 @@
 function Start-Monitor
 {
     [CmdletBinding()]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Scope='Function', Target='Write-Host')]
     param
     (
         # The script block to test if the state is ok.

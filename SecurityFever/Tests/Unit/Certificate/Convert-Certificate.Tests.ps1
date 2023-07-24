@@ -77,7 +77,7 @@ Describe 'Convert-Certificate' {
         switch ($Type)
         {
             'X.509/DER' {
-                $hashObject = Get-FileHash -Path $Path -Algorithm 'SHA1'
+                $hashObject = Get-FileHash -Path $Path -Algorithm 'SHA256'
                 return $hashObject.Hash
             }
             'X.509/PEM' {
