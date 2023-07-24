@@ -27,6 +27,9 @@
         "**/*.user": true
     },
 
+    "powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
+    "powershell.integratedConsole.suppressStartupBanner": true,
+    "powershell.promptToUpdatePowerShell": false,
     "powershell.debugging.createTemporaryIntegratedConsole": true,
     "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "powershell.codeFormatting.autoCorrectAliases": false,
@@ -47,13 +50,29 @@
     "powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
     "powershell.codeFormatting.whitespaceBeforeOpenParen": true,
 
+
     "cSpell.words": [
         "abcdefghijkmnopqrstuvwx",
         "ABCDEFGHJKLMNPQRSTUVWX",
         "ACPI",
+        "ADSI",
+        "certreq",
+        "clcerts",
         "contoso",
+        "DPAPI",
+        "HMACSHA",
+        "nocerts",
+        "nokeys",
+        "openssl",
+        "otpauth",
+        "passin",
+        "Passw",
+        "pkcs",
+        "PKCS",
+        "PSHOME",
         "Readline",
         "Schannel",
+        "totp",
         "TOTP",
         "unmanaged"
     ]
