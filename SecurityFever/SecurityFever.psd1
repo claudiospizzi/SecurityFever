@@ -80,15 +80,17 @@
         'Get-TimeBasedOneTimePassword'
         'New-TimeBasedOneTimeSharedSecret'
         'Invoke-Elevated'
-        'Test-Credential'
-        'Protect-String'
-        'Unprotect-SecureString'
-        'Test-Credential'
+        'Start-Monitor'
+        # Credential
         'New-Password'
+        'Test-Credential'
         # Impersonation
         'Get-ImpersonationContext'
         'Pop-ImpersonationContext'
         'Push-ImpersonationContext'
+        # SecureString
+        'Protect-String'
+        'Unprotect-SecureString'
         # System Audit
         'Get-SystemAudit'
         'Get-SystemAuditFileSystem'

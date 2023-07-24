@@ -1,5 +1,6 @@
 # Module assemblies
-**/Assemblies/SecurityFever.dll
+**/Assemblies/*.dll
+!**/Assemblies/QRCode.dll
 
 # Build output
 [Bb]in/
