@@ -42,7 +42,7 @@
 #>
 function Test-Credential
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Credential')]
     [OutputType([System.Boolean])]
     [OutputType([System.Management.Automation.PSCredential])]
     param

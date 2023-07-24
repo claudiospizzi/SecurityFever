@@ -45,6 +45,7 @@ function New-Password
 
         # How to return the generated password.
         [Parameter(Mandatory = $false)]
+        [Alias('As')]
         [ValidateSet('SecureString', 'String', 'Clipboard')]
         [System.String]
         $OutputType = 'SecureString'

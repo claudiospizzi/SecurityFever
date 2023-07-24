@@ -80,6 +80,11 @@ function Get-SystemAuditFileSystem
         foreach ($access in $accessList)
         {
             $access = $access.Trim()
+            if ([System.String]::IsNullOrEmpty($access))
+            {
+                continue
+            }
+
             switch ($access)
             {
                 '%%4416' { $access = 'ReadData / ListDirectory' }
@@ -97,7 +102,7 @@ function Get-SystemAuditFileSystem
                 '%%1540' { $access = 'WriteOwner' }
                 '%%1541' { $access = 'Synchronize' }
                 '%%1542' { $access = 'AccessSysSec' }
-                default  { throw "Access definition for $access not found." }
+                default  { Write-Warning "Access definition for '$access' not found." }
             }
 
             # Create a usable event by parsing the properties. But most of the
@@ -113,15 +118,16 @@ function Get-SystemAuditFileSystem
             # ProcessName (11) = C:\Windows\explorer.exe
             # ResourceAttributes (12) = S:AI
             $auditEvent = [PSCustomObject] @{
-                PSTypeName = 'SecurityFever.SystemAudit.Event'
-                Timestamp  = $record.TimeCreated
-                Machine    = $record.MachineName
-                User       = Get-WinEventRecordUser -Record $record
-                Component  = 'File System'
-                Action     = $access
-                Context    = [System.String] $record.Properties[6].Value
-                Detail     = 'Subject: {0}\{1}' -f $record.Properties[2].Value, $record.Properties[1].Value
-                Source     = '/EventLog/Security/Record[@Id={0}]' -f $recordId
+                PSTypeName  = 'SecurityFever.SystemAudit.Event'
+                Timestamp   = $record.TimeCreated
+                Machine     = $record.MachineName
+                User        = Get-WinEventRecordUser -Record $record
+                Component   = 'File System'
+                Action      = $access
+                Context     = [System.String] $record.Properties[6].Value
+                Detail      = 'Subject: {0}\{1}' -f $record.Properties[2].Value, $record.Properties[1].Value
+                SourcePath  = '/EventLog/Security/Record[@Id={0}]' -f $recordId
+                SourceEvent = $record
             }
 
             Write-Output $auditEvent

@@ -55,15 +55,16 @@ function Get-SystemAuditGroupPolicy
         $recordId = $record.Id
 
         $auditEvent = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAudit.Event'
-            Timestamp  = $record.TimeCreated
-            Machine    = $record.MachineName
-            User       = Get-WinEventRecordUser -Record $record
-            Component  = 'Group Policy'
-            Action     = $configEventLog.Events.System.$recordId.Action
-            Context    = ''
-            Detail     = ''
-            Source     = '/EventLog/Security/System[@Id={0}]' -f $recordId
+            PSTypeName  = 'SecurityFever.SystemAudit.Event'
+            Timestamp   = $record.TimeCreated
+            Machine     = $record.MachineName
+            User        = Get-WinEventRecordUser -Record $record
+            Component   = 'Group Policy'
+            Action      = $configEventLog.Events.System.$recordId.Action
+            Context     = ''
+            Detail      = ''
+            SourcePath  = '/EventLog/Security/System[@Id={0}]' -f $recordId
+            SourceEvent = $record
         }
 
         # Get record properties

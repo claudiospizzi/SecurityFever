@@ -67,15 +67,16 @@ function Get-SystemAuditUserSession
         }
 
         $auditEvent = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAudit.Event'
-            Timestamp  = $record.TimeCreated
-            Machine    = $record.MachineName
-            User       = Get-WinEventRecordUser -Record $record
-            Component  = 'User Session'
-            Action     = $configEventLog.Events.Security.$recordId.Action
-            Context    = ''
-            Detail     = ''
-            Source     = '/EventLog/Security/Record[@Id={0}]' -f $recordId
+            PSTypeName  = 'SecurityFever.SystemAudit.Event'
+            Timestamp   = $record.TimeCreated
+            Machine     = $record.MachineName
+            User        = Get-WinEventRecordUser -Record $record
+            Component   = 'User Session'
+            Action      = $configEventLog.Events.Security.$recordId.Action
+            Context     = ''
+            Detail      = ''
+            SourcePath  = '/EventLog/Security/Record[@Id={0}]' -f $recordId
+            SourceEvent = $record
         }
 
         # Get record properties

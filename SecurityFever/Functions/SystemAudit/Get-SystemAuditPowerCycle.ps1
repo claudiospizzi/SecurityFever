@@ -60,15 +60,16 @@ function Get-SystemAuditPowerCycle
         $recordId = $record.Id
 
         $auditEvent = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAudit.Event'
-            Timestamp  = $record.TimeCreated
-            Machine    = $record.MachineName
-            User       = Get-WinEventRecordUser -Record $record
-            Component  = 'System Power'
-            Action     = $configEventLog.Events.System.$recordId.Action
-            Context    = ''
-            Detail     = ''
-            Source     = '/EventLog/System/Record[@Id={0}]' -f $recordId
+            PSTypeName  = 'SecurityFever.SystemAudit.Event'
+            Timestamp   = $record.TimeCreated
+            Machine     = $record.MachineName
+            User        = Get-WinEventRecordUser -Record $record
+            Component   = 'System Power'
+            Action      = $configEventLog.Events.System.$recordId.Action
+            Context     = ''
+            Detail      = ''
+            SourcePath  = '/EventLog/System/Record[@Id={0}]' -f $recordId
+            SourceEvent = $record
         }
 
         # Try to get the reason for sleep and awake action

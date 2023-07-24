@@ -63,15 +63,16 @@ function Get-SystemAuditWindowsService
         $recordId = $record.Id
 
         $auditEvent = [PSCustomObject] @{
-            PSTypeName = 'SecurityFever.SystemAudit.Event'
-            Timestamp  = $record.TimeCreated
-            Machine    = $record.MachineName
-            User       = Get-WinEventRecordUser -Record $record
-            Component  = 'Windows Service'
-            Action     = $configEventLog.Events.System.$recordId.Action
-            Context    = $record.Properties[0].Value
-            Detail     = ''
-            Source     = '/EventLog/Application/Record[@Id={0}]' -f $recordId
+            PSTypeName  = 'SecurityFever.SystemAudit.Event'
+            Timestamp   = $record.TimeCreated
+            Machine     = $record.MachineName
+            User        = Get-WinEventRecordUser -Record $record
+            Component   = 'Windows Service'
+            Action      = $configEventLog.Events.System.$recordId.Action
+            Context     = $record.Properties[0].Value
+            Detail      = ''
+            SourcePath  = '/EventLog/Application/Record[@Id={0}]' -f $recordId
+            SourceEvent = $record
         }
 
         # Fix the context for events where the service name is not stored in the
