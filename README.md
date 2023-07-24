@@ -215,8 +215,8 @@ manually on your local system:
 The following minimum requirements are necessary to use this module, or in other
 words are used to test this module:
 
-* Windows PowerShell 3.0
-* Windows Server 2008 R2 / Windows 7
+* Windows PowerShell 5.1
+* Windows Server 2012 R2 / Windows 10
 
 ## Contribute
 
