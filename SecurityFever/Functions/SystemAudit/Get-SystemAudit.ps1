@@ -60,10 +60,14 @@ function Get-SystemAudit
     Show-SystemAuditPolicyWarning -Category 'Object Access' -Subcategory 'File System' -Setting 'Success' -HideWarning:$HideWarning.IsPresent
 
     # Get all audit events
-    Get-SystemAuditFileSystem -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
-    Get-SystemAuditMsiInstaller -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
-    Get-SystemAuditPowerCycle -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
-    Get-SystemAuditUserSession -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
-    Get-SystemAuditGroupPolicy -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
-    Get-SystemAuditWindowsService -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents = @()
+    $auditEvents += Get-SystemAuditFileSystem -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents += Get-SystemAuditMsiInstaller -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents += Get-SystemAuditPowerCycle -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents += Get-SystemAuditUserSession -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents += Get-SystemAuditGroupPolicy -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+    $auditEvents += Get-SystemAuditWindowsService -Extended:$Extended.IsPresent -DayPeriod $DayPeriod -HideWarning
+
+    # Format and sort the audit events
+    $auditEvents | Sort-Object -Property 'TimeCreated' -Descending
 }

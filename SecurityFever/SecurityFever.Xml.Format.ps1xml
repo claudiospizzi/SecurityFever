@@ -250,7 +250,7 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Machine</Label>
-            <Width>16</Width>
+            <Width>18</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>User</Label>
@@ -258,14 +258,15 @@
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Component</Label>
-            <Width>16</Width>
+            <Width>18</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Action</Label>
-            <Width>24</Width>
+            <Width>40</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Context</Label>
+            <Width>50</Width>
           </TableColumnHeader>
           <TableColumnHeader>
             <Label>Detail</Label>
@@ -278,7 +279,7 @@
                 <PropertyName>Timestamp</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Machine</PropertyName>
+                <ScriptBlock>([System.String] $_.Machine).Split('.')[0].ToUpper()</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>User</PropertyName>
