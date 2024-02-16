@@ -29,6 +29,7 @@
 function New-Password
 {
     [CmdletBinding()]
+    [Alias('pw')]
     [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     param
     (
@@ -47,7 +48,7 @@ function New-Password
         [Parameter(Mandatory = $false)]
         [Alias('As')]
         [ValidateSet('SecureString', 'String', 'Clipboard')]
-        [System.String]
+        [System.String[]]
         $OutputType = 'SecureString'
     )
 
@@ -98,19 +99,22 @@ function New-Password
         }
         while (-not ($isComplexLower -and $isComplexUpper -and $isComplexNumber))
 
-        switch ($OutputType)
+        foreach ($currentOutputType in $OutputType)
         {
-            'SecureString'
+            switch ($OutputType)
             {
-                Write-Output $password
-            }
-            'String'
-            {
-                Unprotect-SecureString -SecureString $password | Write-Output
-            }
-            'Clipboard'
-            {
-                Unprotect-SecureString -SecureString $password | Set-Clipboard
+                'SecureString'
+                {
+                    Write-Output $password
+                }
+                'String'
+                {
+                    Unprotect-SecureString -SecureString $password | Write-Output
+                }
+                'Clipboard'
+                {
+                    Unprotect-SecureString -SecureString $password | Set-Clipboard
+                }
             }
         }
     }

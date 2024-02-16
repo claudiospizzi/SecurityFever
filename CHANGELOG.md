@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+* Added: New alias pw for New-Password and allow multiple output types (New-Password)
 * Changed: System audit optimization: Better sort and output formatting (Get-SystemAudit)
 
 ## 3.0.0 - 2023-07-25

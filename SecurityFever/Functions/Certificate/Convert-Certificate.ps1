@@ -23,7 +23,7 @@
         - X.509/DER
         - X.509/PEM
 
-        IDeas but not yet implemented certificate formats:
+        Ideas but not yet implemented certificate formats:
         - .PKCS#7 (.p7b)
         - .pfx Files
         - PKCS#1 private key
@@ -125,22 +125,3 @@ function Convert-Certificate
         }
     }
 }
-
-
-# openssl x509 -inform der -outform pem -in ca.cer -out ca.pem
-
-
-# -----BEGIN RSA PRIVATE KEY-----
-# MIIDBjCCAm8CAQAwcTERMA8GA1UEAxMIcXV1eC5jb20xDzANBgNVBAsTBkJyYWlu
-# czEWMBQGA1UEChMNRGV2ZWxvcE1lbnRvcjERMA8GA1UEBxMIVG9ycmFuY2UxEzAR
-# BgNVBAgTCkNhbGlmb3JuaWExCzAJBgNVBAYTAlVTMIGfMA0GCSqGSIb3DQEBAQUA
-# <...>
-# -----END RSA PRIVATE KEY-----
-
-
-# -----BEGIN PRIVATE KEY-----
-# MIIDBjCCAm8CAQAwcTERMA8GA1UEAxMIcXV1eC5jb20xDzANBgNVBAsTBkJyYWlu
-# czEWMBQGA1UEChMNRGV2ZWxvcE1lbnRvcjERMA8GA1UEBxMIVG9ycmFuY2UxEzAR
-# BgNVBAgTCkNhbGlmb3JuaWExCzAJBgNVBAYTAlVTMIGfMA0GCSqGSIb3DQEBAQUA
-# <...>
-# -----END PRIVATE KEY-----

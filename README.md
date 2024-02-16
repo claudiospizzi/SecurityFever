@@ -5,17 +5,18 @@
 
 # SecurityFever PowerShell Module
 
-PowerShell Module with custom functions and cmdlets related to Windows and
-application security.
+PowerShell Module with custom functions and cmdlets related to Windows and application security.
 
 ## Introduction
 
-This is a PowerShell Module with functions and cmdlets related to Windows and
-application security. It unites multiple handy tools into one module.
-
 You can invoke PowerShell scripts or script blocks in an elevated context with
 **sudo** or test your credentials against the local system or an Active
-Directory domain with **Test-Credential**.
+Directory domain with **Test-Credential**. A new password can be generated with
+**New-Password** using cryptographically secure random numbers. Time-based
+one-time password can be generated with **Get-TimeBasedOneTimePassword**. The
+**Convert-Certificate** cmdlet can convert certificate files between various
+formats and the **New-DomainSignedCertificate** cmdlet can create a new
+certificate signed by the domain CA.
 
 With the security activity and audit policy cmdlets, you can get the security
 related configuration of security audit events in the **Audit Policy** and check
