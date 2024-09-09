@@ -2,35 +2,42 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   windows-powershell-legacy:
-    name: Windows / PowerShell 5.1
+    name: Windows PowerShell 5.1
     runs-on: windows-latest
     steps:
+
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Install and cache PowerShell modules
-        uses: potatoqualitee/psmodulecache@v5.2
+        uses: potatoqualitee/psmodulecache@v6.2
         with:
           shell: powershell
           updatable: true
-          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::"
+          modules-to-cache: "InvokeBuild::, InvokeBuildHelper::, Pester:4.10.1"
+
       - name: Build the PowerShell module assemblies
         shell: powershell
         run: |
-          Invoke-Build -Task 'Build'
+          Invoke-BuildIsolated -Task 'Build' -PesterVersion v4
+
       - name: Run PowerShell module Schema tests
         shell: powershell
         run: |
-          Invoke-Build -Task 'SchemaTest'
+          Invoke-BuildIsolated -Task 'SchemaTest' -PesterVersion v4
+
       - name: Run PowerShell module Unit tests
         shell: powershell
         run: |
-          Invoke-Build -Task 'UnitTest'
+          Invoke-BuildIsolated -Task 'UnitTest' -PesterVersion v4
+
       - name: Run PowerShell module Analyzer tests
         shell: powershell
         run: |
-          Invoke-Build -Task 'AnalyzerTest'
+          Invoke-BuildIsolated -Task 'AnalyzerTest' -PesterVersion v4
