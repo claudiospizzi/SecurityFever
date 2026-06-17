@@ -53,6 +53,9 @@ function New-TimeBasedOneTimeSharedSecret
     $sharedSecretHex    = [System.BitConverter]::ToString($bytes) -replace '-', ''
     $sharedSecretBase32 = Convert-ByteToBase32 -Byte $bytes
 
+    # Add the QRCoder assembly
+    Add-Type -Path "$Script:PSModulePath\Assemblies\QRCoder.dll"
+
     # Generate the QR code
     $qrCodePath = '{0}\{1:yyyyMMddHHmmss}_{2}.png' -f $Env:Temp, (Get-Date), $Account.Replace('\', '_')
     $qrOneTimeGenerator = [QRCoder.PayloadGenerator+OneTimePassword]::new()
