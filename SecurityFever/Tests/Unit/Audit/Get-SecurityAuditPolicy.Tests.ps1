@@ -1,24 +1,30 @@
 
-$modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
-$moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+BeforeAll {
 
-Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
-Import-Module -Name "$modulePath\$moduleName" -Force
+    $modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
+    $moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+
+    Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+    Import-Module -Name "$modulePath\$moduleName" -Force
+}
 
 Describe 'Get-SecurityAuditPolicy' {
 
-    Copy-Item -Path "$PSScriptRoot\TestData" -Destination 'TestDrive:\' -Recurse
+    BeforeAll {
 
-    Mock 'Invoke-AuditPolGetCategoryAllCsv' -ModuleName $ModuleName {
-        Get-Content -Path 'TestDrive:\TestData\auditpol-getcategoryall.csv' -Raw #| Write-Output
-    }
+        Copy-Item -Path "$PSScriptRoot\TestData" -Destination 'TestDrive:\' -Recurse
 
-    Mock 'Invoke-AuditPolListSubcategoryAllCsv' -ModuleName $ModuleName {
-        Get-Content -Path 'TestDrive:\TestData\auditpol-listsubcategoryall.csv' | Write-Output
-    }
+        Mock 'Invoke-AuditPolGetCategoryAllCsv' -ModuleName $ModuleName {
+            Get-Content -Path 'TestDrive:\TestData\auditpol-getcategoryall.csv' -Raw #| Write-Output
+        }
 
-    Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
-        # Don't throw which means it's ok.
+        Mock 'Invoke-AuditPolListSubcategoryAllCsv' -ModuleName $ModuleName {
+            Get-Content -Path 'TestDrive:\TestData\auditpol-listsubcategoryall.csv' | Write-Output
+        }
+
+        Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
+            # Don't throw which means it's ok.
+        }
     }
 
     Context 'Verify Output' {
@@ -59,8 +65,8 @@ Describe 'Get-SecurityAuditPolicy' {
                 Get-SecurityAuditPolicy |
                     Where-Object { $_.Category -eq 'System' -and $_.Subcategory -eq 'Security System Extension' }
 
-            $auditPolicy.AuditSuccess | Should Be $true
-            $auditPolicy.AuditFailure | Should Be $true
+            $auditPolicy.AuditSuccess | Should -Be $true
+            $auditPolicy.AuditFailure | Should -Be $true
         }
 
         It 'should parse "No Auditing" setting' {
@@ -69,8 +75,8 @@ Describe 'Get-SecurityAuditPolicy' {
                 Get-SecurityAuditPolicy |
                     Where-Object { $_.Category -eq 'Logon/Logoff' -and $_.Subcategory -eq 'Account Lockout' }
 
-            $auditPolicy.AuditSuccess | Should Be $false
-            $auditPolicy.AuditFailure | Should Be $false
+            $auditPolicy.AuditSuccess | Should -Be $false
+            $auditPolicy.AuditFailure | Should -Be $false
         }
 
         It 'should parse "Success" setting' {
@@ -79,8 +85,8 @@ Describe 'Get-SecurityAuditPolicy' {
                 Get-SecurityAuditPolicy |
                     Where-Object { $_.Category -eq 'Account Logon' -and $_.Subcategory -eq 'Credential Validation' }
 
-            $auditPolicy.AuditSuccess | Should Be $true
-            $auditPolicy.AuditFailure | Should Be $false
+            $auditPolicy.AuditSuccess | Should -Be $true
+            $auditPolicy.AuditFailure | Should -Be $false
         }
 
         It 'should parse "Failure" setting' {
@@ -89,20 +95,23 @@ Describe 'Get-SecurityAuditPolicy' {
                 Get-SecurityAuditPolicy |
                     Where-Object { $_.Category -eq 'Object Access' -and $_.Subcategory -eq 'File System' }
 
-            $auditPolicy.AuditSuccess | Should Be $false
-            $auditPolicy.AuditFailure | Should Be $true
+            $auditPolicy.AuditSuccess | Should -Be $false
+            $auditPolicy.AuditFailure | Should -Be $true
         }
     }
 
     Context 'Permission' {
 
-        Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
-            throw 'Access denied. Please start this functions as an administrator.'
+        BeforeAll {
+
+            Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
+                throw 'Access denied. Please start this functions as an administrator.'
+            }
         }
 
         It 'should throw an exception if not run as administrator' {
 
-            { Get-SecurityAuditPolicy } | Should Throw
+            { Get-SecurityAuditPolicy } | Should -Throw
         }
     }
 
@@ -112,7 +121,7 @@ Describe 'Get-SecurityAuditPolicy' {
 
             $auditPolicies = Get-SecurityAuditPolicy
 
-            ($auditPolicies | Get-Member).TypeName | Select-Object -First 1 | Should Be 'SecurityFever.Audit.Policy'
+            ($auditPolicies | Get-Member).TypeName | Select-Object -First 1 | Should -Be 'SecurityFever.Audit.Policy'
         }
     }
 }

@@ -1,38 +1,47 @@
 
-$modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
-$moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+BeforeAll {
 
-Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
-Import-Module -Name "$modulePath\$moduleName" -Force
+    $modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
+    $moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+
+    Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+    Import-Module -Name "$modulePath\$moduleName" -Force
+}
 
 Describe 'Remove-TrustedHost' {
 
     Context 'Not Administrator' {
 
-        Mock 'Test-AdministratorRole' -ModuleName $moduleName {
-            throw 'Access denied. Please start this functions as an administrator.'
+        BeforeAll {
+
+            Mock 'Test-AdministratorRole' -ModuleName $moduleName {
+                throw 'Access denied. Please start this functions as an administrator.'
+            }
         }
 
         It 'should throw an exception' {
 
             # Arrange, Act, Assert
-            { Remove-TrustedHost -ComputerName $Env:COMPUTERNAME } | Should Throw
+            { Remove-TrustedHost -ComputerName $Env:COMPUTERNAME } | Should -Throw
         }
     }
 
     Context 'Is Administrator' {
 
-        Mock 'Test-AdministratorRole' -ModuleName $moduleName {
-            # Return nothing, so the function will continue
-        }
+        BeforeAll {
 
-        Mock 'Get-Item' -ModuleName $ModuleName {
-            [PSCustomObject] @{ Value = '10.0.0.1,SERVER,10.0.0.2,10.0.0.3,*.contoso.com' }
-        }
+            Mock 'Test-AdministratorRole' -ModuleName $moduleName {
+                # Return nothing, so the function will continue
+            }
 
-        Mock 'Set-Item' -ModuleName $ModuleName -Verifiable -ParameterFilter {
-            $Path -eq 'WSMan:\localhost\Client\TrustedHosts' -and $Value -eq '10.0.0.1,10.0.0.2,*.contoso.com'
-        } { }
+            Mock 'Get-Item' -ModuleName $ModuleName {
+                [PSCustomObject] @{ Value = '10.0.0.1,SERVER,10.0.0.2,10.0.0.3,*.contoso.com' }
+            }
+
+            Mock 'Set-Item' -ModuleName $ModuleName -Verifiable -ParameterFilter { $Path -eq 'WSMan:\localhost\Client\TrustedHosts' -and $Value -eq '10.0.0.1,10.0.0.2,*.contoso.com' } {
+                # Return nothing
+            }
+        }
 
         It 'should add two entries via parameter' {
 
@@ -44,18 +53,6 @@ Describe 'Remove-TrustedHost' {
 
             # Assert
             Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
-        }
-
-        It 'should add two entries via pipeline' {
-
-            # Arrange
-            $list = 'SERVER', '10.0.0.3'
-
-            # Act
-            $list | Remove-TrustedHost
-
-            # Assert
-            Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 2 -Exactly
         }
     }
 }

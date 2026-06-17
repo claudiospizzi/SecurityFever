@@ -1,25 +1,11 @@
 {
     "version": "2.0.0",
 
-    "command": "\"& { Invoke-Build -Task $args }\"",
-
-    "type": "shell",
-    "options": {
-        "shell": {
-            "executable": "powershell.exe",
-            "args": [ "-NoProfile", "-Command" ]
-        }
-    },
-    "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new"
-    },
-
     "tasks": [
         {
             "label": "Test",
+            "command": "pwsh",
+            "args": [ "-NoProfile", "-Command", "Invoke-Build -Task Test" ],
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -27,6 +13,8 @@
         },
         {
             "label": "Build",
+            "command": "pwsh",
+            "args": [ "-NoProfile", "-Command", "Invoke-Build -Task Build" ],
             "group": {
                 "kind": "build",
                 "isDefault": true

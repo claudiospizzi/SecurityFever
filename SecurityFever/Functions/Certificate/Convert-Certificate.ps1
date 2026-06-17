@@ -73,7 +73,12 @@ function Convert-Certificate
         $OutType
     )
 
-    $InPath = Resolve-Path -Path $InPath | Select-Object -ExpandProperty 'Path'
+    # Resolve the path to the actual provider path e.g. for TestDrive:\ in
+    # Pester or other relative paths and PSDrives. The Resolve-Path cmdlet will
+    # throw if the file does not exist.
+    $InPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($InPath)
+    $OutPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutPath)
+
 
     if ($PSBoundParameters.ContainsKey('InPassword'))
     {

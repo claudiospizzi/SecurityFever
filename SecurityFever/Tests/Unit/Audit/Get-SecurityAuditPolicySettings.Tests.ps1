@@ -1,24 +1,30 @@
 
-$modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
-$moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+BeforeAll {
 
-Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
-Import-Module -Name "$modulePath\$moduleName" -Force
+    $modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
+    $moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+
+    Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+    Import-Module -Name "$modulePath\$moduleName" -Force
+}
 
 Describe 'Get-SecurityAuditPolicySettings' {
 
-    Copy-Item -Path "$PSScriptRoot\TestData" -Destination 'TestDrive:\' -Recurse
+    BeforeAll {
 
-    Mock 'Invoke-AuditPolGetCategoryAllCsv' -ModuleName $ModuleName {
-        Get-Content -Path 'TestDrive:\TestData\auditpol-getcategoryall.csv' | Write-Output
-    }
+        Copy-Item -Path "$PSScriptRoot\TestData" -Destination 'TestDrive:\' -Recurse
 
-    Mock 'Invoke-AuditPolListSubcategoryAllCsv' -ModuleName $ModuleName {
-        Get-Content -Path 'TestDrive:\TestData\auditpol-listsubcategoryall.csv' | Write-Output
-    }
+        Mock 'Invoke-AuditPolGetCategoryAllCsv' -ModuleName $ModuleName {
+            Get-Content -Path 'TestDrive:\TestData\auditpol-getcategoryall.csv' | Write-Output
+        }
 
-    Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
-        return $true
+        Mock 'Invoke-AuditPolListSubcategoryAllCsv' -ModuleName $ModuleName {
+            Get-Content -Path 'TestDrive:\TestData\auditpol-listsubcategoryall.csv' | Write-Output
+        }
+
+        Mock 'Test-AdministratorRole' -ModuleName $ModuleName {
+            # Don't throw which means it's ok.
+        }
     }
 
     Context 'Verify Output' {
@@ -33,7 +39,7 @@ Describe 'Get-SecurityAuditPolicySettings' {
 
             $AuditPolicySetting = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam
 
-            $AuditPolicySetting.GetType().FullName | Should Be 'System.Boolean'
+            $AuditPolicySetting.GetType().FullName | Should -Be 'System.Boolean'
         }
 
         It 'should parse "Success and Failure" setting' {
@@ -46,8 +52,8 @@ Describe 'Get-SecurityAuditPolicySettings' {
             $auditPolicySettingSuccess = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Success'
             $auditPolicySettingFailure = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Failure'
 
-            $auditPolicySettingSuccess | Should Be $true
-            $auditPolicySettingFailure | Should Be $true
+            $auditPolicySettingSuccess | Should -Be $true
+            $auditPolicySettingFailure | Should -Be $true
         }
 
         It 'should parse "No Auditing" setting' {
@@ -60,8 +66,8 @@ Describe 'Get-SecurityAuditPolicySettings' {
             $auditPolicySettingSuccess = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Success'
             $auditPolicySettingFailure = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Failure'
 
-            $auditPolicySettingSuccess | Should Be $false
-            $auditPolicySettingFailure | Should Be $false
+            $auditPolicySettingSuccess | Should -Be $false
+            $auditPolicySettingFailure | Should -Be $false
         }
 
         It 'should parse "Success" setting' {
@@ -74,8 +80,8 @@ Describe 'Get-SecurityAuditPolicySettings' {
             $auditPolicySettingSuccess = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Success'
             $auditPolicySettingFailure = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Failure'
 
-            $auditPolicySettingSuccess | Should Be $true
-            $auditPolicySettingFailure | Should Be $false
+            $auditPolicySettingSuccess | Should -Be $true
+            $auditPolicySettingFailure | Should -Be $false
         }
 
         It 'should parse "Failure" setting' {
@@ -88,8 +94,8 @@ Describe 'Get-SecurityAuditPolicySettings' {
             $auditPolicySettingSuccess = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Success'
             $auditPolicySettingFailure = Get-SecurityAuditPolicySetting @SecurityAuditPolicySettingParam -Setting 'Failure'
 
-            $auditPolicySettingSuccess | Should Be $false
-            $auditPolicySettingFailure | Should Be $true
+            $auditPolicySettingSuccess | Should -Be $false
+            $auditPolicySettingFailure | Should -Be $true
         }
     }
 }

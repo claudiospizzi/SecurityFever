@@ -1,11 +1,14 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
-$modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
-$moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+BeforeAll {
 
-Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
-Import-Module -Name "$modulePath\$moduleName" -Force
+    $modulePath = Resolve-Path -Path "$PSScriptRoot\..\..\..\.." | Select-Object -ExpandProperty Path
+    $moduleName = Resolve-Path -Path "$PSScriptRoot\..\..\.." | Get-Item | Select-Object -ExpandProperty BaseName
+
+    Remove-Module -Name $moduleName -Force -ErrorAction SilentlyContinue
+    Import-Module -Name "$modulePath\$moduleName" -Force
+}
 
 Describe 'Test-Credential' {
 
@@ -44,7 +47,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Credential $expectedCredential -Method 'StartProcess' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return true for valid username and password' {
@@ -63,7 +66,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'StartProcess' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return a credential object for valid credentials' {
@@ -80,8 +83,8 @@ Describe 'Test-Credential' {
 
             # Assert
             $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+            $actualResult.GetNetworkCredential().UserName | Should -Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should -Be $expectedCredential.GetNetworkCredential().Password
         }
 
         It 'should return a credential object for valid username and password' {
@@ -98,8 +101,8 @@ Describe 'Test-Credential' {
 
             # Assert
             $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+            $actualResult.GetNetworkCredential().UserName | Should -Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should -Be $expectedCredential.GetNetworkCredential().Password
         }
 
         It 'should return false for invalid credentials' {
@@ -112,7 +115,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Credential $invalidCredential -Method 'StartProcess' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return false for invalid username and password' {
@@ -126,7 +129,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'StartProcess' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should throw an exception for invalid credentials' {
@@ -161,12 +164,15 @@ Describe 'Test-Credential' {
 
     Context "Method ActiveDirectory" {
 
-        Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -eq $expectedUsername } {
-            return @{ distinguishedName = 'DC=contoso,DC=com' }
-        }
+        BeforeAll {
 
-        Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -ne $expectedUsername } {
-            throw 'Logon failure: unknown user name or bad password'
+            Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -eq $expectedUsername } {
+                return @{ distinguishedName = 'DC=contoso,DC=com' }
+            }
+
+            Mock 'New-Object' -ModuleName $ModuleName -ParameterFilter { $TypeName -eq 'System.DirectoryServices.DirectoryEntry' -and $ArgumentList[1] -ne $expectedUsername } {
+                throw 'Logon failure: unknown user name or bad password'
+            }
         }
 
         It 'should return true for valid credentials' {
@@ -178,7 +184,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Credential $expectedCredential -Method 'ActiveDirectory' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return true for valid username and password' {
@@ -190,7 +196,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Username $expectedUsername -Password $expectedPassword -Method 'ActiveDirectory' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return a credential object for valid credentials' {
@@ -200,8 +206,8 @@ Describe 'Test-Credential' {
 
             # Assert
             $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+            $actualResult.GetNetworkCredential().UserName | Should -Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should -Be $expectedCredential.GetNetworkCredential().Password
         }
 
         It 'should return a credential object for valid username and password' {
@@ -211,8 +217,8 @@ Describe 'Test-Credential' {
 
             # Assert
             $actualResult | Should BeOfType 'System.Management.Automation.PSCredential'
-            $actualResult.GetNetworkCredential().UserName | Should Be $expectedCredential.GetNetworkCredential().UserName
-            $actualResult.GetNetworkCredential().Password | Should Be $expectedCredential.GetNetworkCredential().Password
+            $actualResult.GetNetworkCredential().UserName | Should -Be $expectedCredential.GetNetworkCredential().UserName
+            $actualResult.GetNetworkCredential().Password | Should -Be $expectedCredential.GetNetworkCredential().Password
         }
 
         It 'should return false for invalid credentials' {
@@ -225,7 +231,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Credential $invalidCredential -Method 'ActiveDirectory' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should return false for invalid username and password' {
@@ -239,7 +245,7 @@ Describe 'Test-Credential' {
             $actualResult = Test-Credential -Username $invalidUsername -Password $invalidPassword -Method 'ActiveDirectory' -Quiet
 
             # Assert
-            $actualResult | Should Be $expectedResult
+            $actualResult | Should -Be $expectedResult
         }
 
         It 'should throw an exception for invalid credentials' {
