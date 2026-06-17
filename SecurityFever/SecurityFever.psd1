@@ -46,7 +46,6 @@
 
     # Assemblies that must be loaded prior to importing this module
     RequiredAssemblies = @(
-        'Assemblies\SecurityFever.dll'
         'Assemblies\QRCoder.dll'
     )
 

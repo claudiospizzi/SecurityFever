@@ -1,13 +1,43 @@
-﻿/**
- * Source:
- * https://github.com/microsoft/Git-Credential-Manager-for-Windows/blob/master/Microsoft.Alm.Authentication/Src/NativeMethods.cs
- */
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Management.Automation;
 using System.Runtime.InteropServices;
+using System.Security;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SecurityFever.CredentialManager
 {
+    /// <summary>
+    /// Type of credential.
+    /// </summary>
+    public enum CredentialType
+    {
+        Generic               = 0x01,
+        DomainPassword        = 0x02,
+        DomainCertificate     = 0x03,
+        DomainVisiblePassword = 0x04,
+        GenericCertificate    = 0x05,
+        DomainExtended        = 0x06,
+        Maximum               = 0x07,
+        MaximumEx             = Maximum + 1000
+    }
+
+    /// <summary>
+    /// Type of credential persistence.
+    /// </summary>
+    public enum CredentialPersist : uint
+    {
+        Session      = 0x01,
+        LocalMachine = 0x02,
+        Enterprise   = 0x03
+    }
+
+    /// <summary>
+    /// Helper class having native methods to manage credential manager entries.
+    /// </summary>
     internal static class NativeMethods
     {
         private const string Advapi32 = "advapi32.dll";
@@ -93,8 +123,8 @@ namespace SecurityFever.CredentialManager
         /// </param>
         /// <param name="flags">The value of this parameter can be zero or more values combined
         /// with a bitwise-OR operation.</param>
-        /// <param name="count">Count of the credentials returned in the <paramref name="credenitalsArrayPtr"/>.</param>
-        /// <param name="credenitalsArrayPtr">
+        /// <param name="count">Count of the credentials returned in the <paramref name="credentialsArrayPtr"/>.</param>
+        /// <param name="credentialsArrayPtr">
         /// <para>Pointer to an array of pointers to credentials. The returned credential is a
         /// single allocated block. Any pointers contained within the buffer are pointers to
         /// locations within this single allocated block.</para>
@@ -102,7 +132,7 @@ namespace SecurityFever.CredentialManager
         /// </param>
         /// <returns></returns>
         [DllImport(Advapi32, CharSet = CharSet.Unicode, EntryPoint = "CredEnumerateW", SetLastError = true)]
-        internal static extern bool CredEnumerate(string targetNameFilter, CredentialEnumerateFlags flags, out int count, out IntPtr credenitalsArrayPtr);
+        internal static extern bool CredEnumerate(string targetNameFilter, CredentialEnumerateFlags flags, out int count, out IntPtr credentialsArrayPtr);
 
         [Flags]
         internal enum CredentialEnumerateFlags : uint
@@ -242,7 +272,7 @@ namespace SecurityFever.CredentialManager
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct Credential
         {
-            internal const int AttributeMaxLengh = 63;
+            internal const int AttributeMaxLength = 63;
             internal const int PasswordMaxLength = 2047;
             internal const int StringMaxLength = 255;
             internal const int UsernameMaxLength = 511;
@@ -305,7 +335,7 @@ namespace SecurityFever.CredentialManager
             /// <summary>
             /// <para>The number of application-defined attributes to be associated with the
             /// credential. </para>
-            /// <para>This member can be read and written. Its value cannot be greater than `<see cref="AttributeMaxLengh"/>`.</para>
+            /// <para>This member can be read and written. Its value cannot be greater than `<see cref="AttributeMaxLength"/>`.</para>
             /// </summary>
             public uint AttributeCount;
             /// <summary>
@@ -385,7 +415,7 @@ namespace SecurityFever.CredentialManager
             /// <summary>
             /// The process cannot access the file because it is being used by another process.
             /// </summary>
-            public const int SharingViloation = 32;
+            public const int SharingViolation = 32;
             /// <summary>
             /// The file exists.
             /// </summary>
@@ -393,7 +423,7 @@ namespace SecurityFever.CredentialManager
             /// <summary>
             /// Cannot create a file when that file already exists.
             /// </summary>
-            public const int AlreadExists = 183;
+            public const int AlreadyExists = 183;
             /// <summary>
             /// Element not found.
             /// </summary>
@@ -402,6 +432,356 @@ namespace SecurityFever.CredentialManager
             /// A specified logon session does not exist. It may already have been terminated.
             /// </summary>
             public const int NoSuchLogonSession = 1312;
+        }
+    }
+
+    /// <summary>
+    /// Helper methods to manage credential manager entries.
+    /// </summary>
+    public static class CredentialHelper
+    {
+        /// <summary>
+        /// Convert an unmanaged IntPtr to a SecureString object, used for
+        /// credentials.
+        /// </summary>
+        /// <param name="pointer">The credential blob.</param>
+        /// <param name="size">The credential blob size.</param>
+        /// <returns>The protected credential.</returns>
+        public static SecureString IntPtrToSecureString(IntPtr pointer, uint size)
+        {
+            if (size > 0)
+            {
+                string plain = Marshal.PtrToStringUni(pointer, (int)size / 2);
+
+                return StringToSecureString(plain);
+            }
+            else
+            {
+                return StringToSecureString(string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Convert a plain string to a SecureString object.
+        /// </summary>
+        /// <param name="plain">The plain string to protect.</param>
+        /// <returns>The protected string.</returns>
+        public static SecureString StringToSecureString(string plain)
+        {
+            SecureString secure = new SecureString();
+
+            if (!string.IsNullOrEmpty(plain))
+            {
+                foreach (char c in plain)
+                {
+                    secure.AppendChar(c);
+                }
+            }
+
+            secure.MakeReadOnly();
+
+            return secure;
+        }
+    }
+
+    /// <summary>
+    /// Class representing an entry in the credential manager.
+    /// </summary>
+    public class CredentialEntry
+    {
+        /// <summary>
+        /// Create a new CredentialEntry object.
+        /// </summary>
+        /// <param name="nativeCredential">The native credential object.</param>
+        /// <param name="flags">Credential object flags.</param>
+        internal CredentialEntry(NativeMethods.Credential nativeCredential, NativeMethods.CredentialEnumerateFlags flags)
+        {
+            // Initialize default properties
+            Namespace   = string.Empty;
+            Type        = (CredentialType)nativeCredential.Type;
+            Persist     = (CredentialPersist)nativeCredential.Persist;
+            TargetName  = nativeCredential.TargetName ?? string.Empty;
+            Username    = nativeCredential.UserName ?? string.Empty;
+            Password    = CredentialHelper.IntPtrToSecureString(nativeCredential.CredentialBlob, nativeCredential.CredentialBlobSize);
+            Comment     = nativeCredential.Comment ?? string.Empty;
+            Attribute   = string.Empty;
+            TargetAlias = nativeCredential.TargetAlias ?? string.Empty;
+
+            // Extract namespace, attribute and target name
+            if (flags == NativeMethods.CredentialEnumerateFlags.AllCredentials)
+            {
+                Match match = Regex.Match(TargetName, "(.*?):(.*?)=(.*)");
+
+                if (match.Success)
+                {
+                    if (match.Groups.Count >= 2)
+                    {
+                        Namespace = match.Groups[1].Value;
+                    }
+
+                    if (match.Groups.Count >= 3)
+                    {
+                        Attribute = match.Groups[2].Value;
+                    }
+
+                    if (match.Groups.Count >= 4)
+                    {
+                        TargetName = match.Groups[3].Value;
+                    }
+                }
+            }
+
+            // Use the username if provided or fallback to the target name
+            if (!string.IsNullOrEmpty(Username))
+            {
+                Credential = new PSCredential(Username, Password);
+            }
+            else
+            {
+                Credential = new PSCredential(TargetName, Password);
+            }
+        }
+
+        /// <summary>
+        /// Entry namespace like Domain, LegacyGeneric, MicrosoftAccount, WindowsLive, etc.
+        /// </summary>
+        public string Namespace
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Type of the entry.
+        /// </summary>
+        public CredentialType Type
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Definition where it will persist the entry.
+        /// </summary>
+        public CredentialPersist Persist
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry target name, used to display in the credential manager.
+        /// </summary>
+        public string TargetName
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry username.
+        /// </summary>
+        public string Username
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry password.
+        /// </summary>
+        public SecureString Password
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// PowerShell credential object.
+        /// </summary>
+        public PSCredential Credential
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry comment.
+        /// </summary>
+        public string Comment
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry attribute.
+        /// </summary>
+        public string Attribute
+        {
+            private set;
+            get;
+        }
+
+        /// <summary>
+        /// Entry alias.
+        /// </summary>
+        public string TargetAlias
+        {
+            private set;
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Class providing methods to interact with the credential manager. This
+    /// is a wrapper to unmanaged code.
+    /// </summary>
+    public static class CredentialStore
+    {
+        /// <summary>
+        /// Get a credential entry based on name and type. If no or multiple
+        /// credentials were found, an exception is thrown.
+        /// </summary>
+        /// <param name="targetName">Credential entry name.</param>
+        /// <param name="type">Credential entry type.</param>
+        /// <returns>The credential entry.</returns>
+        public static CredentialEntry GetCredential(string targetName, CredentialType type)
+        {
+            IList<CredentialEntry> credentials = GetCredentials(targetName, type).ToList();
+
+            if (credentials.Count == 1)
+            {
+                return credentials[0];
+            }
+            else if (credentials.Count < 1)
+            {
+                throw new Win32Exception("Credentials not found!");
+            }
+            else
+            {
+                throw new Win32Exception("No unique credential found!");
+            }
+        }
+
+        /// <summary>
+        /// Get all credential entries matching the specified parameters.
+        /// </summary>
+        /// <param name="targetName">Optional entry name.</param>
+        /// <param name="type">Optional entry type.</param>
+        /// <param name="persist">Optional entry persist.</param>
+        /// <param name="username">Optional entry username.</param>
+        /// <returns>List of al matching credential entries.</returns>
+        public static IEnumerable<CredentialEntry> GetCredentials(string targetName = null, CredentialType? type = null, CredentialPersist? persist = null, string username = null)
+        {
+            IList<CredentialEntry> credentials = new List<CredentialEntry>();
+
+            int count;
+            IntPtr credentialArrayPtr;
+
+            NativeMethods.CredentialEnumerateFlags flags = NativeMethods.CredentialEnumerateFlags.None;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                flags = NativeMethods.CredentialEnumerateFlags.AllCredentials;
+            }
+
+            if (NativeMethods.CredEnumerate(null, flags, out count, out credentialArrayPtr))
+            {
+                for (int i = 0; i < count; i += 1)
+                {
+                    int offset = i * Marshal.SizeOf(typeof(IntPtr));
+
+                    IntPtr credentialPtr = Marshal.ReadIntPtr(credentialArrayPtr, offset);
+
+                    if (credentialPtr != IntPtr.Zero)
+                    {
+                        NativeMethods.Credential nativeCredential = Marshal.PtrToStructure<NativeMethods.Credential>(credentialPtr);
+
+                        CredentialEntry credential = new CredentialEntry(nativeCredential, flags);
+
+                        if ((string.IsNullOrEmpty(targetName) || credential.TargetName == targetName) &&
+                            (!type.HasValue || credential.Type == type.Value) &&
+                            (!persist.HasValue || credential.Persist == persist.Value) &&
+                            (string.IsNullOrEmpty(username) || credential.Credential.UserName == username))
+                        {
+                            credentials.Add(credential);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            return credentials;
+        }
+
+        /// <summary>
+        /// Check if the credential identified by name and type exists.
+        /// </summary>
+        /// <param name="targetName">Credential entry name.</param>
+        /// <param name="type">Credential entry type.</param>
+        /// <returns>If the entry exists, return true, else false.</returns>
+        public static bool ExistCredential(string targetName, CredentialType type)
+        {
+            IList<CredentialEntry> credentials = GetCredentials(targetName, type).ToList();
+
+            return credentials.Count > 0;
+        }
+
+        /// <summary>
+        /// Create a new credential entry objects.
+        /// </summary>
+        /// <param name="targetName">Credential entry name.</param>
+        /// <param name="type">Credential entry type.</param>
+        /// <param name="persist">Credential entry persist.</param>
+        /// <param name="credential">Credential object.</param>
+        /// <returns>Returns the new created entry.</returns>
+        public static CredentialEntry CreateCredential(string targetName, CredentialType type, CredentialPersist persist, PSCredential credential)
+        {
+            NativeMethods.Credential nativeCredential = new NativeMethods.Credential()
+            {
+                TargetName         = targetName,
+                Type               = (NativeMethods.CredentialType)type,
+                Persist            = (NativeMethods.CredentialPersist)persist,
+                AttributeCount     = 0,
+                UserName           = credential.UserName,
+                CredentialBlob     = Marshal.StringToCoTaskMemUni(credential.GetNetworkCredential().Password),
+                CredentialBlobSize = (uint)Encoding.Unicode.GetByteCount(credential.GetNetworkCredential().Password)
+            };
+
+            try
+            {
+                if (NativeMethods.CredWrite(ref nativeCredential, 0))
+                {
+                    return GetCredential(targetName, type);
+                }
+                else
+                {
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+            }
+            finally
+            {
+                if (nativeCredential.CredentialBlob != IntPtr.Zero)
+                {
+                    Marshal.FreeCoTaskMem(nativeCredential.CredentialBlob);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove an existing credential entry.
+        /// </summary>
+        /// <param name="targetName">Credential entry name.</param>
+        /// <param name="type">Credential entry type.</param>
+        public static void RemoveCredential(string targetName, CredentialType type)
+        {
+            if (!NativeMethods.CredDelete(targetName, (NativeMethods.CredentialType)type, 0))
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
         }
     }
 }

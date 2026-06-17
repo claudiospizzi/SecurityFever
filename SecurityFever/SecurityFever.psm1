@@ -35,6 +35,10 @@ $Script:PSModuleVersion = (Import-PowerShellDataFile -Path "$Script:PSModulePath
 
 ## Module Loader
 
+# Get and add all .NET source code files as types (internal)
+Get-ChildItem -Path "$Script:PSModulePath\Sources" -Filter '*.cs' -File -Recurse |
+    ForEach-Object { Add-Type -Path $_.FullName }
+
 # Get and dot source all functions
 Get-ChildItem -Path "$Script:PSModulePath\Helpers", "$Script:PSModulePath\Functions" -Filter '*.ps1' -File -Recurse |
     ForEach-Object {

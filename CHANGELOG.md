@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added: New alias pw for New-Password and allow multiple output types (New-Password)
 * Changed: System audit optimization: Better sort and output formatting (Get-SystemAudit)
 * Changed: Optimize module loading time by change the dot-sourcing mode
+* Changed: Remove the .NET Framework 4.5 dependency and add the .NET C# classes with Add-Type (SecurityFever.CredentialManager)
 
 ## 3.0.0 - 2023-07-25
 
