@@ -27,6 +27,18 @@
         "**/*.user": true
     },
 
+    "terminal.integrated.env.windows": {
+        "PWSH_DEBUG_MODULE": "true"
+    },
+
+    "terminal.integrated.env.linux": {
+        "PWSH_DEBUG_MODULE": "true"
+    },
+
+    "terminal.integrated.env.osx": {
+        "PWSH_DEBUG_MODULE": "true"
+    },
+
     "powershell.powerShellDefaultVersion": "Windows PowerShell (x64)",
     "powershell.integratedConsole.suppressStartupBanner": true,
     "powershell.promptToUpdatePowerShell": false,
@@ -60,7 +72,9 @@
         "clcerts",
         "contoso",
         "DPAPI",
+        "getcategoryall",
         "HMACSHA",
+        "listsubcategoryall",
         "nocerts",
         "nokeys",
         "openssl",

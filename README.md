@@ -228,9 +228,9 @@ Studio Code and ensure that the PowerShell extension is installed.
 * [Visual Studio Code] with the [PowerShell Extension]
 * [Pester], [PSScriptAnalyzer], [InvokeBuild] and [InvokeBuildHelper] modules
 
-[PowerShell Gallery]: https://www.powershellgallery.com/packages/InvokeBuildHelper
-[GitHub Releases]: https://github.com/claudiospizzi/PSInvokeBuildHelper/releases
-[Installing a PowerShell Module]: https://msdn.microsoft.com/en-us/library/dd878350
+[PowerShell Gallery]: https://www.powershellgallery.com/packages/SecurityFever
+[GitHub Releases]: https://github.com/claudiospizzi/SecurityFever/releases
+[Installing a PowerShell Module]: https://learn.microsoft.com/en-us/powershell/scripting/developer/module/installing-a-powershell-module
 
 [CHANGELOG.md]: CHANGELOG.md
 

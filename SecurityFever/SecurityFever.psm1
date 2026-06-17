@@ -3,27 +3,55 @@
         Root module file.
 
     .DESCRIPTION
-        The root module file loads all classes, helpers and functions into the
-        module context.
+        The root module file loads all functions and helpers into the module
+        context.
 #>
 
-# Get and dot source all classes (internal)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Classes' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
+[CmdletBinding()]
+param
+(
+    # Enable debug mode for the module. This will allow to debug the module
+    # functions and helpers using breakpoints but will slow down module loading
+    # due to the slow dot-sourcing.
+    [Parameter(Mandatory = $false)]
+    [System.Boolean]
+    $DebugModule = $false
+)
 
-# Get and dot source all helper functions (internal)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Helpers' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
 
-# Get and dot source all external functions (public)
-Split-Path -Path $PSCommandPath |
-    Get-ChildItem -Filter 'Functions' -Directory |
-        Get-ChildItem -Include '*.ps1' -File -Recurse |
-            ForEach-Object { . $_.FullName }
+## Module Core
+
+# Module behavior
+Set-StrictMode -Version 'Latest'
+$Script:ErrorActionPreference = 'Stop'
+$Script:ProgressPreference    = 'SilentlyContinue'
+
+
+# Module metadata
+$Script:PSModulePath    = [System.IO.Path]::GetDirectoryName($PSCommandPath)
+$Script:PSModuleName    = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[0]
+$Script:PSModuleVersion = (Import-PowerShellDataFile -Path "$Script:PSModulePath\$Script:PSModuleName.psd1")['ModuleVersion']
+
+
+## Module Loader
+
+# Get and dot source all functions
+Get-ChildItem -Path "$Script:PSModulePath\Helpers", "$Script:PSModulePath\Functions" -Filter '*.ps1' -File -Recurse |
+    ForEach-Object {
+        if ($DebugModule -or $Env:PWSH_DEBUG_MODULE -eq 'true')
+        {
+            . $_.FullName
+        }
+        else
+        {
+            . ([System.Management.Automation.ScriptBlock]::Create(
+                [System.IO.File]::ReadAllText($_.FullName, [System.Text.Encoding]::UTF8)
+            ))
+        }
+    }
+
+
+## Module Context
 
 # Path to the module configuration
 $Script:ConfigurationPath = Join-Path -Path $PSScriptRoot -ChildPath 'Configurations'
