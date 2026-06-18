@@ -1,0 +1,32 @@
+name: PowerShell - CI
+
+on:
+  push:
+    branches: [ 'main' ]
+    tags-ignore: [ '**' ]
+    paths: [ '**.ps1', '**.psm1', '**.psd1', '**.ps1xml', '.github/workflows/pwsh-ci.yml' ]
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Install and cache PowerShell modules
+        uses: potatoqualitee/psmodulecache@v6.2.1
+        with:
+          modules-to-cache: InvokeBuild:5.14.23,InvokeBuildHelper::,PSScriptAnalyzer:1.25.0,Pester:5.7.1
+          updatable: true
+
+      - name: Build PowerShell module
+        shell: pwsh
+        run: |
+          Invoke-Build -Task 'Build'
+
+      - name: Test PowerShell module
+        shell: pwsh
+        run: |
+          Invoke-Build -Task 'Test'

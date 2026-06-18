@@ -25,23 +25,16 @@ body:
     validations:
       required: true
   - type: input
-    id: platform
+    id: version
     attributes:
-      label: Platform/OS
-      description: Specify the Platform and/or Operating System
+      label: Version
+      description: Specify the used version(s).
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Specify the Operating System, PLatform, Browser, etc.
     validations:
       required: false
-  - type: input
-    id: powershell-version
-    attributes:
-      label: PowerShell Version
-      description: Specify the used PowerShell version
-    validations:
-      required: true
-  - type: input
-    id: module-version
-    attributes:
-      label: Module Version
-      description: Specify the used version of this module
-    validations:
-      required: true

@@ -1,0 +1,20 @@
+name: Question
+description: Ask a question about this project.
+title: "[Question]: "
+labels:
+  - question
+assignees:
+  - claudiospizzi
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in this project! Please ask your question below and consider, this is a spare time community open source project.
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+      placeholder: Please describe your question in detail and provide used platforms and versions if applicable.
+    validations:
+      required: true
