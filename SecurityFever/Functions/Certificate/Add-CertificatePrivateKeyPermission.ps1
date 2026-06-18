@@ -75,11 +75,14 @@ function Add-CertificatePrivateKeyPermission
 
         if ($acl.Access.Where({ $_.IdentityReference -eq $Identity -and $_.FileSystemRights -eq $Right }).Count -eq 0)
         {
-            Write-Verbose "Add $Right permission to $Identity on $path"
+            if ($PSCmdlet.ShouldProcess($path, "Add $Right to $Identity"))
+            {
+                Write-Verbose "Add $Right permission to $Identity on $path"
 
-            $ace = [System.Security.AccessControl.FileSystemAccessRule]::new($Identity, $Right, 'Allow')
-            $acl.AddAccessRule($ace) | Out-Null
-            $acl | Set-Acl -Path $Path
+                $ace = [System.Security.AccessControl.FileSystemAccessRule]::new($Identity, $Right, 'Allow')
+                $acl.AddAccessRule($ace) | Out-Null
+                $acl | Set-Acl -Path $Path
+            }
         }
     }
 }

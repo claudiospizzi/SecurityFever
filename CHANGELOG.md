@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Changed: Optimize module loading time by change the dot-sourcing mode
 * Changed: Remove the .NET Framework 4.5 dependency and add the .NET C# classes with Add-Type (SecurityFever.CredentialManager)
 * Changed: Only load the QRCoder assembly when generating a QR code (New-TimeBasedOneTimeSharedSecret)
+* Fixed: Command not correctly supporting ShouldProcess (Add-CertificatePrivateKeyPermission)
 
 ## 3.0.0 - 2023-07-25
 
