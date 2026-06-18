@@ -8,7 +8,7 @@ BeforeAll {
     Import-Module -Name "$modulePath\$moduleName" -Force
 }
 
-Describe 'SecurityFever.CredentialManager' {
+Describe 'SecurityFever.CredentialManager' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and -not $IsWindows) {
 
     It 'Should create credential' {
 
