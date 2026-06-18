@@ -36,6 +36,12 @@ function Remove-TrustedHost
 
     begin
     {
+        # Exit if executed on a non-Windows platform
+        if ($PSVersionTable.PSVersion.Major -gt 5 and -not $IsWindows)
+        {
+            throw 'This function is only supported on Windows platforms.'
+        }
+
         # Check the WinRM service
         $serviceWinRM = Get-Service -Name 'WinRM'
         if ($serviceWinRM.StartType -ne 'Automatic' -or $serviceWinRM.Status -ne 'Running')
