@@ -59,3 +59,7 @@ Get-ChildItem -Path "$Script:PSModulePath\Helpers", "$Script:PSModulePath\Functi
 
 # Path to the module configuration
 $Script:ConfigurationPath = Join-Path -Path $PSScriptRoot -ChildPath 'Configurations'
+
+# Add the impersonation context variables
+$Script:ImpersonationContext = $null
+$Script:PSReadlineHistorySaveStyle = $null

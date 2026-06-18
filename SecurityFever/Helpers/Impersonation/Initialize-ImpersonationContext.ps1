@@ -4,6 +4,12 @@ function Initialize-ImpersonationContext
     [CmdletBinding()]
     param ()
 
+    # Exit if executed not on Windows PowerSHell
+    if ($PSVersionTable.PSVersion.Major -gt 5)
+    {
+        throw 'This function is only supported on Windows PowerShell.'
+    }
+
     # Add Win32 native API methods to call to LogonUser()
     if (-not ([System.Management.Automation.PSTypeName]'Win32.AdvApi32').Type)
     {
@@ -23,7 +29,7 @@ function Initialize-ImpersonationContext
     }
 
     # Define enumeration for the logon type
-    if (-not ([System.Management.Automation.PSTypeName]'Win33.Logon32Type').Type)
+    if (-not ([System.Management.Automation.PSTypeName]'Win32.Logon32Type').Type)
     {
         Add-Type -TypeDefinition '
             namespace Win32
@@ -43,7 +49,7 @@ function Initialize-ImpersonationContext
     }
 
     # Define enumeration for the logon provider
-    if (-not ([System.Management.Automation.PSTypeName]'Win33.Logon32Type').Type)
+    if (-not ([System.Management.Automation.PSTypeName]'Win32.Logon32Provider').Type)
     {
         Add-Type -TypeDefinition '
             namespace Win32
