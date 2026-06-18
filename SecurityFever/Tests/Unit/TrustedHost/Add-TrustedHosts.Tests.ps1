@@ -8,7 +8,7 @@ BeforeAll {
     Import-Module -Name "$modulePath\$moduleName" -Force
 }
 
-Describe 'Add-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 and -not $IsWindows) {
+Describe 'Add-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and -not $IsWindows) {
 
     Context 'Not Administrator' {
 

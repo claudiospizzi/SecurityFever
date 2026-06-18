@@ -25,7 +25,7 @@ function Get-TrustedHost
     param ()
 
     # Exit if executed on a non-Windows platform
-    if ($PSVersionTable.PSVersion.Major -gt 5 and -not $IsWindows)
+    if ($PSVersionTable.PSVersion.Major -gt 5 -and -not $IsWindows)
     {
         throw 'This function is only supported on Windows platforms.'
     }

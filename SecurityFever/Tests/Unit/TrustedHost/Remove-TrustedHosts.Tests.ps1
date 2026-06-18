@@ -8,7 +8,7 @@ BeforeAll {
     Import-Module -Name "$modulePath\$moduleName" -Force
 }
 
-Describe 'Remove-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 and -not $IsWindows) {
+Describe 'Remove-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and -not $IsWindows) {
 
     Context 'Not Administrator' {
 

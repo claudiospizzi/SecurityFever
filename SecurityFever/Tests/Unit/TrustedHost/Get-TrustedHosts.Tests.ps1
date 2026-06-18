@@ -9,7 +9,7 @@ BeforeAll {
     Import-Module -Name "$modulePath\$moduleName" -Force
 }
 
-Describe 'Get-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 and -not $IsWindows) {
+Describe 'Get-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and -not $IsWindows) {
 
     Context 'Empty Value' {
 
