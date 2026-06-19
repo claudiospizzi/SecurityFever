@@ -26,7 +26,6 @@ Set-StrictMode -Version 'Latest'
 $Script:ErrorActionPreference = 'Stop'
 $Script:ProgressPreference    = 'SilentlyContinue'
 
-
 # Module metadata
 $Script:PSModulePath    = [System.IO.Path]::GetDirectoryName($PSCommandPath)
 $Script:PSModuleName    = [System.IO.Path]::GetFileName($PSCommandPath).Split('.')[0]
