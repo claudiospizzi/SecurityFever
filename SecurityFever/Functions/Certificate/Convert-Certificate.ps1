@@ -4,7 +4,7 @@
 
     .DESCRIPTION
         Function to convert certificate files. This function is using native
-        .NET crypto functions and does not required external dependencies.
+        crypto functions and does not required external dependencies.
 
         The following overview should give a short introduction about
         certificates and their file formats:
