@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is mainly based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+
+* Added: Enhance certification conversion to support new input and output formats (Convert-Certificate)
+
 ## 3.1.0 - 2026-06-18
 
 * Added: New alias pw for New-Password and allow multiple output types (New-Password)
