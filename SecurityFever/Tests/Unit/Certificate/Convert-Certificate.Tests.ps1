@@ -114,7 +114,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/PEM (ca cert)
         @{
             InPath  = $testDataPath
-            InFile  = 'ca-des.pfx'
+            InFile  = 'ca-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'ca.pem'
             OutType = 'X.509/PEM'
@@ -122,7 +122,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/DER (ca cert)
         @{
             InPath  = $testDataPath
-            InFile  = 'ca-des.pfx'
+            InFile  = 'ca-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'ca.cer'
             OutType = 'X.509/DER'
@@ -194,7 +194,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/PEM (issued cert / single)
         @{
             InPath  = $testDataPath
-            InFile  = 'cert-single-des.pfx'
+            InFile  = 'cert-single-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.pem'
             OutType = 'X.509/PEM'
@@ -202,7 +202,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/DER (issued cert / single)
         @{
             InPath  = $testDataPath
-            InFile  = 'cert-single-des.pfx'
+            InFile  = 'cert-single-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
@@ -226,7 +226,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/PEM (issued cert / chain)
         @{
             InPath  = $testDataPath
-            InFile  = 'cert-chain-des.pfx'
+            InFile  = 'cert-chain-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.pem'
             OutType = 'X.509/PEM'
@@ -234,7 +234,7 @@ Describe 'Convert-Certificate' {
         # PKCS#12 (3DES) -> X.509/DER (issued cert / chain)
         @{
             InPath  = $testDataPath
-            InFile  = 'cert-chain-des.pfx'
+            InFile  = 'cert-chain-3des.pfx'
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
