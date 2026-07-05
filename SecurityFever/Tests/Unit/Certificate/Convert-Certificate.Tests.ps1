@@ -271,8 +271,8 @@ Describe 'Convert-Certificate' {
             InFile   = 'cert-chain.p7b'
             InType   = 'X.509/PKCS#7'
             OutFile  = 'cert-chain.pem'
-            OutFile1 = 'cert-chain-8f1bd1f130565fef0175984c2c763421f004df52.pem' # ca
-            OutFile2 = 'cert-chain-092cb288945d29c5e2c7edaf5c49f6f09b0d784c.pem'
+            OutFile1 = 'cert-chain-8f1bd1f.pem'
+            OutFile2 = 'cert-chain-092cb28.pem'
             OutType  = 'X.509/PEM'
         }
         # X.509/PKCS#7 -> X.509/DER (issued cert / chain)
@@ -281,8 +281,8 @@ Describe 'Convert-Certificate' {
             InFile   = 'cert-chain.p7b'
             InType   = 'X.509/PKCS#7'
             OutFile  = 'cert-chain.cer'
-            OutFile1 = 'cert-chain-8f1bd1f130565fef0175984c2c763421f004df52.cer'
-            OutFile2 = 'cert-chain-092cb288945d29c5e2c7edaf5c49f6f09b0d784c.cer'
+            OutFile1 = 'cert-chain-8f1bd1f.cer'
+            OutFile2 = 'cert-chain-092cb28.cer'
             OutType  = 'X.509/DER'
         }
     )

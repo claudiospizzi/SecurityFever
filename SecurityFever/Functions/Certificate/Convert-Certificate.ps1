@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Convert certificates files into other formats.
+        Convert certificate files into other formats.
 
     .DESCRIPTION
         Function to convert certificate files. This function is using native
@@ -9,37 +9,54 @@
         The following overview should give a short introduction about
         certificates and their file formats:
 
-        - X.509/DER (.cer)
+        - X.509/DER
             Contains the public part of a single X.509 certificate in the
             binary DER format. Used primary on Windows systems.
 
-        - X.509/PEM (.pem)
+        - X.509/PEM
             Contains the public part of a single X.509 certificate in the
             Base64 encoded PEM format. Used primary on Linux systems.
 
-        - X.509/PKCS#7 (.p7b)
-            Contains the public part of one or more X.509 certificates in the
-            Base64 encoded PKCS#7 format. Used primary on Windows systems.
+        - PKCS#7 (.p7b, .p7c, .p7m, .p7r, .p7s)
+            This is a file archive container for storing one or more X.509
+            certificates. The certificate files only contain the public part of
+            the certificates. On Windows these files are normally formatted as
+            DER binary files.
 
         - PKCS#12 (.pfx/.p12)
-            Contains the public and private part of one or more X.509
-            certificates in the binary PKCS#12 format. Used primary on Windows
-            systems. Because it's a mix of public and private keys, it is not
-            only an X.509 certificate but more container.
+            This is a file archive container for storing one or more X.509
+            certificates with their public and private key parts. On Windows
+            these files are normally formatted as DER binary files and can be
+            password protected with AES or 3DES encryption.
 
-        Input certificate formats supported by this command:
-        - X.509/DER
-        - X.509/PEM
-        - PKCS#7 (.p7b)
-        - PKCS#12 (AES/3DES password encrypted)
+        - PKCS#1 Private Key (-----BEGIN RSA PRIVATE KEY-----)
+            Contains the private part of a single RSA key in the Base64 encoded
+            PKCS#1 format. Used primary on Linux systems.
 
-        Output certificate formats supported by this command:
-        - X.509/DER
-        - X.509/PEM
+        - PKCS#8 Private Key (-----BEGIN PRIVATE KEY-----)
+            Contains the private part of a key in the Base64 encoded PKCS#8
+            format. Compared to the PKCS#1 format, this format can contain keys
+            of different algorithms. Used primary on Linux systems.
 
-        Ideas but not yet implemented certificate formats:
+        Supported input certificate formats:
+        - X.509/DER certificate
+        - X.509/PEM certificate
+        - PKCS#7 certificate container
+        - PKCS#12 certificate container (AES/3DES password encrypted)
+
+        Currently NOT supported input certificate formats:
         - PKCS#1 private key
         - PKCS#8 private key
+
+        Supported output certificate formats:
+        - X.509/DER certificate
+        - X.509/PEM certificate
+        - PKCS#1 private key
+        - PKCS#8 private key
+
+        Currently NOT supported output certificate formats:
+        - PKCS#7 certificate container
+        - PKCS#12 certificate container
 
     .EXAMPLE
         PS C:\> Convert-Certificate -InPath 'cert.cer' -OutPath 'cert.pem' -OutType 'X.509/PEM'
@@ -76,12 +93,41 @@ function Convert-Certificate
         [System.Security.SecureString]
         $OutPassword,
 
-        # Type of the output certificate file.
+        # Type of the output certificate or private key file.
+        # - X.509/DER or CertificateBinary: Binary DER encoded X.509 certificate
+        # - X.509/PEM or CertificateBase64: Base64 PEM encoded X.509 certificate
+        # - PKCS#1 or RsaPrivateKey: Base64 PEM encoded PKCS#1 private key
+        # - PKCS#8 or PrivateKey: Base64 PEM encoded PKCS#8 private key
         [Parameter(Mandatory = $true, Position = 2)]
-        [ValidateSet('X.509/DER', 'X.509/PEM')]
+        [ValidateSet('X.509/DER', 'CertificateBinary', 'X.509/PEM', 'CertificateBase64', 'PKCS#1', 'RsaPrivateKey', 'PKCS#8', 'PrivateKey')]
         [System.String]
         $OutType
     )
+
+    #region Helper functions
+
+    function ConvertTo-Base64 ([System.Byte[]] $Byte)
+    {
+        $straight = [System.Convert]::ToBase64String($Byte)
+
+        # Convert the string to base64 junks with a maximum length of 64
+        # characters per line.
+        $formatted = [System.Text.StringBuilder]::new()
+        for ($i = 0; $i -lt $straight.Length; $i += 64)
+        {
+            $formatted.AppendLine($straight.Substring($i, [System.Math]::Min(64, $straight.Length - $i))) | Out-Null
+        }
+
+        # Remove the new lines for the last empty line and store it as a simple
+        # string with newlines, no string array.
+        $formattedString = $formatted.ToString().TrimEnd("`n`r")
+
+        return $formattedString
+    }
+
+    #endregion
+
+    #region Input: Resolve input file and import as X509Certificate2 object(s)
 
     # Resolve the path to the actual provider path e.g. for TestDrive:\ in
     # Pester or other relative paths and PSDrives. The Resolve-Path cmdlet will
@@ -95,6 +141,10 @@ function Convert-Certificate
     switch -wildcard ($InPath)
     {
         '*.p7b' { $InType = 'PKCS#7' }
+        '*.p7c' { $InType = 'PKCS#7' }
+        '*.p7m' { $InType = 'PKCS#7' }
+        '*.p7r' { $InType = 'PKCS#7' }
+        '*.p7s' { $InType = 'PKCS#7' }
         '*.pfx' { $InType = 'PKCS#12' }
         '*.p12' { $InType = 'PKCS#12' }
     }
@@ -159,10 +209,12 @@ function Convert-Certificate
 
             foreach ($certificate in $certificates)
             {
-                $certificateThumbprint = $certificate.Thumbprint.ToLower()
+                $certificateId = $certificate.Thumbprint.ToLower().Substring(0, 7)
+                $outFileName = '{0}-{1}{2}' -f $outBaseName, $certificateId, $outExtension
+
                 $exportFiles += @{
                     Certificate = $certificate
-                    OutPath     = [System.IO.Path]::Combine($outDirectory, "$outBaseName-$certificateThumbprint$outExtension")
+                    OutPath     = [System.IO.Path]::Combine($outDirectory, $outFileName)
                 }
             }
         }
@@ -170,6 +222,16 @@ function Convert-Certificate
     else
     {
         Write-Verbose "[Convert-Certificate] Read the certificate file '$InPath' as a basic X.509 certificate."
+
+        # Try to detect unsupported input certificates. A common issue could be,
+        # that a private key is provided as input file, which cannot be
+        # converted
+        $inFileContent = [System.IO.File]::ReadAllText($InPath)
+        if ($inFileContent -match '-----BEGIN PRIVATE KEY-----' -or
+            $inFileContent -match '-----BEGIN RSA PRIVATE KEY-----')
+        {
+            throw "The input certificate file '$InPath' is a private key file and cannot be converted. Only X.509 certificates and PKCS#7/PKCS#12 container files can be converted."
+        }
 
         # Single export file, nothing special here
         $certificate = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new($InPath)
@@ -179,49 +241,45 @@ function Convert-Certificate
         }
     }
 
-    function ConvertTo-Base64 ([System.Byte[]] $Byte)
-    {
-        $straight = [System.Convert]::ToBase64String($Byte)
+    #endregion
 
-        # Convert the string to base64 junks with a maximum length of 64
-        # characters per line.
-        $formatted = [System.Text.StringBuilder]::new()
-        for ($i = 0; $i -lt $straight.Length; $i += 64)
-        {
-            $formatted.AppendLine($straight.Substring($i, [System.Math]::Min(64, $straight.Length - $i))) | Out-Null
-        }
-
-        # Remove the new lines for the last empty line and store it as a simple
-        # string with newlines, no string array.
-        $formattedString = $formatted.ToString().TrimEnd("`n`r")
-
-        return $formattedString
-    }
+    #region Output: Export the X509Certificate2 object(s) to the specified output file and format
 
     foreach ($exportFile in $exportFiles)
     {
-        Write-Verbose "[Convert-Certificate] Exporting certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as '$OutType'."
-
-        switch ($OutType)
+        if ($OutType -in 'X.509/DER', 'CertificateBinary')
         {
-            'X.509/DER'
-            {
-                $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
-                [System.IO.File]::WriteAllBytes($exportFile.OutPath, $certificateBytes)
-            }
+            Write-Verbose "[Convert-Certificate] Exporting certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as binary 'X.509/DER' format."
 
-            'X.509/PEM'
-            {
-                $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
-                $certificateBase64 = ConvertTo-Base64 -Byte $certificateBytes
+            $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+            [System.IO.File]::WriteAllBytes($exportFile.OutPath, $certificateBytes)
+        }
 
-                $outStringBuilder = [System.Text.StringBuilder]::new()
-                $outStringBuilder.AppendLine("-----BEGIN CERTIFICATE-----") | Out-Null
-                $outStringBuilder.AppendLine($certificateBase64) | Out-Null
-                $outStringBuilder.Append("-----END CERTIFICATE-----") | Out-Null
+        if ($OutType -in 'X.509/PEM', 'CertificateBase64')
+        {
+            Write-Verbose "[Convert-Certificate] Exporting certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as base64 'X.509/PEM' format."
 
-                Set-Content -Path $exportFile.OutPath -Value $outStringBuilder.ToString()
-            }
+            $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+            $certificateBase64 = ConvertTo-Base64 -Byte $certificateBytes
+
+            $outStringBuilder = [System.Text.StringBuilder]::new()
+            $outStringBuilder.AppendLine("-----BEGIN CERTIFICATE-----") | Out-Null
+            $outStringBuilder.AppendLine($certificateBase64) | Out-Null
+            $outStringBuilder.Append("-----END CERTIFICATE-----") | Out-Null
+
+            Set-Content -Path $exportFile.OutPath -Value $outStringBuilder.ToString()
+        }
+
+        if ($OutType -in 'PKCS#1', 'RsaPrivateKey')
+        {
+            throw "Exporting RSA private keys is currently not supported."
+        }
+
+        if ($OutType -in 'PKCS#8', 'PrivateKey')
+        {
+            throw "Exporting private keys is currently not supported."
         }
     }
+
+    #endregion
 }
