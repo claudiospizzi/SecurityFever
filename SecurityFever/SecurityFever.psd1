@@ -70,6 +70,7 @@
         'Get-SecurityAuditPolicySetting'
         # Certificate
         'Convert-Certificate'
+        'Export-CertificatePrivateKey'
         'New-DomainSignedCertificate'
         'Add-CertificatePrivateKeyPermission'
         'Get-CertificatePrivateKeyPermission'

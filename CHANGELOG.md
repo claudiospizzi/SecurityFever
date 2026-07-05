@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Unreleased
 
 * Added: Enhance certification conversion to support new input and output formats (Convert-Certificate)
+* Added: New function to export the private key (PKCS#1 or PKCS#8) of a PKCS#12 aka. pfx certificate (Export-CertificatePrivateKey)
 
 ## 3.1.0 - 2026-06-18
 
