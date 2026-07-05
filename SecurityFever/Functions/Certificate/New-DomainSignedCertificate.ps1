@@ -82,8 +82,13 @@ function New-DomainSignedCertificate
 
         # Option to export the certificate as Base64. Requires openssl.exe.
         [Parameter(Mandatory = $false)]
-        [switch]
+        [Switch]
         $Base64,
+
+        # Option to use OpenSSL for the Base64 export.
+        [Parameter(Mandatory = $false)]
+        [Switch]
+        $Base64UseOpenSsl,
 
         # Path to the working folder where the files will be stored.
         [Parameter(Mandatory = $false)]
@@ -112,7 +117,7 @@ function New-DomainSignedCertificate
 
         # Check and get native commands
         $certReqCmd = Get-CommandPath -Name 'certreq.exe'
-        if ($Base64.IsPresent)
+        if ($Base64.IsPresent -and $Base64UseOpenSsl.IsPresent)
         {
             $openSslCmd = Get-CommandPath -Name 'openssl.exe' -WarningMessage 'Download OpenSSL for Windows from https://slproweb.com/products/Win32OpenSSL.html'
         }
@@ -192,7 +197,7 @@ function New-DomainSignedCertificate
             $extensions = 'inf', 'req', 'rsp', 'cer', 'pfx'
             if ($Base64.IsPresent)
             {
-                $extensions += 'pem', 'key'
+                $extensions += 'pem', 'key', 'rsa'
             }
             foreach ($extension in $extensions)
             {
@@ -290,53 +295,82 @@ function New-DomainSignedCertificate
 
             if ($Base64.IsPresent)
             {
-                Write-Verbose "Export the certificate as X.509 PEM to $Subject.pem"
-                Write-Verbose "> openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -clcerts -nokeys -out `"$Path\$Subject.pem`""
-                Write-Verbose "> openssl.exe x509 -in `"$Path\$Subject.pem`" -out `"$Path\$Subject.pem`""
-
-                Write-Progress -Activity $activity -Status "Export the certificate as X.509 PEM to $Subject.pem" -PercentComplete 70
-
-                $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -clcerts -nokeys -out "`"$Path\$Subject.pem`"")
-
-                if ($Global:LASTEXITCODE -ne 0)
+                if ($Base64UseOpenSsl.IsPresent)
                 {
-                    throw "Failed to convert the certificate from pfx to pem!"
+                    Write-Verbose "Export the certificate as X.509 PEM to $Subject.pem using OpenSSL"
+                    Write-Verbose "> openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -clcerts -nokeys -out `"$Path\$Subject.pem`""
+                    Write-Verbose "> openssl.exe x509 -in `"$Path\$Subject.pem`" -out `"$Path\$Subject.pem`""
+
+                    Write-Progress -Activity $activity -Status "Export the certificate as X.509 PEM to $Subject.pem" -PercentComplete 70
+
+                    $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -clcerts -nokeys -out "`"$Path\$Subject.pem`"")
+
+                    if ($Global:LASTEXITCODE -ne 0)
+                    {
+                        throw "Failed to convert the certificate from pfx to pem!"
+                    }
+
+                    $result = (& $openSslCmd x509 -in "`"$Path\$Subject.pem`"" -out "`"$Path\$Subject.pem`"")
+
+                    if ($Global:LASTEXITCODE -ne 0)
+                    {
+                        throw "Failed to convert the certificate from pfx to pem!"
+                    }
                 }
-
-                $result = (& $openSslCmd x509 -in "`"$Path\$Subject.pem`"" -out "`"$Path\$Subject.pem`"")
-
-                if ($Global:LASTEXITCODE -ne 0)
+                else
                 {
-                    throw "Failed to convert the certificate from pfx to pem!"
+                    Write-Verbose "Export the certificate as X.509 PEM to $Subject.pem"
+
+                    Convert-Certificate -InPath "$Path\$Subject.cer" -OutPath "$Path\$Subject.pem" -OutType 'X.509/PEM'
                 }
             }
 
 
             # Step 7
-            # Export certificate as RSA (.key) file
+            # Export certificate as RSA (.key/.rsa) file
 
             if ($Base64.IsPresent)
             {
-                Write-Verbose "Export the certificate as RSA to $Subject.key"
-                Write-Verbose "> openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -nocerts -out `"$Path\$Subject.key`" -nodes"
-                Write-Verbose "> openssl.exe rsa -in `"$Path\$Subject.key`" -out `"$Path\$Subject.key`""
-
-                Write-Progress -Activity $activity -Status "Export the certificate as RSA to $Subject.key" -PercentComplete 84
-
-                $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -nocerts -out "`"$Path\$Subject.key`"" -nodes)
-
-                if ($Global:LASTEXITCODE -ne 0)
+                if ($Base64UseOpenSsl.IsPresent)
                 {
-                    throw "Failed to convert the certificate from pfx to key!"
+                    Write-Verbose "Export the certificate as RSA to $Subject.key and $Subject.rsa using OpenSSL"
+                    Write-Verbose "> openssl.exe pkcs12 -passin pass:`"***`" -in `"$Path\$Subject.pfx`" -nocerts -out `"$Path\$Subject.key`" -nodes"
+                    Write-Verbose "> openssl.exe rsa -in `"$Path\$Subject.key`" -out `"$Path\$Subject.key`""
+                    Write-Verbose "> openssl.exe rsa -in `"$Path\$Subject.key`" -out `"$Path\$Subject.rsa`" -traditional"
+
+                    Write-Progress -Activity $activity -Status "Export the certificate as RSA to $Subject.key" -PercentComplete 84
+
+                    $result = (& $openSslCmd pkcs12 -passin "pass:`"$(Unprotect-SecureString -SecureString $Password)`"" -in "`"$Path\$Subject.pfx`"" -nocerts -out "`"$Path\$Subject.key`"" -nodes)
+
+                    if ($Global:LASTEXITCODE -ne 0)
+                    {
+                        throw "Failed to convert the certificate from pfx to key!"
+                    }
+
+                    $ErrorActionPreference = 'SilentlyContinue'
+                    $result = (& $openSslCmd rsa -in "`"$Path\$Subject.key`"" -out "`"$Path\$Subject.key`"" 2>&1)
+                    $ErrorActionPreference = 'Stop'
+
+                    if ($Global:LASTEXITCODE -ne 0)
+                    {
+                        throw "Failed to convert the certificate from pfx to key!"
+                    }
+
+                    $ErrorActionPreference = 'SilentlyContinue'
+                    $result = (& $openSslCmd rsa -in "`"$Path\$Subject.key`"" -out "`"$Path\$Subject.rsa`" -traditional" 2>&1)
+                    $ErrorActionPreference = 'Stop'
+
+                    if ($Global:LASTEXITCODE -ne 0)
+                    {
+                        throw "Failed to convert the certificate from pfx to key!"
+                    }
                 }
-
-                $ErrorActionPreference = 'SilentlyContinue'
-                $result = (& $openSslCmd rsa -in "`"$Path\$Subject.key`"" -out "`"$Path\$Subject.key`"" 2>&1)
-                $ErrorActionPreference = 'Stop'
-
-                if ($Global:LASTEXITCODE -ne 0)
+                else
                 {
-                    throw "Failed to convert the certificate from pfx to key!"
+                    Write-Verbose "Export the certificate as RSA to $Subject.key and $Subject.rsa"
+
+                    Convert-Certificate -InPath "$Path\$Subject.pfx" -InPassword $Password -OutPath "$Path\$Subject.key" -OutType 'PKCS#8'
+                    Convert-Certificate -InPath "$Path\$Subject.pfx" -InPassword $Password -OutPath "$Path\$Subject.rsa" -OutType 'PKCS#1'
                 }
             }
 
