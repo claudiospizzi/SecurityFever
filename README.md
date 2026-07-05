@@ -80,6 +80,11 @@ account.
   Command to convert certificate files between various formats. This is useful
   to replace openssl and have a PowerShell nativ method.
 
+* **Export-CertificatePrivateKey**  
+  Command to export the private key of a certificate into a PEM Base64 encoded
+  file. The certificate can be provided as a PFX file with password or as a
+  certificate object.
+
 * **New-DomainSignedCertificate**  
   Command to create a new certificate signed by the domain CA. It's able to
   create subject, dns name, ip addresses and a friendly name for the
