@@ -248,7 +248,7 @@ function Export-CertificatePrivateKey
                     $pkcs8InnerStream.Dispose()
                 }
 
-                $pkcs1Bytes = $pkcs8Stream.ToArray()
+                $pkcs8Bytes = $pkcs8Stream.ToArray()
             }
             finally
             {
@@ -262,7 +262,7 @@ function Export-CertificatePrivateKey
 
         # Write the Base64 encoded PKCS#8 private key to the specified output
         # file path containing the PKCS#1 private key as a nested structure.
-        $pkcs8Base64 = ConvertTo-CertificateBase64 -Type 'PRIVATE KEY' -Byte $pkcs8Stream.ToArray()
+        $pkcs8Base64 = ConvertTo-CertificateBase64 -Type 'PRIVATE KEY' -Byte $pkcs8Bytes
         [System.IO.File]::WriteAllText($OutPath, $pkcs8Base64)
     }
 }
