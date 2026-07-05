@@ -74,7 +74,10 @@ function Export-CertificatePrivateKey
     # Resolve the path to the actual provider path e.g. for TestDrive:\ in
     # Pester or other relative paths and PSDrives. The Resolve-Path cmdlet will
     # throw if the file does not exist.
-    $InPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($InPath)
+    if ($PSCmdlet.ParameterSetName -eq 'File')
+    {
+        $InPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($InPath)
+    }
     $OutPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutPath)
 
     # Import the certificate from the specified file path if it was specified by
@@ -106,12 +109,15 @@ function Export-CertificatePrivateKey
     # one of the following types:
     # - System.Security.Cryptography.RSACryptoServiceProvider
     #     This is the legacy type used in .NET Framework and .NET Core 2.x.
+    # - System.Security.Cryptography.RSAOpenSsl
+    #     This is the type used in .NET Core 3.x and .NET 5+ on Linux systems.
     # - System.Security.Cryptography.RSACng
     #     This is the modern .NET alternative to replace the old type.
     if ($InCertificate.PrivateKey -isnot [System.Security.Cryptography.RSACryptoServiceProvider] -and
+        $InCertificate.PrivateKey -isnot [System.Security.Cryptography.RSAOpenSsl] -and
         $InCertificate.PrivateKey -isnot [System.Security.Cryptography.RSACng])
     {
-        throw "The certificate's private key is not an RSA key. Only RSA private keys are supported."
+        throw "The certificate's private key is not an RSA key: [$($InCertificate.PrivateKey.GetType().FullName)]. Only RSA private keys are supported."
     }
 
     ## Required?!?
@@ -216,9 +222,11 @@ function Export-CertificatePrivateKey
 
                         $pkcs8InnerWriter.Write([System.Byte]0x30) # SEQUENCE
                         $pkcs8InnerWriter | Write-CertificateDerLength -Length 13
+
                         $pkcs8InnerWriter.Write([System.Byte]0x06) # OBJECT IDENTIFIER
                         $pkcs8InnerWriter | Write-CertificateDerLength -Length 9
                         $pkcs8InnerWriter.Write(@([System.Byte]0x2A, [System.Byte]0x86, [System.Byte]0x48, [System.Byte]0x86, [System.Byte]0xF7, [System.Byte]0x0D, [System.Byte]0x01, [System.Byte]0x01, [System.Byte]0x01), 0, 9)
+
                         $pkcs8InnerWriter.Write([System.Byte]0x05) # NULL
                         $pkcs8InnerWriter | Write-CertificateDerLength -Length 0
 

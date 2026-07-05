@@ -73,7 +73,7 @@ function Convert-Certificate
         # Path to the input certificate file.
         [Parameter(Mandatory = $true, Position = 0)]
         [Alias('In', 'InFile')]
-        [ValidateScript({ Test-Path -Path $_ })]
+        [ValidateScript({ Test-Path -Path $_ -PathType 'Leaf' })]
         [System.String]
         $InPath,
 
@@ -239,12 +239,16 @@ function Convert-Certificate
 
         if ($OutType -in 'PKCS#1', 'RsaPrivateKey')
         {
-            throw "Exporting RSA private keys is currently not supported."
+            Write-Verbose "[Convert-Certificate] Exporting private key of certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as base64 'PKCS#1' format."
+
+            Export-CertificatePrivateKey -Certificate $exportFile.Certificate -OutPath $exportFile.OutPath -OutFormat 'PKCS#1'
         }
 
         if ($OutType -in 'PKCS#8', 'PrivateKey')
         {
-            throw "Exporting private keys is currently not supported."
+            Write-Verbose "[Convert-Certificate] Exporting private key of certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as base64 'PKCS#8' format."
+
+            Export-CertificatePrivateKey -Certificate $exportFile.Certificate -OutPath $exportFile.OutPath -OutFormat 'PKCS#8'
         }
     }
 }

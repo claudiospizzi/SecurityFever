@@ -9,6 +9,43 @@
 
 Describe 'Export-CertificatePrivateKey' {
 
+    BeforeAll {
+
+        function Get-CertificateFile
+        {
+            param
+            (
+                [Parameter(Mandatory = $true)]
+                [System.String]
+                $Path
+            )
+
+            $content = Get-Content -Path $Path -Raw
+
+            # Depending on the OS, replace the line endings with the correct
+            # ones. This is required for the test cases to pass on Linux and
+            # Windows.
+            if ($PSVersionTable.PSVersion.Major -gt 5 -and ($IsLinux -or $IsMacOS))
+            {
+                # Just remove the carriage return characters. The line feed
+                # characters are already the correct ones on Linux and macOS.
+                $content = $content.Replace("`r", '')
+            }
+            else
+            {
+                # Replace the line endings with the correct ones for Windows.
+                $content = $content.Replace("`r", '').Replace("`n", "`r`n")
+            }
+
+            return $content
+        }
+    }
+
+    BeforeEach {
+
+        Get-ChildItem -Path 'TestDrive:' -Include '*.cer', '*.pem', '*.pfx', '*.p7b' -Recurse | Remove-Item -Force
+    }
+
     $testDataPath = Resolve-Path -Path "$PSScriptRoot\TestData" | Select-Object -ExpandProperty 'Path'
 
     $testCases = @(
@@ -68,12 +105,12 @@ Describe 'Export-CertificatePrivateKey' {
 
         # Arrange
         $password = Protect-String -String 'Passw0rd'
-        $expected = Get-Content -Path "$InPath\$OutFile" -Raw
+        $expected = Get-CertificateFile -Path "$InPath\$OutFile"
 
         # Act
         Export-CertificatePrivateKey -InPath "$InPath\$InFile" -InPassword $password -OutPath "TestDrive:\$OutFile" -OutFormat $OutFormat
 
         # Assert
-        Get-Content -Path "TestDrive:\$OutFile" -Raw | Should -Be $expected
+        Get-CertificateFile -Path "TestDrive:\$OutFile" | Should -Be $expected
     }
 }

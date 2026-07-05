@@ -25,16 +25,34 @@ Describe 'Convert-Certificate' {
                 $Type
             )
 
-            switch ($Type)
+            if ($Type -eq 'X.509/DER')
             {
-                'X.509/DER' {
-                    $hashObject = Get-FileHash -Path $Path -Algorithm 'SHA256'
-                    return $hashObject.Hash
+                # For DER we don't compare the content but the file hash.
+                $hashObject = Get-FileHash -Path $Path -Algorithm 'SHA256'
+                return $hashObject.Hash
+            }
+            else
+            {
+                $content = Get-Content -Path $Path -Raw
+
+                # Depending on the OS, replace the line endings with the correct
+                # ones. This is required for the test cases to pass on Linux and
+                # Windows.
+                if ($PSVersionTable.PSVersion.Major -gt 5 -and ($IsLinux -or $IsMacOS))
+                {
+                    # Just remove the carriage return characters. The line feed
+                    # characters are already the correct ones on Linux and
+                    # macOS.
+                    $content = $content.Replace("`r", '')
                 }
-                'X.509/PEM' {
-                    $content = Get-Content -Path $Path -Raw
-                    return $content
+                else
+                {
+                    # Replace the line endings with the correct ones for
+                    # Windows.
+                    $content = $content.Replace("`r", '').Replace("`n", "`r`n")
                 }
+
+                return $content
             }
         }
     }
@@ -111,6 +129,22 @@ Describe 'Convert-Certificate' {
             OutFile = 'ca.cer'
             OutType = 'X.509/DER'
         }
+        # PKCS#12 (AES) -> PKCS#1 (RSA private key)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'ca-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'ca-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (AES) -> PKCS#8 (private key)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'ca-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'ca-key.pem'
+            OutType = 'PKCS#8'
+        }
         # PKCS#12 (3DES) -> X.509/PEM (ca cert)
         @{
             InPath  = $testDataPath
@@ -126,6 +160,22 @@ Describe 'Convert-Certificate' {
             InType  = 'X.509/PKCS#12'
             OutFile = 'ca.cer'
             OutType = 'X.509/DER'
+        }
+        # PKCS#12 (3DES) -> PKCS#1 (RSA private key)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'ca-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'ca-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (3DES) -> PKCS#8 (private key)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'ca-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'ca-key.pem'
+            OutType = 'PKCS#8'
         }
         # X.509/PEM -> X.509/PEM (issued cert)
         @{
@@ -191,6 +241,22 @@ Describe 'Convert-Certificate' {
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
         }
+        # PKCS#12 (AES) -> PKCS#1 (RSA private key / single)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-single-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (AES) -> PKCS#8 (private key / single)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-single-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-key.pem'
+            OutType = 'PKCS#8'
+        }
         # PKCS#12 (3DES) -> X.509/PEM (issued cert / single)
         @{
             InPath  = $testDataPath
@@ -206,6 +272,22 @@ Describe 'Convert-Certificate' {
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
+        }
+        # PKCS#12 (3DES) -> PKCS#1 (RSA private key / single)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-single-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (3DES) -> PKCS#8 (private key / single)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-single-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-key.pem'
+            OutType = 'PKCS#8'
         }
         # PKCS#12 (AES) -> X.509/PEM (issued cert / chain)
         @{
@@ -223,6 +305,22 @@ Describe 'Convert-Certificate' {
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
         }
+        # PKCS#12 (AES) -> PKCS#1 (RSA private key / chain)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-chain-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (AES) -> PKCS#8 (private key / chain)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-chain-aes.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-key.pem'
+            OutType = 'PKCS#8'
+        }
         # PKCS#12 (3DES) -> X.509/PEM (issued cert / chain)
         @{
             InPath  = $testDataPath
@@ -238,6 +336,22 @@ Describe 'Convert-Certificate' {
             InType  = 'X.509/PKCS#12'
             OutFile = 'cert.cer'
             OutType = 'X.509/DER'
+        }
+        # PKCS#12 (3DES) -> PKCS#1 (RSA private key / chain)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-chain-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-rsa.pem'
+            OutType = 'PKCS#1'
+        }
+        # PKCS#12 (3DES) -> PKCS#8 (private key / chain)
+        @{
+            InPath  = $testDataPath
+            InFile  = 'cert-chain-3des.pfx'
+            InType  = 'X.509/PKCS#12'
+            OutFile = 'cert-key.pem'
+            OutType = 'PKCS#8'
         }
     )
 
