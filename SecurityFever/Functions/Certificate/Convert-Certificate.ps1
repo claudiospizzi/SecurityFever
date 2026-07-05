@@ -104,31 +104,6 @@ function Convert-Certificate
         $OutType
     )
 
-    #region Helper functions
-
-    function ConvertTo-Base64 ([System.Byte[]] $Byte)
-    {
-        $straight = [System.Convert]::ToBase64String($Byte)
-
-        # Convert the string to base64 junks with a maximum length of 64
-        # characters per line.
-        $formatted = [System.Text.StringBuilder]::new()
-        for ($i = 0; $i -lt $straight.Length; $i += 64)
-        {
-            $formatted.AppendLine($straight.Substring($i, [System.Math]::Min(64, $straight.Length - $i))) | Out-Null
-        }
-
-        # Remove the new lines for the last empty line and store it as a simple
-        # string with newlines, no string array.
-        $formattedString = $formatted.ToString().TrimEnd("`n`r")
-
-        return $formattedString
-    }
-
-    #endregion
-
-    #region Input: Resolve input file and import as X509Certificate2 object(s)
-
     # Resolve the path to the actual provider path e.g. for TestDrive:\ in
     # Pester or other relative paths and PSDrives. The Resolve-Path cmdlet will
     # throw if the file does not exist.
@@ -241,17 +216,14 @@ function Convert-Certificate
         }
     }
 
-    #endregion
-
-    #region Output: Export the X509Certificate2 object(s) to the specified output file and format
-
     foreach ($exportFile in $exportFiles)
     {
         if ($OutType -in 'X.509/DER', 'CertificateBinary')
         {
             Write-Verbose "[Convert-Certificate] Exporting certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as binary 'X.509/DER' format."
 
-            $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+            $certificateBytes = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+
             [System.IO.File]::WriteAllBytes($exportFile.OutPath, $certificateBytes)
         }
 
@@ -259,15 +231,10 @@ function Convert-Certificate
         {
             Write-Verbose "[Convert-Certificate] Exporting certificate '$($exportFile.Certificate.Subject)' with thumbprint '$($exportFile.Certificate.Thumbprint)' to file '$($exportFile.OutPath)' as base64 'X.509/PEM' format."
 
-            $certificateBytes  = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
-            $certificateBase64 = ConvertTo-Base64 -Byte $certificateBytes
+            $certificateBytes = $exportFile.Certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
+            $certificateBase64 = $certificateBytes | ConvertTo-CertificateBase64 -Type 'CERTIFICATE'
 
-            $outStringBuilder = [System.Text.StringBuilder]::new()
-            $outStringBuilder.AppendLine("-----BEGIN CERTIFICATE-----") | Out-Null
-            $outStringBuilder.AppendLine($certificateBase64) | Out-Null
-            $outStringBuilder.Append("-----END CERTIFICATE-----") | Out-Null
-
-            Set-Content -Path $exportFile.OutPath -Value $outStringBuilder.ToString()
+            [System.IO.File]::WriteAllText($exportFile.OutPath, $certificateBase64)
         }
 
         if ($OutType -in 'PKCS#1', 'RsaPrivateKey')
@@ -280,6 +247,4 @@ function Convert-Certificate
             throw "Exporting private keys is currently not supported."
         }
     }
-
-    #endregion
 }
