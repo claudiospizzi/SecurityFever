@@ -49,7 +49,7 @@ Describe 'Add-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and -no
             Add-TrustedHost -ComputerName $list
 
             # Assert
-            Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
+            Should-Invoke 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
         }
     }
 }

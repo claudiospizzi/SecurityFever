@@ -52,7 +52,7 @@ Describe 'Remove-TrustedHost' -Skip:($PSVersionTable.PSVersion.Major -gt 5 -and 
             Remove-TrustedHost -ComputerName $list
 
             # Assert
-            Assert-MockCalled 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
+            Should-Invoke 'Set-Item' -ModuleName $moduleName -Times 1 -Exactly
         }
     }
 }
